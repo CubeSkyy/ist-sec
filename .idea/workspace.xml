@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ea876c7c-9e33-4d0b-9bbb-196703d83fe7" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+        <option name="vmOptionsForImporter" value="-Xmx768m" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1Z1dYKhCNNX019LdggyOzNaUcEx" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/server/src/test/java" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs.jest.jest_package" value="" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.importing" />
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn install" />
+    </option>
+  </component>
+  <component name="RunManager" selected="JUnit.Tests">
+    <configuration name="HelloWorldClientTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="dpas-client" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.dpas.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.dpas" />
+      <option name="MAIN_CLASS_NAME" value="com.dpas.HelloWorldClientTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HelloWorldClientTest.greet_messageDeliveredToServer" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="dpas-client" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.dpas.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.dpas" />
+      <option name="MAIN_CLASS_NAME" value="com.dpas.HelloWorldClientTest" />
+      <option name="METHOD_NAME" value="greet_messageDeliveredToServer" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HelloWorldServerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="dpas-server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.dpas.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.dpas" />
+      <option name="MAIN_CLASS_NAME" value="com.dpas.HelloWorldServerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Tests" type="JUnit" factoryName="JUnit">
+      <useClassPathOnly />
+      <option name="PACKAGE_NAME" value="com.dpas" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <option name="PARAMETERS" value="" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="dpas-client [compile,exec:java]" type="MavenRunConfiguration" factoryName="Maven" nameIsGenerated="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="compile" />
+                <option value="exec:java" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$/client" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <configuration name="dpas-contract [install]" type="MavenRunConfiguration" factoryName="Maven" nameIsGenerated="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="install" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$/contract" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <configuration name="dpas-server [compile,exec:java]" type="MavenRunConfiguration" factoryName="Maven" nameIsGenerated="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="compile" />
+                <option value="exec:java" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$/server" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.Tests" />
+      <item itemvalue="JUnit.HelloWorldClientTest" />
+      <item itemvalue="JUnit.HelloWorldClientTest.greet_messageDeliveredToServer" />
+      <item itemvalue="JUnit.HelloWorldServerTest" />
+      <item itemvalue="Maven.dpas-server [compile,exec:java]" />
+      <item itemvalue="Maven.dpas-client [compile,exec:java]" />
+      <item itemvalue="Maven.dpas-contract [install]" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.HelloWorldServerTest" />
+        <item itemvalue="JUnit.HelloWorldClientTest.greet_messageDeliveredToServer" />
+        <item itemvalue="JUnit.HelloWorldClientTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ea876c7c-9e33-4d0b-9bbb-196703d83fe7" name="Default Changelist" comment="" />
+      <created>1584010582083</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1584010582083</updated>
+      <workItem from="1584010587437" duration="448000" />
+      <workItem from="1584011054753" duration="174000" />
+      <workItem from="1584011246096" duration="378000" />
+      <workItem from="1584011665189" duration="3925000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="552" y="178" key="#Project_Structure" timestamp="1584011487061">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="178" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1584011487061" />
+    <state x="153" y="246" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584014897228">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="153" y="246" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584014897228" />
+    <state x="429" y="367" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1584014892770">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="429" y="367" key="#com.intellij.ide.util.PackageChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584014892770" />
+    <state x="1281" y="314" key="#xdebugger.evaluate" timestamp="1584014215415">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1281" y="314" key="#xdebugger.evaluate/0.0.1920.1040@0.0.1920.1040" timestamp="1584014215415" />
+    <state width="1877" height="245" key="GridCell.Tab.0.bottom" timestamp="1584014901018">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="245" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584014901018" />
+    <state width="1877" height="245" key="GridCell.Tab.0.center" timestamp="1584014901018">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="245" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584014901018" />
+    <state width="1877" height="245" key="GridCell.Tab.0.left" timestamp="1584014901018">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="245" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584014901018" />
+    <state width="1877" height="245" key="GridCell.Tab.0.right" timestamp="1584014901018">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="245" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584014901018" />
+    <state width="1877" height="243" key="GridCell.Tab.1.bottom" timestamp="1584014504187">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="243" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584014504187" />
+    <state width="1877" height="243" key="GridCell.Tab.1.center" timestamp="1584014504187">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="243" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584014504187" />
+    <state width="1877" height="243" key="GridCell.Tab.1.left" timestamp="1584014504187">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="243" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584014504187" />
+    <state width="1877" height="243" key="GridCell.Tab.1.right" timestamp="1584014504187">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="243" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584014504187" />
+    <state x="440" y="94" key="SettingsEditor" timestamp="1584012198505">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1584012198505" />
+    <state x="776" y="297" key="chooseDestDirectoryDialog" timestamp="1584014586341">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="776" y="297" key="chooseDestDirectoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584014586341" />
+    <state x="591" y="65" width="737" height="909" key="find.popup" timestamp="1584012392678">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="591" y="65" width="737" height="909" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1584012392678" />
+    <state x="616" y="240" width="672" height="677" key="run.anything.popup" timestamp="1584010707047">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="240" width="672" height="677" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1584010707047" />
+  </component>
+</project>
