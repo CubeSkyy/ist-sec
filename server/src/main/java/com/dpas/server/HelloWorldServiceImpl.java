@@ -17,7 +17,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
 	public static final String USERS_FILE = "users.tmp";
 
-	public void checkUsersFile() {
+	public synchronized void checkUsersFile() {
 
 		File f = new File(USERS_FILE);
 		System.out.println("File users exists: " + f.isFile());
