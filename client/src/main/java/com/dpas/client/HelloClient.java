@@ -56,10 +56,10 @@ public class HelloClient {
 		// Here we create a blocking stub, but an async stub,
 		// or an async stub with Future are always possible.
 		HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub = HelloWorldServiceGrpc.newBlockingStub(channel);
-		HelloWorld.HelloRequest request = HelloWorld.HelloRequest.newBuilder().setName("friend").build();
+		HelloWorld.RegisterRequest request = HelloWorld.RegisterRequest.newBuilder().setKey("publickey4").setUsername("user4").build();
 
 		// Finally, make the call using the stub
-		HelloWorld.HelloResponse response = stub.greeting(request);
+		HelloWorld.RegisterResponse response = stub.register(request);
 
 		// HelloResponse has auto-generated toString method that shows its contents
 		System.out.println(response);
