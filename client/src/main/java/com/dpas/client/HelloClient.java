@@ -56,10 +56,17 @@ public class HelloClient {
 		// Here we create a blocking stub, but an async stub,
 		// or an async stub with Future are always possible.
 		HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub = HelloWorldServiceGrpc.newBlockingStub(channel);
-		HelloWorld.RegisterRequest request = HelloWorld.RegisterRequest.newBuilder().setKey("publickey4").setUsername("user4").build();
+		HelloWorld.Announcement referral = HelloWorld.Announcement.newBuilder().setKey("referred1").setMessage("referred1").setSignature("referred1").build();
+		HelloWorld.Announcement referral2 = HelloWorld.Announcement.newBuilder().setKey("referred2").setMessage("referred2").setSignature("referred2").build();
+
+		//HelloWorld.RegisterRequest request = HelloWorld.RegisterRequest.newBuilder().setKey("publickey5").setUsername("user5").build();
+		//HelloWorld.Announcement post = HelloWorld.Announcement.newBuilder().setKey("publickey2").setMessage("message2").setSignature("signature2").addA(referral).addA(referral2).build();
+		//HelloWorld.PostRequest request = HelloWorld.PostRequest.newBuilder().setPost(post).build();
+		HelloWorld.Announcement post = HelloWorld.Announcement.newBuilder().setKey("publickey2").setMessage("message2").setSignature("signature2").addA(referral).addA(referral2).build();
+		HelloWorld.PostGeneralRequest request = HelloWorld.PostGeneralRequest.newBuilder().setPost(post).build();
 
 		// Finally, make the call using the stub
-		HelloWorld.RegisterResponse response = stub.register(request);
+		HelloWorld.PostGeneralResponse response = stub.postGeneral(request);
 
 		// HelloResponse has auto-generated toString method that shows its contents
 		System.out.println(response);
