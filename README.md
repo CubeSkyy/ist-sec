@@ -8,6 +8,3 @@ This is a gRPC example application, composed of three modules:
 See the README for each module.
 Start at contract, then go to server, and finally go to the client.
 
-----
-
-[SD Faculty](mailto:leic-sod@disciplinas.tecnico.ulisboa.pt)

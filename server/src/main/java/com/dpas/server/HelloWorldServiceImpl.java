@@ -12,10 +12,19 @@ import java.io.ObjectOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.*;
+import java.text.SimpleDateFormat;
 
 public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServiceImplBase {
 
 	public static final String USERS_FILE = "users.tmp";
+	public Map<String, AnnouncementBoard> boards;
+	public GeneralAnnouncementBoard generalBoard;
+
+	public HelloWorldServiceImpl(){
+		boards = new HashMap<String, AnnouncementBoard>();
+		generalBoard = GeneralAnnouncementBoard.getInstance();
+
+	}
 
 	public synchronized void checkUsersFile() {
 
@@ -65,6 +74,47 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 		return new HashMap<String, String>();
 	}
 
+	/*----------------------------------------------POST ANNOUNCEMENT-------------------------------------------------*/
+	public synchronized void postAnnouncement(HelloWorld.PostRequest request){
+		//TODO - check MAC, signature, etc
+
+		String key = request.getPost().getKey();
+		if(!boards.containsKey(key)){
+			AnnouncementBoard ab = new AnnouncementBoard(key);
+			boards.put(key, ab);
+		}
+		Announcement newAnnouncement = new Announcement(request.getPost().getKey(), request.getPost().getMessage());
+
+		Announcement referedAnnouncement;
+		if(!request.getAList().isEmpty()){
+			for(int i = 0; i < request.getACount(); i++){
+				referedAnnouncement = new Announcement(request.getA(i).getKey(), request.getA(i).getMessage());
+				newAnnouncement.addAnnouncement(referedAnnouncement);
+			}
+		}
+
+		boards.get(key).addAnnouncement(newAnnouncement);
+		//System.out.println(boards.get(key).toString());
+	}
+
+	public synchronized void postGeneralAnnouncement(HelloWorld.PostGeneralRequest request){
+		//TODO - check MAC, signature, etc
+
+		String key = request.getPost().getKey();
+		Announcement newAnnouncement = new Announcement(request.getPost().getKey(), request.getPost().getMessage());
+
+		Announcement referedAnnouncement;
+		if(!request.getAList().isEmpty()){
+			for(int i = 0; i < request.getACount(); i++){
+				referedAnnouncement = new Announcement(request.getA(i).getKey(), request.getA(i).getMessage());
+				newAnnouncement.addAnnouncement(referedAnnouncement);
+			}
+		}
+
+		generalBoard.addAnnouncement(newAnnouncement);
+		//System.out.println(generalBoard.toString());
+	}
+
 	@Override
 	public void greeting(HelloWorld.HelloRequest request, StreamObserver<HelloWorld.HelloResponse> responseObserver) {
 
@@ -107,6 +157,42 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
 		// When you are done, you must call onCompleted
 		responseObserver.onCompleted();
+	}
+
+	public void post(HelloWorld.PostRequest request, StreamObserver<HelloWorld.PostResponse> responseObserver){
+		System.out.println(request);
+
+		postAnnouncement(request);
+
+		HelloWorld.PostResponse response = HelloWorld.PostResponse.newBuilder()
+				.setResult(true).build();
+
+		responseObserver.onNext(response);
+
+		responseObserver.onCompleted();
+	}
+
+	public void postGeneral(HelloWorld.PostGeneralRequest request, StreamObserver<HelloWorld.PostGeneralResponse> responseObserver){
+		System.out.println(request);
+
+		postGeneralAnnouncement(request);
+
+		HelloWorld.PostGeneralResponse response = HelloWorld.PostGeneralResponse.newBuilder()
+				.setResult(true).build();
+
+		responseObserver.onNext(response);
+
+		responseObserver.onCompleted();
+	}
+
+	public void read(HelloWorld.ReadRequest request, StreamObserver<HelloWorld.ReadResponse> responseObserver){
+		System.out.println(request);
+		//TODO
+	}
+
+	public void readGeneral(HelloWorld.ReadGeneralRequest request, StreamObserver<HelloWorld.ReadGeneralResponse> responseObserver){
+		System.out.println(request);
+		//TODO
 	}
 
 }
