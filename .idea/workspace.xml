@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ea876c7c-9e33-4d0b-9bbb-196703d83fe7" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contract/target/dpas-contract-1.0.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/dpas-contract-1.0.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contract/target/generated-sources/protobuf/grpc-java/com/dpas/HelloWorldServiceGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/generated-sources/protobuf/grpc-java/com/dpas/HelloWorldServiceGrpc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contract/target/generated-sources/protobuf/java/com/dpas/HelloWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/generated-sources/protobuf/java/com/dpas/HelloWorld.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,39 +61,8 @@
       <command value="mvn install" />
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.Tests">
-    <configuration name="HelloWorldClientTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="dpas-client" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.dpas.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.dpas" />
-      <option name="MAIN_CLASS_NAME" value="com.dpas.HelloWorldClientTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="HelloWorldClientTest.greet_messageDeliveredToServer" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="dpas-client" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.dpas.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.dpas" />
-      <option name="MAIN_CLASS_NAME" value="com.dpas.HelloWorldClientTest" />
-      <option name="METHOD_NAME" value="greet_messageDeliveredToServer" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="HelloWorldServerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.RegisterTest.register_empty_key">
+    <configuration name="RegisterTest.register_empty_key" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="dpas-server" />
       <extension name="coverage">
         <pattern>
@@ -99,8 +71,73 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="com.dpas" />
-      <option name="MAIN_CLASS_NAME" value="com.dpas.HelloWorldServerTest" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="MAIN_CLASS_NAME" value="com.dpas.RegisterTest" />
+      <option name="METHOD_NAME" value="register_empty_key" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RegisterTest.register_empty_username" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="dpas-server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.dpas.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.dpas" />
+      <option name="MAIN_CLASS_NAME" value="com.dpas.RegisterTest" />
+      <option name="METHOD_NAME" value="register_empty_username" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RegisterTest.register_once" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="dpas-server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.dpas.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.dpas" />
+      <option name="MAIN_CLASS_NAME" value="com.dpas.RegisterTest" />
+      <option name="METHOD_NAME" value="register_once" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RegisterTest.register_twice" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="dpas-server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.dpas.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.dpas" />
+      <option name="MAIN_CLASS_NAME" value="com.dpas.RegisterTest" />
+      <option name="METHOD_NAME" value="register_twice" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RegisterTest.register_twice_dif" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="dpas-server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.dpas.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.dpas" />
+      <option name="MAIN_CLASS_NAME" value="com.dpas.RegisterTest" />
+      <option name="METHOD_NAME" value="register_twice_dif" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -198,18 +235,22 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.Tests" />
-      <item itemvalue="JUnit.HelloWorldClientTest" />
-      <item itemvalue="JUnit.HelloWorldClientTest.greet_messageDeliveredToServer" />
-      <item itemvalue="JUnit.HelloWorldServerTest" />
       <item itemvalue="Maven.dpas-server [compile,exec:java]" />
       <item itemvalue="Maven.dpas-client [compile,exec:java]" />
       <item itemvalue="Maven.dpas-contract [install]" />
+      <item itemvalue="JUnit.RegisterTest.register_once" />
+      <item itemvalue="JUnit.RegisterTest.register_twice" />
+      <item itemvalue="JUnit.RegisterTest.register_twice_dif" />
+      <item itemvalue="JUnit.RegisterTest.register_empty_username" />
+      <item itemvalue="JUnit.RegisterTest.register_empty_key" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.HelloWorldServerTest" />
-        <item itemvalue="JUnit.HelloWorldClientTest.greet_messageDeliveredToServer" />
-        <item itemvalue="JUnit.HelloWorldClientTest" />
+        <item itemvalue="JUnit.RegisterTest.register_empty_key" />
+        <item itemvalue="JUnit.RegisterTest.register_empty_username" />
+        <item itemvalue="JUnit.RegisterTest.register_twice_dif" />
+        <item itemvalue="JUnit.RegisterTest.register_twice" />
+        <item itemvalue="JUnit.RegisterTest.register_once" />
       </list>
     </recent_temporary>
   </component>
@@ -227,6 +268,7 @@
       <workItem from="1584011054753" duration="174000" />
       <workItem from="1584011246096" duration="378000" />
       <workItem from="1584011665189" duration="4524000" />
+      <workItem from="1584390318591" duration="1301000" />
     </task>
     <servers />
   </component>
@@ -250,22 +292,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1281" y="314" key="#xdebugger.evaluate/0.0.1920.1040@0.0.1920.1040" timestamp="1584014215415" />
-    <state width="1877" height="243" key="GridCell.Tab.0.bottom" timestamp="1584019239115">
+    <state width="1877" height="233" key="GridCell.Tab.0.bottom" timestamp="1584391636561">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584019239115" />
-    <state width="1877" height="243" key="GridCell.Tab.0.center" timestamp="1584019239115">
+    <state width="1877" height="233" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584391636561" />
+    <state width="1877" height="233" key="GridCell.Tab.0.center" timestamp="1584391636560">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584019239115" />
-    <state width="1877" height="243" key="GridCell.Tab.0.left" timestamp="1584019239115">
+    <state width="1877" height="233" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584391636560" />
+    <state width="1877" height="233" key="GridCell.Tab.0.left" timestamp="1584391636560">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584019239115" />
-    <state width="1877" height="243" key="GridCell.Tab.0.right" timestamp="1584019239115">
+    <state width="1877" height="233" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584391636560" />
+    <state width="1877" height="233" key="GridCell.Tab.0.right" timestamp="1584391636560">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584019239115" />
+    <state width="1877" height="233" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584391636560" />
     <state width="1877" height="243" key="GridCell.Tab.1.bottom" timestamp="1584019239116">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
