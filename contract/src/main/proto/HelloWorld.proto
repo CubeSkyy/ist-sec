@@ -35,13 +35,12 @@ message RegisterResponse {
 message Announcement {
     string key = 1;
     string message = 2;
-    string mac = 3;
+    string signature = 3;
     repeated Announcement a = 4;
 }
 
 message PostRequest {
     Announcement post = 1;
-    repeated Announcement a = 2;
 }
 
 message PostResponse {
@@ -50,7 +49,6 @@ message PostResponse {
 
 message PostGeneralRequest {
     Announcement post = 1;
-    repeated Announcement a = 2;
 }
 
 message PostGeneralResponse {

@@ -16,25 +16,44 @@ import java.util.*;
 public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServiceImplBase {
 
 	public static final String USERS_FILE = "users.tmp";
+	public static final String PARTICULAR_FILE = "particular.tmp";
+	public static final String GENERAL_FILE = "general.tmp";
 
-	public synchronized void checkUsersFile() {
+	public void checkFile(String filename) {
 
-		File f = new File(USERS_FILE);
-		System.out.println("File users exists: " + f.isFile());
-		//System.out.println(System.getProperty("user.dir"));
+		File f = new File(filename);
+		System.out.println("File " + filename + " exists: " + f.isFile());
 
 		if (!f.isFile()) {
 			try {
 				f.createNewFile();
-				writeUsersToFile(new HashMap<String, String>());
-				System.out.println("Users file not found. New instance has been created.");
+				switch (filename) {
+					case USERS_FILE:
+						writeToUsersFile(new HashMap<String, String>());
+						break;
+
+					case PARTICULAR_FILE:
+						writeToParticularFile(new HashMap<String, ArrayList<HelloWorld.Announcement>>());
+						break;
+
+					case GENERAL_FILE:
+						writeToGeneralFile(new ArrayList<HelloWorld.Announcement>());
+						break;
+
+					default:
+						// TODO throw exception
+						break;
+				}
+
+				System.out.println("" + filename + " file not found. New instance has been created.");
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public synchronized void writeUsersToFile(Map<String, String> users) {
+	public void writeToUsersFile(HashMap<String, String> users) {
 
 		try {
 			FileOutputStream fos = new FileOutputStream(USERS_FILE);
@@ -48,12 +67,40 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 		}
 	}
 
-	public synchronized Map<String, String> readUsersFromFile() {
+	public void writeToParticularFile(HashMap<String, ArrayList<HelloWorld.Announcement>> posts) {
+
+		try {
+			FileOutputStream fos = new FileOutputStream(PARTICULAR_FILE);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(posts);
+			System.out.println("Particular post successfully written to file.");
+			oos.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void writeToGeneralFile(ArrayList<HelloWorld.Announcement> posts) {
+
+		try {
+			FileOutputStream fos = new FileOutputStream(GENERAL_FILE);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(posts);
+			System.out.println("General post successfully written to file.");
+			oos.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public HashMap<String, String> readFromUsersFile() {
 
 		try {
 			FileInputStream fis = new FileInputStream(USERS_FILE);
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			Map<String, String> users = (HashMap<String, String>) ois.readObject();
+			HashMap<String, String> users = (HashMap<String, String>) ois.readObject();
 			System.out.println("Users successfully read from file.");
 			ois.close();
 			return users;
@@ -64,6 +111,41 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
 		return new HashMap<String, String>();
 	}
+
+	public HashMap<String, ArrayList<HelloWorld.Announcement>> readFromParticularFile() {
+
+		try {
+			FileInputStream fis = new FileInputStream(PARTICULAR_FILE);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			HashMap<String, ArrayList<HelloWorld.Announcement>> posts = (HashMap<String, ArrayList<HelloWorld.Announcement>>) ois.readObject();
+			System.out.println("Particular posts successfully read from file.");
+			ois.close();
+			return posts;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return new HashMap<String, ArrayList<HelloWorld.Announcement>>();
+	}
+
+	public ArrayList<HelloWorld.Announcement> readFromGeneralFile() {
+
+		try {
+			FileInputStream fis = new FileInputStream(GENERAL_FILE);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			ArrayList<HelloWorld.Announcement> posts = (ArrayList<HelloWorld.Announcement>) ois.readObject();
+			System.out.println("General posts successfully read from file.");
+			ois.close();
+			return posts;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return new ArrayList<HelloWorld.Announcement>();
+	}
+
 
 	@Override
 	public void greeting(HelloWorld.HelloRequest request, StreamObserver<HelloWorld.HelloResponse> responseObserver) {
@@ -83,23 +165,139 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 	}
 
 	@Override
-	public void register(HelloWorld.RegisterRequest request, StreamObserver<HelloWorld.RegisterResponse> responseObserver) {
+	public synchronized void register(HelloWorld.RegisterRequest request, StreamObserver<HelloWorld.RegisterResponse> responseObserver) {
 
 		// HelloRequest has auto-generated toString method that shows its contents
 		System.out.println(request);
 
-		checkUsersFile();
+		String key = request.getKey();
 
-		Map<String, String> users = readUsersFromFile();
+		/*
+			TODO check if public key is owned by user with a digital signature
+		*/
 
-		users.put(request.getKey(), request.getUsername());
+		checkFile(USERS_FILE);
+
+		HashMap<String, String> users = readFromUsersFile();
+		System.out.println("Class of retrieved info: " + users.getClass().getName());
+
+		if (!users.containsKey(key)) {
+
+			users.put(key, request.getUsername());
+			writeToUsersFile(users);
+		}
+
+		else
+			System.out.println("User is already registered.");
 
 		System.out.println("Users: " + users);
 
-		writeUsersToFile(users);
 
 		// You must use a builder to construct a new Protobuffer object
 		HelloWorld.RegisterResponse response = HelloWorld.RegisterResponse.newBuilder()
+				.setResult(true).build();
+
+		// Use responseObserver to send a single response back
+		responseObserver.onNext(response);
+
+		// When you are done, you must call onCompleted
+		responseObserver.onCompleted();
+	}
+
+	@Override
+	public synchronized void post(HelloWorld.PostRequest request, StreamObserver<HelloWorld.PostResponse> responseObserver) {
+
+		// HelloRequest has auto-generated toString method that shows its contents
+		System.out.println(request);
+
+		HelloWorld.Announcement post = request.getPost();
+		//List<HelloWorld.Announcement> a = post.getAList();
+		System.out.println("A: " + post.getAList());
+
+		String key = post.getKey();
+		String message = post.getMessage();
+		String signature = post.getSignature();
+
+		if (message.length() > 255) {
+			// TODO throw exception for message too big
+		}
+
+		/*
+		TODO check if key is registered to a user
+		TODO check if signature corresponds to message+announcement
+		 */
+
+		checkFile(PARTICULAR_FILE);
+
+		HashMap<String, ArrayList<HelloWorld.Announcement>> particular = readFromParticularFile();
+		System.out.println("Class of retrieved info: " + particular.getClass().getName());
+
+		if (!particular.containsKey(key)) {
+			ArrayList<HelloWorld.Announcement> tmp = new ArrayList<HelloWorld.Announcement>();
+			tmp.add(post);
+			particular.put(key, tmp);
+		}
+
+		else {
+			ArrayList<HelloWorld.Announcement> tmp = particular.get(key);
+			tmp.add(post);
+			particular.replace(key, tmp);
+		}
+
+		writeToParticularFile(particular);
+
+		System.out.println("Particular posts: " + particular);
+
+
+		// You must use a builder to construct a new Protobuffer object
+		HelloWorld.PostResponse response = HelloWorld.PostResponse.newBuilder()
+				.setResult(true).build();
+
+		// Use responseObserver to send a single response back
+		responseObserver.onNext(response);
+
+		// When you are done, you must call onCompleted
+		responseObserver.onCompleted();
+	}
+
+
+	@Override
+	public synchronized void postGeneral(HelloWorld.PostGeneralRequest request, StreamObserver<HelloWorld.PostGeneralResponse> responseObserver) {
+
+		// HelloRequest has auto-generated toString method that shows its contents
+		System.out.println(request);
+
+		HelloWorld.Announcement post = request.getPost();
+		//List<HelloWorld.Announcement> a = post.getAList();
+		System.out.println("A: " + post.getAList());
+
+		String key = post.getKey();
+		String message = post.getMessage();
+		String signature = post.getSignature();
+
+		if (message.length() > 255) {
+			// TODO throw exception for message too big
+		}
+
+		/*
+		TODO check if key is registered to a user
+		TODO check if signature corresponds to message+announcement
+		 */
+
+		checkFile(GENERAL_FILE);
+
+		ArrayList<HelloWorld.Announcement> general = readFromGeneralFile();
+		System.out.println("Class of retrieved info: " + general.getClass().getName());
+
+		general.add(post);
+
+		writeToGeneralFile(general);
+
+		System.out.println("General posts: " + general);
+
+
+		// You must use a builder to construct a new Protobuffer object
+		HelloWorld.PostGeneralResponse response = HelloWorld.PostGeneralResponse.newBuilder()
 				.setResult(true).build();
 
 		// Use responseObserver to send a single response back
