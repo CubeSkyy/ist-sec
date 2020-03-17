@@ -67,9 +67,15 @@ public class HelloClient {
 
 		// Finally, make the call using the stub
 		HelloWorld.PostGeneralResponse response = stub.postGeneral(request);
+		System.out.println(response);
+
+		HelloWorld.ReadGeneralRequest readRequest = HelloWorld.ReadGeneralRequest.newBuilder().setNumber(1).build();
+		HelloWorld.ReadGeneralResponse readResponse = stub.readGeneral(readRequest);
+
+		System.out.println(readResponse);
 
 		// HelloResponse has auto-generated toString method that shows its contents
-		System.out.println(response);
+
 
 		// A Channel should be shutdown before stopping the process.
 		channel.shutdownNow();
