@@ -1388,6 +1388,6912 @@ public final class HelloWorld {
 
   }
 
+  public interface RegisterRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.dpas.RegisterRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string key = 1;</code>
+     */
+    java.lang.String getKey();
+    /**
+     * <code>string key = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getKeyBytes();
+
+    /**
+     * <code>string username = 2;</code>
+     */
+    java.lang.String getUsername();
+    /**
+     * <code>string username = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getUsernameBytes();
+  }
+  /**
+   * Protobuf type {@code com.dpas.RegisterRequest}
+   */
+  public  static final class RegisterRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.dpas.RegisterRequest)
+      RegisterRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use RegisterRequest.newBuilder() to construct.
+    private RegisterRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private RegisterRequest() {
+      key_ = "";
+      username_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private RegisterRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              key_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              username_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_RegisterRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_RegisterRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.dpas.HelloWorld.RegisterRequest.class, com.dpas.HelloWorld.RegisterRequest.Builder.class);
+    }
+
+    public static final int KEY_FIELD_NUMBER = 1;
+    private volatile java.lang.Object key_;
+    /**
+     * <code>string key = 1;</code>
+     */
+    public java.lang.String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        key_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string key = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int USERNAME_FIELD_NUMBER = 2;
+    private volatile java.lang.Object username_;
+    /**
+     * <code>string username = 2;</code>
+     */
+    public java.lang.String getUsername() {
+      java.lang.Object ref = username_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        username_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string username = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getUsernameBytes() {
+      java.lang.Object ref = username_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        username_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, key_);
+      }
+      if (!getUsernameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, username_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, key_);
+      }
+      if (!getUsernameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, username_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.dpas.HelloWorld.RegisterRequest)) {
+        return super.equals(obj);
+      }
+      com.dpas.HelloWorld.RegisterRequest other = (com.dpas.HelloWorld.RegisterRequest) obj;
+
+      boolean result = true;
+      result = result && getKey()
+          .equals(other.getKey());
+      result = result && getUsername()
+          .equals(other.getUsername());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getKey().hashCode();
+      hash = (37 * hash) + USERNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getUsername().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.dpas.HelloWorld.RegisterRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.RegisterRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.RegisterRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.RegisterRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.RegisterRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.RegisterRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.RegisterRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.RegisterRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.RegisterRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.RegisterRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.RegisterRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.RegisterRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.dpas.HelloWorld.RegisterRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.dpas.RegisterRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.dpas.RegisterRequest)
+        com.dpas.HelloWorld.RegisterRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_RegisterRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_RegisterRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.dpas.HelloWorld.RegisterRequest.class, com.dpas.HelloWorld.RegisterRequest.Builder.class);
+      }
+
+      // Construct using com.dpas.HelloWorld.RegisterRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        key_ = "";
+
+        username_ = "";
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_RegisterRequest_descriptor;
+      }
+
+      public com.dpas.HelloWorld.RegisterRequest getDefaultInstanceForType() {
+        return com.dpas.HelloWorld.RegisterRequest.getDefaultInstance();
+      }
+
+      public com.dpas.HelloWorld.RegisterRequest build() {
+        com.dpas.HelloWorld.RegisterRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.dpas.HelloWorld.RegisterRequest buildPartial() {
+        com.dpas.HelloWorld.RegisterRequest result = new com.dpas.HelloWorld.RegisterRequest(this);
+        result.key_ = key_;
+        result.username_ = username_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.dpas.HelloWorld.RegisterRequest) {
+          return mergeFrom((com.dpas.HelloWorld.RegisterRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.dpas.HelloWorld.RegisterRequest other) {
+        if (other == com.dpas.HelloWorld.RegisterRequest.getDefaultInstance()) return this;
+        if (!other.getKey().isEmpty()) {
+          key_ = other.key_;
+          onChanged();
+        }
+        if (!other.getUsername().isEmpty()) {
+          username_ = other.username_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.dpas.HelloWorld.RegisterRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.dpas.HelloWorld.RegisterRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object key_ = "";
+      /**
+       * <code>string key = 1;</code>
+       */
+      public java.lang.String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getKeyBytes() {
+        java.lang.Object ref = key_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          key_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder setKey(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        key_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder clearKey() {
+        
+        key_ = getDefaultInstance().getKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder setKeyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        key_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object username_ = "";
+      /**
+       * <code>string username = 2;</code>
+       */
+      public java.lang.String getUsername() {
+        java.lang.Object ref = username_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          username_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string username = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getUsernameBytes() {
+        java.lang.Object ref = username_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          username_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string username = 2;</code>
+       */
+      public Builder setUsername(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        username_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string username = 2;</code>
+       */
+      public Builder clearUsername() {
+        
+        username_ = getDefaultInstance().getUsername();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string username = 2;</code>
+       */
+      public Builder setUsernameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        username_ = value;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.dpas.RegisterRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.dpas.RegisterRequest)
+    private static final com.dpas.HelloWorld.RegisterRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.dpas.HelloWorld.RegisterRequest();
+    }
+
+    public static com.dpas.HelloWorld.RegisterRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<RegisterRequest>
+        PARSER = new com.google.protobuf.AbstractParser<RegisterRequest>() {
+      public RegisterRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new RegisterRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<RegisterRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<RegisterRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public com.dpas.HelloWorld.RegisterRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface RegisterResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.dpas.RegisterResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool result = 1;</code>
+     */
+    boolean getResult();
+  }
+  /**
+   * Protobuf type {@code com.dpas.RegisterResponse}
+   */
+  public  static final class RegisterResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.dpas.RegisterResponse)
+      RegisterResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use RegisterResponse.newBuilder() to construct.
+    private RegisterResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private RegisterResponse() {
+      result_ = false;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private RegisterResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              result_ = input.readBool();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_RegisterResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_RegisterResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.dpas.HelloWorld.RegisterResponse.class, com.dpas.HelloWorld.RegisterResponse.Builder.class);
+    }
+
+    public static final int RESULT_FIELD_NUMBER = 1;
+    private boolean result_;
+    /**
+     * <code>bool result = 1;</code>
+     */
+    public boolean getResult() {
+      return result_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (result_ != false) {
+        output.writeBool(1, result_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (result_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, result_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.dpas.HelloWorld.RegisterResponse)) {
+        return super.equals(obj);
+      }
+      com.dpas.HelloWorld.RegisterResponse other = (com.dpas.HelloWorld.RegisterResponse) obj;
+
+      boolean result = true;
+      result = result && (getResult()
+          == other.getResult());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RESULT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getResult());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.dpas.HelloWorld.RegisterResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.RegisterResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.RegisterResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.RegisterResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.RegisterResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.RegisterResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.RegisterResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.RegisterResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.RegisterResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.RegisterResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.RegisterResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.RegisterResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.dpas.HelloWorld.RegisterResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.dpas.RegisterResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.dpas.RegisterResponse)
+        com.dpas.HelloWorld.RegisterResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_RegisterResponse_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_RegisterResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.dpas.HelloWorld.RegisterResponse.class, com.dpas.HelloWorld.RegisterResponse.Builder.class);
+      }
+
+      // Construct using com.dpas.HelloWorld.RegisterResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        result_ = false;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_RegisterResponse_descriptor;
+      }
+
+      public com.dpas.HelloWorld.RegisterResponse getDefaultInstanceForType() {
+        return com.dpas.HelloWorld.RegisterResponse.getDefaultInstance();
+      }
+
+      public com.dpas.HelloWorld.RegisterResponse build() {
+        com.dpas.HelloWorld.RegisterResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.dpas.HelloWorld.RegisterResponse buildPartial() {
+        com.dpas.HelloWorld.RegisterResponse result = new com.dpas.HelloWorld.RegisterResponse(this);
+        result.result_ = result_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.dpas.HelloWorld.RegisterResponse) {
+          return mergeFrom((com.dpas.HelloWorld.RegisterResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.dpas.HelloWorld.RegisterResponse other) {
+        if (other == com.dpas.HelloWorld.RegisterResponse.getDefaultInstance()) return this;
+        if (other.getResult() != false) {
+          setResult(other.getResult());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.dpas.HelloWorld.RegisterResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.dpas.HelloWorld.RegisterResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private boolean result_ ;
+      /**
+       * <code>bool result = 1;</code>
+       */
+      public boolean getResult() {
+        return result_;
+      }
+      /**
+       * <code>bool result = 1;</code>
+       */
+      public Builder setResult(boolean value) {
+        
+        result_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool result = 1;</code>
+       */
+      public Builder clearResult() {
+        
+        result_ = false;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.dpas.RegisterResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.dpas.RegisterResponse)
+    private static final com.dpas.HelloWorld.RegisterResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.dpas.HelloWorld.RegisterResponse();
+    }
+
+    public static com.dpas.HelloWorld.RegisterResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<RegisterResponse>
+        PARSER = new com.google.protobuf.AbstractParser<RegisterResponse>() {
+      public RegisterResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new RegisterResponse(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<RegisterResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<RegisterResponse> getParserForType() {
+      return PARSER;
+    }
+
+    public com.dpas.HelloWorld.RegisterResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface AnnouncementOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.dpas.Announcement)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string key = 1;</code>
+     */
+    java.lang.String getKey();
+    /**
+     * <code>string key = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getKeyBytes();
+
+    /**
+     * <code>string message = 2;</code>
+     */
+    java.lang.String getMessage();
+    /**
+     * <code>string message = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getMessageBytes();
+
+    /**
+     * <code>string signature = 3;</code>
+     */
+    java.lang.String getSignature();
+    /**
+     * <code>string signature = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getSignatureBytes();
+
+    /**
+     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     */
+    java.util.List<com.dpas.HelloWorld.Announcement> 
+        getAList();
+    /**
+     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     */
+    com.dpas.HelloWorld.Announcement getA(int index);
+    /**
+     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     */
+    int getACount();
+    /**
+     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     */
+    java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
+        getAOrBuilderList();
+    /**
+     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     */
+    com.dpas.HelloWorld.AnnouncementOrBuilder getAOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code com.dpas.Announcement}
+   */
+  public  static final class Announcement extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.dpas.Announcement)
+      AnnouncementOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Announcement.newBuilder() to construct.
+    private Announcement(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Announcement() {
+      key_ = "";
+      message_ = "";
+      signature_ = "";
+      a_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Announcement(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              key_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              message_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              signature_ = s;
+              break;
+            }
+            case 34: {
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+                a_ = new java.util.ArrayList<com.dpas.HelloWorld.Announcement>();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              a_.add(
+                  input.readMessage(com.dpas.HelloWorld.Announcement.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+          a_ = java.util.Collections.unmodifiableList(a_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_Announcement_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_Announcement_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.dpas.HelloWorld.Announcement.class, com.dpas.HelloWorld.Announcement.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int KEY_FIELD_NUMBER = 1;
+    private volatile java.lang.Object key_;
+    /**
+     * <code>string key = 1;</code>
+     */
+    public java.lang.String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        key_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string key = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MESSAGE_FIELD_NUMBER = 2;
+    private volatile java.lang.Object message_;
+    /**
+     * <code>string message = 2;</code>
+     */
+    public java.lang.String getMessage() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        message_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string message = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMessageBytes() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        message_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SIGNATURE_FIELD_NUMBER = 3;
+    private volatile java.lang.Object signature_;
+    /**
+     * <code>string signature = 3;</code>
+     */
+    public java.lang.String getSignature() {
+      java.lang.Object ref = signature_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        signature_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string signature = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getSignatureBytes() {
+      java.lang.Object ref = signature_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        signature_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int A_FIELD_NUMBER = 4;
+    private java.util.List<com.dpas.HelloWorld.Announcement> a_;
+    /**
+     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     */
+    public java.util.List<com.dpas.HelloWorld.Announcement> getAList() {
+      return a_;
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     */
+    public java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
+        getAOrBuilderList() {
+      return a_;
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     */
+    public int getACount() {
+      return a_.size();
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     */
+    public com.dpas.HelloWorld.Announcement getA(int index) {
+      return a_.get(index);
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     */
+    public com.dpas.HelloWorld.AnnouncementOrBuilder getAOrBuilder(
+        int index) {
+      return a_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, key_);
+      }
+      if (!getMessageBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
+      }
+      if (!getSignatureBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, signature_);
+      }
+      for (int i = 0; i < a_.size(); i++) {
+        output.writeMessage(4, a_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, key_);
+      }
+      if (!getMessageBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
+      }
+      if (!getSignatureBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, signature_);
+      }
+      for (int i = 0; i < a_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, a_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.dpas.HelloWorld.Announcement)) {
+        return super.equals(obj);
+      }
+      com.dpas.HelloWorld.Announcement other = (com.dpas.HelloWorld.Announcement) obj;
+
+      boolean result = true;
+      result = result && getKey()
+          .equals(other.getKey());
+      result = result && getMessage()
+          .equals(other.getMessage());
+      result = result && getSignature()
+          .equals(other.getSignature());
+      result = result && getAList()
+          .equals(other.getAList());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getKey().hashCode();
+      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMessage().hashCode();
+      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getSignature().hashCode();
+      if (getACount() > 0) {
+        hash = (37 * hash) + A_FIELD_NUMBER;
+        hash = (53 * hash) + getAList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.dpas.HelloWorld.Announcement parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.Announcement parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.Announcement parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.Announcement parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.Announcement parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.Announcement parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.Announcement parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.Announcement parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.Announcement parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.Announcement parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.Announcement parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.Announcement parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.dpas.HelloWorld.Announcement prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.dpas.Announcement}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.dpas.Announcement)
+        com.dpas.HelloWorld.AnnouncementOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_Announcement_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_Announcement_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.dpas.HelloWorld.Announcement.class, com.dpas.HelloWorld.Announcement.Builder.class);
+      }
+
+      // Construct using com.dpas.HelloWorld.Announcement.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getAFieldBuilder();
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        key_ = "";
+
+        message_ = "";
+
+        signature_ = "";
+
+        if (aBuilder_ == null) {
+          a_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+        } else {
+          aBuilder_.clear();
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_Announcement_descriptor;
+      }
+
+      public com.dpas.HelloWorld.Announcement getDefaultInstanceForType() {
+        return com.dpas.HelloWorld.Announcement.getDefaultInstance();
+      }
+
+      public com.dpas.HelloWorld.Announcement build() {
+        com.dpas.HelloWorld.Announcement result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.dpas.HelloWorld.Announcement buildPartial() {
+        com.dpas.HelloWorld.Announcement result = new com.dpas.HelloWorld.Announcement(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.key_ = key_;
+        result.message_ = message_;
+        result.signature_ = signature_;
+        if (aBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+            a_ = java.util.Collections.unmodifiableList(a_);
+            bitField0_ = (bitField0_ & ~0x00000008);
+          }
+          result.a_ = a_;
+        } else {
+          result.a_ = aBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.dpas.HelloWorld.Announcement) {
+          return mergeFrom((com.dpas.HelloWorld.Announcement)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.dpas.HelloWorld.Announcement other) {
+        if (other == com.dpas.HelloWorld.Announcement.getDefaultInstance()) return this;
+        if (!other.getKey().isEmpty()) {
+          key_ = other.key_;
+          onChanged();
+        }
+        if (!other.getMessage().isEmpty()) {
+          message_ = other.message_;
+          onChanged();
+        }
+        if (!other.getSignature().isEmpty()) {
+          signature_ = other.signature_;
+          onChanged();
+        }
+        if (aBuilder_ == null) {
+          if (!other.a_.isEmpty()) {
+            if (a_.isEmpty()) {
+              a_ = other.a_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+            } else {
+              ensureAIsMutable();
+              a_.addAll(other.a_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.a_.isEmpty()) {
+            if (aBuilder_.isEmpty()) {
+              aBuilder_.dispose();
+              aBuilder_ = null;
+              a_ = other.a_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+              aBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getAFieldBuilder() : null;
+            } else {
+              aBuilder_.addAllMessages(other.a_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.dpas.HelloWorld.Announcement parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.dpas.HelloWorld.Announcement) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object key_ = "";
+      /**
+       * <code>string key = 1;</code>
+       */
+      public java.lang.String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getKeyBytes() {
+        java.lang.Object ref = key_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          key_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder setKey(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        key_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder clearKey() {
+        
+        key_ = getDefaultInstance().getKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder setKeyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        key_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object message_ = "";
+      /**
+       * <code>string message = 2;</code>
+       */
+      public java.lang.String getMessage() {
+        java.lang.Object ref = message_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          message_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMessageBytes() {
+        java.lang.Object ref = message_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          message_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public Builder setMessage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        message_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public Builder clearMessage() {
+        
+        message_ = getDefaultInstance().getMessage();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public Builder setMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        message_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object signature_ = "";
+      /**
+       * <code>string signature = 3;</code>
+       */
+      public java.lang.String getSignature() {
+        java.lang.Object ref = signature_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          signature_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string signature = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getSignatureBytes() {
+        java.lang.Object ref = signature_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          signature_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string signature = 3;</code>
+       */
+      public Builder setSignature(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        signature_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string signature = 3;</code>
+       */
+      public Builder clearSignature() {
+        
+        signature_ = getDefaultInstance().getSignature();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string signature = 3;</code>
+       */
+      public Builder setSignatureBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        signature_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<com.dpas.HelloWorld.Announcement> a_ =
+        java.util.Collections.emptyList();
+      private void ensureAIsMutable() {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+          a_ = new java.util.ArrayList<com.dpas.HelloWorld.Announcement>(a_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder> aBuilder_;
+
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public java.util.List<com.dpas.HelloWorld.Announcement> getAList() {
+        if (aBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(a_);
+        } else {
+          return aBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public int getACount() {
+        if (aBuilder_ == null) {
+          return a_.size();
+        } else {
+          return aBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public com.dpas.HelloWorld.Announcement getA(int index) {
+        if (aBuilder_ == null) {
+          return a_.get(index);
+        } else {
+          return aBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public Builder setA(
+          int index, com.dpas.HelloWorld.Announcement value) {
+        if (aBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAIsMutable();
+          a_.set(index, value);
+          onChanged();
+        } else {
+          aBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public Builder setA(
+          int index, com.dpas.HelloWorld.Announcement.Builder builderForValue) {
+        if (aBuilder_ == null) {
+          ensureAIsMutable();
+          a_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          aBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public Builder addA(com.dpas.HelloWorld.Announcement value) {
+        if (aBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAIsMutable();
+          a_.add(value);
+          onChanged();
+        } else {
+          aBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public Builder addA(
+          int index, com.dpas.HelloWorld.Announcement value) {
+        if (aBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAIsMutable();
+          a_.add(index, value);
+          onChanged();
+        } else {
+          aBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public Builder addA(
+          com.dpas.HelloWorld.Announcement.Builder builderForValue) {
+        if (aBuilder_ == null) {
+          ensureAIsMutable();
+          a_.add(builderForValue.build());
+          onChanged();
+        } else {
+          aBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public Builder addA(
+          int index, com.dpas.HelloWorld.Announcement.Builder builderForValue) {
+        if (aBuilder_ == null) {
+          ensureAIsMutable();
+          a_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          aBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public Builder addAllA(
+          java.lang.Iterable<? extends com.dpas.HelloWorld.Announcement> values) {
+        if (aBuilder_ == null) {
+          ensureAIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, a_);
+          onChanged();
+        } else {
+          aBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public Builder clearA() {
+        if (aBuilder_ == null) {
+          a_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+          onChanged();
+        } else {
+          aBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public Builder removeA(int index) {
+        if (aBuilder_ == null) {
+          ensureAIsMutable();
+          a_.remove(index);
+          onChanged();
+        } else {
+          aBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public com.dpas.HelloWorld.Announcement.Builder getABuilder(
+          int index) {
+        return getAFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public com.dpas.HelloWorld.AnnouncementOrBuilder getAOrBuilder(
+          int index) {
+        if (aBuilder_ == null) {
+          return a_.get(index);  } else {
+          return aBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
+           getAOrBuilderList() {
+        if (aBuilder_ != null) {
+          return aBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(a_);
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public com.dpas.HelloWorld.Announcement.Builder addABuilder() {
+        return getAFieldBuilder().addBuilder(
+            com.dpas.HelloWorld.Announcement.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public com.dpas.HelloWorld.Announcement.Builder addABuilder(
+          int index) {
+        return getAFieldBuilder().addBuilder(
+            index, com.dpas.HelloWorld.Announcement.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       */
+      public java.util.List<com.dpas.HelloWorld.Announcement.Builder> 
+           getABuilderList() {
+        return getAFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder> 
+          getAFieldBuilder() {
+        if (aBuilder_ == null) {
+          aBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder>(
+                  a_,
+                  ((bitField0_ & 0x00000008) == 0x00000008),
+                  getParentForChildren(),
+                  isClean());
+          a_ = null;
+        }
+        return aBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.dpas.Announcement)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.dpas.Announcement)
+    private static final com.dpas.HelloWorld.Announcement DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.dpas.HelloWorld.Announcement();
+    }
+
+    public static com.dpas.HelloWorld.Announcement getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Announcement>
+        PARSER = new com.google.protobuf.AbstractParser<Announcement>() {
+      public Announcement parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Announcement(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Announcement> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Announcement> getParserForType() {
+      return PARSER;
+    }
+
+    public com.dpas.HelloWorld.Announcement getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PostRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.dpas.PostRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    boolean hasPost();
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    com.dpas.HelloWorld.Announcement getPost();
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    com.dpas.HelloWorld.AnnouncementOrBuilder getPostOrBuilder();
+  }
+  /**
+   * Protobuf type {@code com.dpas.PostRequest}
+   */
+  public  static final class PostRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.dpas.PostRequest)
+      PostRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PostRequest.newBuilder() to construct.
+    private PostRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PostRequest() {
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PostRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.dpas.HelloWorld.Announcement.Builder subBuilder = null;
+              if (post_ != null) {
+                subBuilder = post_.toBuilder();
+              }
+              post_ = input.readMessage(com.dpas.HelloWorld.Announcement.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(post_);
+                post_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_PostRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_PostRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.dpas.HelloWorld.PostRequest.class, com.dpas.HelloWorld.PostRequest.Builder.class);
+    }
+
+    public static final int POST_FIELD_NUMBER = 1;
+    private com.dpas.HelloWorld.Announcement post_;
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    public boolean hasPost() {
+      return post_ != null;
+    }
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    public com.dpas.HelloWorld.Announcement getPost() {
+      return post_ == null ? com.dpas.HelloWorld.Announcement.getDefaultInstance() : post_;
+    }
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    public com.dpas.HelloWorld.AnnouncementOrBuilder getPostOrBuilder() {
+      return getPost();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (post_ != null) {
+        output.writeMessage(1, getPost());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (post_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getPost());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.dpas.HelloWorld.PostRequest)) {
+        return super.equals(obj);
+      }
+      com.dpas.HelloWorld.PostRequest other = (com.dpas.HelloWorld.PostRequest) obj;
+
+      boolean result = true;
+      result = result && (hasPost() == other.hasPost());
+      if (hasPost()) {
+        result = result && getPost()
+            .equals(other.getPost());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasPost()) {
+        hash = (37 * hash) + POST_FIELD_NUMBER;
+        hash = (53 * hash) + getPost().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.dpas.HelloWorld.PostRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.dpas.HelloWorld.PostRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.dpas.PostRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.dpas.PostRequest)
+        com.dpas.HelloWorld.PostRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.dpas.HelloWorld.PostRequest.class, com.dpas.HelloWorld.PostRequest.Builder.class);
+      }
+
+      // Construct using com.dpas.HelloWorld.PostRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (postBuilder_ == null) {
+          post_ = null;
+        } else {
+          post_ = null;
+          postBuilder_ = null;
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostRequest_descriptor;
+      }
+
+      public com.dpas.HelloWorld.PostRequest getDefaultInstanceForType() {
+        return com.dpas.HelloWorld.PostRequest.getDefaultInstance();
+      }
+
+      public com.dpas.HelloWorld.PostRequest build() {
+        com.dpas.HelloWorld.PostRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.dpas.HelloWorld.PostRequest buildPartial() {
+        com.dpas.HelloWorld.PostRequest result = new com.dpas.HelloWorld.PostRequest(this);
+        if (postBuilder_ == null) {
+          result.post_ = post_;
+        } else {
+          result.post_ = postBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.dpas.HelloWorld.PostRequest) {
+          return mergeFrom((com.dpas.HelloWorld.PostRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.dpas.HelloWorld.PostRequest other) {
+        if (other == com.dpas.HelloWorld.PostRequest.getDefaultInstance()) return this;
+        if (other.hasPost()) {
+          mergePost(other.getPost());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.dpas.HelloWorld.PostRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.dpas.HelloWorld.PostRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private com.dpas.HelloWorld.Announcement post_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder> postBuilder_;
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public boolean hasPost() {
+        return postBuilder_ != null || post_ != null;
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement getPost() {
+        if (postBuilder_ == null) {
+          return post_ == null ? com.dpas.HelloWorld.Announcement.getDefaultInstance() : post_;
+        } else {
+          return postBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public Builder setPost(com.dpas.HelloWorld.Announcement value) {
+        if (postBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          post_ = value;
+          onChanged();
+        } else {
+          postBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public Builder setPost(
+          com.dpas.HelloWorld.Announcement.Builder builderForValue) {
+        if (postBuilder_ == null) {
+          post_ = builderForValue.build();
+          onChanged();
+        } else {
+          postBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public Builder mergePost(com.dpas.HelloWorld.Announcement value) {
+        if (postBuilder_ == null) {
+          if (post_ != null) {
+            post_ =
+              com.dpas.HelloWorld.Announcement.newBuilder(post_).mergeFrom(value).buildPartial();
+          } else {
+            post_ = value;
+          }
+          onChanged();
+        } else {
+          postBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public Builder clearPost() {
+        if (postBuilder_ == null) {
+          post_ = null;
+          onChanged();
+        } else {
+          post_ = null;
+          postBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement.Builder getPostBuilder() {
+        
+        onChanged();
+        return getPostFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public com.dpas.HelloWorld.AnnouncementOrBuilder getPostOrBuilder() {
+        if (postBuilder_ != null) {
+          return postBuilder_.getMessageOrBuilder();
+        } else {
+          return post_ == null ?
+              com.dpas.HelloWorld.Announcement.getDefaultInstance() : post_;
+        }
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder> 
+          getPostFieldBuilder() {
+        if (postBuilder_ == null) {
+          postBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder>(
+                  getPost(),
+                  getParentForChildren(),
+                  isClean());
+          post_ = null;
+        }
+        return postBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.dpas.PostRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.dpas.PostRequest)
+    private static final com.dpas.HelloWorld.PostRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.dpas.HelloWorld.PostRequest();
+    }
+
+    public static com.dpas.HelloWorld.PostRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PostRequest>
+        PARSER = new com.google.protobuf.AbstractParser<PostRequest>() {
+      public PostRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PostRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PostRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PostRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public com.dpas.HelloWorld.PostRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PostResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.dpas.PostResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool result = 1;</code>
+     */
+    boolean getResult();
+  }
+  /**
+   * Protobuf type {@code com.dpas.PostResponse}
+   */
+  public  static final class PostResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.dpas.PostResponse)
+      PostResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PostResponse.newBuilder() to construct.
+    private PostResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PostResponse() {
+      result_ = false;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PostResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              result_ = input.readBool();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_PostResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_PostResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.dpas.HelloWorld.PostResponse.class, com.dpas.HelloWorld.PostResponse.Builder.class);
+    }
+
+    public static final int RESULT_FIELD_NUMBER = 1;
+    private boolean result_;
+    /**
+     * <code>bool result = 1;</code>
+     */
+    public boolean getResult() {
+      return result_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (result_ != false) {
+        output.writeBool(1, result_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (result_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, result_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.dpas.HelloWorld.PostResponse)) {
+        return super.equals(obj);
+      }
+      com.dpas.HelloWorld.PostResponse other = (com.dpas.HelloWorld.PostResponse) obj;
+
+      boolean result = true;
+      result = result && (getResult()
+          == other.getResult());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RESULT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getResult());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.dpas.HelloWorld.PostResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.dpas.HelloWorld.PostResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.dpas.PostResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.dpas.PostResponse)
+        com.dpas.HelloWorld.PostResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostResponse_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.dpas.HelloWorld.PostResponse.class, com.dpas.HelloWorld.PostResponse.Builder.class);
+      }
+
+      // Construct using com.dpas.HelloWorld.PostResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        result_ = false;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostResponse_descriptor;
+      }
+
+      public com.dpas.HelloWorld.PostResponse getDefaultInstanceForType() {
+        return com.dpas.HelloWorld.PostResponse.getDefaultInstance();
+      }
+
+      public com.dpas.HelloWorld.PostResponse build() {
+        com.dpas.HelloWorld.PostResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.dpas.HelloWorld.PostResponse buildPartial() {
+        com.dpas.HelloWorld.PostResponse result = new com.dpas.HelloWorld.PostResponse(this);
+        result.result_ = result_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.dpas.HelloWorld.PostResponse) {
+          return mergeFrom((com.dpas.HelloWorld.PostResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.dpas.HelloWorld.PostResponse other) {
+        if (other == com.dpas.HelloWorld.PostResponse.getDefaultInstance()) return this;
+        if (other.getResult() != false) {
+          setResult(other.getResult());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.dpas.HelloWorld.PostResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.dpas.HelloWorld.PostResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private boolean result_ ;
+      /**
+       * <code>bool result = 1;</code>
+       */
+      public boolean getResult() {
+        return result_;
+      }
+      /**
+       * <code>bool result = 1;</code>
+       */
+      public Builder setResult(boolean value) {
+        
+        result_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool result = 1;</code>
+       */
+      public Builder clearResult() {
+        
+        result_ = false;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.dpas.PostResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.dpas.PostResponse)
+    private static final com.dpas.HelloWorld.PostResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.dpas.HelloWorld.PostResponse();
+    }
+
+    public static com.dpas.HelloWorld.PostResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PostResponse>
+        PARSER = new com.google.protobuf.AbstractParser<PostResponse>() {
+      public PostResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PostResponse(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PostResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PostResponse> getParserForType() {
+      return PARSER;
+    }
+
+    public com.dpas.HelloWorld.PostResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PostGeneralRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.dpas.PostGeneralRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    boolean hasPost();
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    com.dpas.HelloWorld.Announcement getPost();
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    com.dpas.HelloWorld.AnnouncementOrBuilder getPostOrBuilder();
+  }
+  /**
+   * Protobuf type {@code com.dpas.PostGeneralRequest}
+   */
+  public  static final class PostGeneralRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.dpas.PostGeneralRequest)
+      PostGeneralRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PostGeneralRequest.newBuilder() to construct.
+    private PostGeneralRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PostGeneralRequest() {
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PostGeneralRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.dpas.HelloWorld.Announcement.Builder subBuilder = null;
+              if (post_ != null) {
+                subBuilder = post_.toBuilder();
+              }
+              post_ = input.readMessage(com.dpas.HelloWorld.Announcement.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(post_);
+                post_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_PostGeneralRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_PostGeneralRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.dpas.HelloWorld.PostGeneralRequest.class, com.dpas.HelloWorld.PostGeneralRequest.Builder.class);
+    }
+
+    public static final int POST_FIELD_NUMBER = 1;
+    private com.dpas.HelloWorld.Announcement post_;
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    public boolean hasPost() {
+      return post_ != null;
+    }
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    public com.dpas.HelloWorld.Announcement getPost() {
+      return post_ == null ? com.dpas.HelloWorld.Announcement.getDefaultInstance() : post_;
+    }
+    /**
+     * <code>.com.dpas.Announcement post = 1;</code>
+     */
+    public com.dpas.HelloWorld.AnnouncementOrBuilder getPostOrBuilder() {
+      return getPost();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (post_ != null) {
+        output.writeMessage(1, getPost());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (post_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getPost());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.dpas.HelloWorld.PostGeneralRequest)) {
+        return super.equals(obj);
+      }
+      com.dpas.HelloWorld.PostGeneralRequest other = (com.dpas.HelloWorld.PostGeneralRequest) obj;
+
+      boolean result = true;
+      result = result && (hasPost() == other.hasPost());
+      if (hasPost()) {
+        result = result && getPost()
+            .equals(other.getPost());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasPost()) {
+        hash = (37 * hash) + POST_FIELD_NUMBER;
+        hash = (53 * hash) + getPost().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.dpas.HelloWorld.PostGeneralRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostGeneralRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostGeneralRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostGeneralRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostGeneralRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostGeneralRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostGeneralRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostGeneralRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostGeneralRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostGeneralRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostGeneralRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostGeneralRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.dpas.HelloWorld.PostGeneralRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.dpas.PostGeneralRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.dpas.PostGeneralRequest)
+        com.dpas.HelloWorld.PostGeneralRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostGeneralRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostGeneralRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.dpas.HelloWorld.PostGeneralRequest.class, com.dpas.HelloWorld.PostGeneralRequest.Builder.class);
+      }
+
+      // Construct using com.dpas.HelloWorld.PostGeneralRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (postBuilder_ == null) {
+          post_ = null;
+        } else {
+          post_ = null;
+          postBuilder_ = null;
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostGeneralRequest_descriptor;
+      }
+
+      public com.dpas.HelloWorld.PostGeneralRequest getDefaultInstanceForType() {
+        return com.dpas.HelloWorld.PostGeneralRequest.getDefaultInstance();
+      }
+
+      public com.dpas.HelloWorld.PostGeneralRequest build() {
+        com.dpas.HelloWorld.PostGeneralRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.dpas.HelloWorld.PostGeneralRequest buildPartial() {
+        com.dpas.HelloWorld.PostGeneralRequest result = new com.dpas.HelloWorld.PostGeneralRequest(this);
+        if (postBuilder_ == null) {
+          result.post_ = post_;
+        } else {
+          result.post_ = postBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.dpas.HelloWorld.PostGeneralRequest) {
+          return mergeFrom((com.dpas.HelloWorld.PostGeneralRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.dpas.HelloWorld.PostGeneralRequest other) {
+        if (other == com.dpas.HelloWorld.PostGeneralRequest.getDefaultInstance()) return this;
+        if (other.hasPost()) {
+          mergePost(other.getPost());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.dpas.HelloWorld.PostGeneralRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.dpas.HelloWorld.PostGeneralRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private com.dpas.HelloWorld.Announcement post_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder> postBuilder_;
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public boolean hasPost() {
+        return postBuilder_ != null || post_ != null;
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement getPost() {
+        if (postBuilder_ == null) {
+          return post_ == null ? com.dpas.HelloWorld.Announcement.getDefaultInstance() : post_;
+        } else {
+          return postBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public Builder setPost(com.dpas.HelloWorld.Announcement value) {
+        if (postBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          post_ = value;
+          onChanged();
+        } else {
+          postBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public Builder setPost(
+          com.dpas.HelloWorld.Announcement.Builder builderForValue) {
+        if (postBuilder_ == null) {
+          post_ = builderForValue.build();
+          onChanged();
+        } else {
+          postBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public Builder mergePost(com.dpas.HelloWorld.Announcement value) {
+        if (postBuilder_ == null) {
+          if (post_ != null) {
+            post_ =
+              com.dpas.HelloWorld.Announcement.newBuilder(post_).mergeFrom(value).buildPartial();
+          } else {
+            post_ = value;
+          }
+          onChanged();
+        } else {
+          postBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public Builder clearPost() {
+        if (postBuilder_ == null) {
+          post_ = null;
+          onChanged();
+        } else {
+          post_ = null;
+          postBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement.Builder getPostBuilder() {
+        
+        onChanged();
+        return getPostFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      public com.dpas.HelloWorld.AnnouncementOrBuilder getPostOrBuilder() {
+        if (postBuilder_ != null) {
+          return postBuilder_.getMessageOrBuilder();
+        } else {
+          return post_ == null ?
+              com.dpas.HelloWorld.Announcement.getDefaultInstance() : post_;
+        }
+      }
+      /**
+       * <code>.com.dpas.Announcement post = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder> 
+          getPostFieldBuilder() {
+        if (postBuilder_ == null) {
+          postBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder>(
+                  getPost(),
+                  getParentForChildren(),
+                  isClean());
+          post_ = null;
+        }
+        return postBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.dpas.PostGeneralRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.dpas.PostGeneralRequest)
+    private static final com.dpas.HelloWorld.PostGeneralRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.dpas.HelloWorld.PostGeneralRequest();
+    }
+
+    public static com.dpas.HelloWorld.PostGeneralRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PostGeneralRequest>
+        PARSER = new com.google.protobuf.AbstractParser<PostGeneralRequest>() {
+      public PostGeneralRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PostGeneralRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PostGeneralRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PostGeneralRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public com.dpas.HelloWorld.PostGeneralRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PostGeneralResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.dpas.PostGeneralResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool result = 1;</code>
+     */
+    boolean getResult();
+  }
+  /**
+   * Protobuf type {@code com.dpas.PostGeneralResponse}
+   */
+  public  static final class PostGeneralResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.dpas.PostGeneralResponse)
+      PostGeneralResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PostGeneralResponse.newBuilder() to construct.
+    private PostGeneralResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PostGeneralResponse() {
+      result_ = false;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PostGeneralResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              result_ = input.readBool();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_PostGeneralResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_PostGeneralResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.dpas.HelloWorld.PostGeneralResponse.class, com.dpas.HelloWorld.PostGeneralResponse.Builder.class);
+    }
+
+    public static final int RESULT_FIELD_NUMBER = 1;
+    private boolean result_;
+    /**
+     * <code>bool result = 1;</code>
+     */
+    public boolean getResult() {
+      return result_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (result_ != false) {
+        output.writeBool(1, result_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (result_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, result_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.dpas.HelloWorld.PostGeneralResponse)) {
+        return super.equals(obj);
+      }
+      com.dpas.HelloWorld.PostGeneralResponse other = (com.dpas.HelloWorld.PostGeneralResponse) obj;
+
+      boolean result = true;
+      result = result && (getResult()
+          == other.getResult());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RESULT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getResult());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.dpas.HelloWorld.PostGeneralResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostGeneralResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostGeneralResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostGeneralResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostGeneralResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.PostGeneralResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostGeneralResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostGeneralResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostGeneralResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostGeneralResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.PostGeneralResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.PostGeneralResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.dpas.HelloWorld.PostGeneralResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.dpas.PostGeneralResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.dpas.PostGeneralResponse)
+        com.dpas.HelloWorld.PostGeneralResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostGeneralResponse_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostGeneralResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.dpas.HelloWorld.PostGeneralResponse.class, com.dpas.HelloWorld.PostGeneralResponse.Builder.class);
+      }
+
+      // Construct using com.dpas.HelloWorld.PostGeneralResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        result_ = false;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_PostGeneralResponse_descriptor;
+      }
+
+      public com.dpas.HelloWorld.PostGeneralResponse getDefaultInstanceForType() {
+        return com.dpas.HelloWorld.PostGeneralResponse.getDefaultInstance();
+      }
+
+      public com.dpas.HelloWorld.PostGeneralResponse build() {
+        com.dpas.HelloWorld.PostGeneralResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.dpas.HelloWorld.PostGeneralResponse buildPartial() {
+        com.dpas.HelloWorld.PostGeneralResponse result = new com.dpas.HelloWorld.PostGeneralResponse(this);
+        result.result_ = result_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.dpas.HelloWorld.PostGeneralResponse) {
+          return mergeFrom((com.dpas.HelloWorld.PostGeneralResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.dpas.HelloWorld.PostGeneralResponse other) {
+        if (other == com.dpas.HelloWorld.PostGeneralResponse.getDefaultInstance()) return this;
+        if (other.getResult() != false) {
+          setResult(other.getResult());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.dpas.HelloWorld.PostGeneralResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.dpas.HelloWorld.PostGeneralResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private boolean result_ ;
+      /**
+       * <code>bool result = 1;</code>
+       */
+      public boolean getResult() {
+        return result_;
+      }
+      /**
+       * <code>bool result = 1;</code>
+       */
+      public Builder setResult(boolean value) {
+        
+        result_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool result = 1;</code>
+       */
+      public Builder clearResult() {
+        
+        result_ = false;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.dpas.PostGeneralResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.dpas.PostGeneralResponse)
+    private static final com.dpas.HelloWorld.PostGeneralResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.dpas.HelloWorld.PostGeneralResponse();
+    }
+
+    public static com.dpas.HelloWorld.PostGeneralResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PostGeneralResponse>
+        PARSER = new com.google.protobuf.AbstractParser<PostGeneralResponse>() {
+      public PostGeneralResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PostGeneralResponse(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PostGeneralResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PostGeneralResponse> getParserForType() {
+      return PARSER;
+    }
+
+    public com.dpas.HelloWorld.PostGeneralResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ReadRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.dpas.ReadRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string key = 1;</code>
+     */
+    java.lang.String getKey();
+    /**
+     * <code>string key = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getKeyBytes();
+
+    /**
+     * <code>int32 number = 2;</code>
+     */
+    int getNumber();
+  }
+  /**
+   * Protobuf type {@code com.dpas.ReadRequest}
+   */
+  public  static final class ReadRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.dpas.ReadRequest)
+      ReadRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ReadRequest.newBuilder() to construct.
+    private ReadRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ReadRequest() {
+      key_ = "";
+      number_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ReadRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              key_ = s;
+              break;
+            }
+            case 16: {
+
+              number_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_ReadRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_ReadRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.dpas.HelloWorld.ReadRequest.class, com.dpas.HelloWorld.ReadRequest.Builder.class);
+    }
+
+    public static final int KEY_FIELD_NUMBER = 1;
+    private volatile java.lang.Object key_;
+    /**
+     * <code>string key = 1;</code>
+     */
+    public java.lang.String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        key_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string key = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NUMBER_FIELD_NUMBER = 2;
+    private int number_;
+    /**
+     * <code>int32 number = 2;</code>
+     */
+    public int getNumber() {
+      return number_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, key_);
+      }
+      if (number_ != 0) {
+        output.writeInt32(2, number_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, key_);
+      }
+      if (number_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, number_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.dpas.HelloWorld.ReadRequest)) {
+        return super.equals(obj);
+      }
+      com.dpas.HelloWorld.ReadRequest other = (com.dpas.HelloWorld.ReadRequest) obj;
+
+      boolean result = true;
+      result = result && getKey()
+          .equals(other.getKey());
+      result = result && (getNumber()
+          == other.getNumber());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getKey().hashCode();
+      hash = (37 * hash) + NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getNumber();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.dpas.HelloWorld.ReadRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.dpas.HelloWorld.ReadRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.dpas.ReadRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.dpas.ReadRequest)
+        com.dpas.HelloWorld.ReadRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.dpas.HelloWorld.ReadRequest.class, com.dpas.HelloWorld.ReadRequest.Builder.class);
+      }
+
+      // Construct using com.dpas.HelloWorld.ReadRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        key_ = "";
+
+        number_ = 0;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadRequest_descriptor;
+      }
+
+      public com.dpas.HelloWorld.ReadRequest getDefaultInstanceForType() {
+        return com.dpas.HelloWorld.ReadRequest.getDefaultInstance();
+      }
+
+      public com.dpas.HelloWorld.ReadRequest build() {
+        com.dpas.HelloWorld.ReadRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.dpas.HelloWorld.ReadRequest buildPartial() {
+        com.dpas.HelloWorld.ReadRequest result = new com.dpas.HelloWorld.ReadRequest(this);
+        result.key_ = key_;
+        result.number_ = number_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.dpas.HelloWorld.ReadRequest) {
+          return mergeFrom((com.dpas.HelloWorld.ReadRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.dpas.HelloWorld.ReadRequest other) {
+        if (other == com.dpas.HelloWorld.ReadRequest.getDefaultInstance()) return this;
+        if (!other.getKey().isEmpty()) {
+          key_ = other.key_;
+          onChanged();
+        }
+        if (other.getNumber() != 0) {
+          setNumber(other.getNumber());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.dpas.HelloWorld.ReadRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.dpas.HelloWorld.ReadRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object key_ = "";
+      /**
+       * <code>string key = 1;</code>
+       */
+      public java.lang.String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getKeyBytes() {
+        java.lang.Object ref = key_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          key_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder setKey(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        key_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder clearKey() {
+        
+        key_ = getDefaultInstance().getKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder setKeyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        key_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int number_ ;
+      /**
+       * <code>int32 number = 2;</code>
+       */
+      public int getNumber() {
+        return number_;
+      }
+      /**
+       * <code>int32 number = 2;</code>
+       */
+      public Builder setNumber(int value) {
+        
+        number_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 number = 2;</code>
+       */
+      public Builder clearNumber() {
+        
+        number_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.dpas.ReadRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.dpas.ReadRequest)
+    private static final com.dpas.HelloWorld.ReadRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.dpas.HelloWorld.ReadRequest();
+    }
+
+    public static com.dpas.HelloWorld.ReadRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ReadRequest>
+        PARSER = new com.google.protobuf.AbstractParser<ReadRequest>() {
+      public ReadRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReadRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ReadRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReadRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public com.dpas.HelloWorld.ReadRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ReadResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.dpas.ReadResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    java.util.List<com.dpas.HelloWorld.Announcement> 
+        getResultList();
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    com.dpas.HelloWorld.Announcement getResult(int index);
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    int getResultCount();
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
+        getResultOrBuilderList();
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    com.dpas.HelloWorld.AnnouncementOrBuilder getResultOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code com.dpas.ReadResponse}
+   */
+  public  static final class ReadResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.dpas.ReadResponse)
+      ReadResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ReadResponse.newBuilder() to construct.
+    private ReadResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ReadResponse() {
+      result_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ReadResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                result_ = new java.util.ArrayList<com.dpas.HelloWorld.Announcement>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              result_.add(
+                  input.readMessage(com.dpas.HelloWorld.Announcement.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          result_ = java.util.Collections.unmodifiableList(result_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_ReadResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_ReadResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.dpas.HelloWorld.ReadResponse.class, com.dpas.HelloWorld.ReadResponse.Builder.class);
+    }
+
+    public static final int RESULT_FIELD_NUMBER = 1;
+    private java.util.List<com.dpas.HelloWorld.Announcement> result_;
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    public java.util.List<com.dpas.HelloWorld.Announcement> getResultList() {
+      return result_;
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    public java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
+        getResultOrBuilderList() {
+      return result_;
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    public int getResultCount() {
+      return result_.size();
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    public com.dpas.HelloWorld.Announcement getResult(int index) {
+      return result_.get(index);
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    public com.dpas.HelloWorld.AnnouncementOrBuilder getResultOrBuilder(
+        int index) {
+      return result_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < result_.size(); i++) {
+        output.writeMessage(1, result_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < result_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, result_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.dpas.HelloWorld.ReadResponse)) {
+        return super.equals(obj);
+      }
+      com.dpas.HelloWorld.ReadResponse other = (com.dpas.HelloWorld.ReadResponse) obj;
+
+      boolean result = true;
+      result = result && getResultList()
+          .equals(other.getResultList());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getResultCount() > 0) {
+        hash = (37 * hash) + RESULT_FIELD_NUMBER;
+        hash = (53 * hash) + getResultList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.dpas.HelloWorld.ReadResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.dpas.HelloWorld.ReadResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.dpas.ReadResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.dpas.ReadResponse)
+        com.dpas.HelloWorld.ReadResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadResponse_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.dpas.HelloWorld.ReadResponse.class, com.dpas.HelloWorld.ReadResponse.Builder.class);
+      }
+
+      // Construct using com.dpas.HelloWorld.ReadResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getResultFieldBuilder();
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (resultBuilder_ == null) {
+          result_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          resultBuilder_.clear();
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadResponse_descriptor;
+      }
+
+      public com.dpas.HelloWorld.ReadResponse getDefaultInstanceForType() {
+        return com.dpas.HelloWorld.ReadResponse.getDefaultInstance();
+      }
+
+      public com.dpas.HelloWorld.ReadResponse build() {
+        com.dpas.HelloWorld.ReadResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.dpas.HelloWorld.ReadResponse buildPartial() {
+        com.dpas.HelloWorld.ReadResponse result = new com.dpas.HelloWorld.ReadResponse(this);
+        int from_bitField0_ = bitField0_;
+        if (resultBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            result_ = java.util.Collections.unmodifiableList(result_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.result_ = result_;
+        } else {
+          result.result_ = resultBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.dpas.HelloWorld.ReadResponse) {
+          return mergeFrom((com.dpas.HelloWorld.ReadResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.dpas.HelloWorld.ReadResponse other) {
+        if (other == com.dpas.HelloWorld.ReadResponse.getDefaultInstance()) return this;
+        if (resultBuilder_ == null) {
+          if (!other.result_.isEmpty()) {
+            if (result_.isEmpty()) {
+              result_ = other.result_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureResultIsMutable();
+              result_.addAll(other.result_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.result_.isEmpty()) {
+            if (resultBuilder_.isEmpty()) {
+              resultBuilder_.dispose();
+              resultBuilder_ = null;
+              result_ = other.result_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              resultBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getResultFieldBuilder() : null;
+            } else {
+              resultBuilder_.addAllMessages(other.result_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.dpas.HelloWorld.ReadResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.dpas.HelloWorld.ReadResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<com.dpas.HelloWorld.Announcement> result_ =
+        java.util.Collections.emptyList();
+      private void ensureResultIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          result_ = new java.util.ArrayList<com.dpas.HelloWorld.Announcement>(result_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder> resultBuilder_;
+
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public java.util.List<com.dpas.HelloWorld.Announcement> getResultList() {
+        if (resultBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(result_);
+        } else {
+          return resultBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public int getResultCount() {
+        if (resultBuilder_ == null) {
+          return result_.size();
+        } else {
+          return resultBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement getResult(int index) {
+        if (resultBuilder_ == null) {
+          return result_.get(index);
+        } else {
+          return resultBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder setResult(
+          int index, com.dpas.HelloWorld.Announcement value) {
+        if (resultBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureResultIsMutable();
+          result_.set(index, value);
+          onChanged();
+        } else {
+          resultBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder setResult(
+          int index, com.dpas.HelloWorld.Announcement.Builder builderForValue) {
+        if (resultBuilder_ == null) {
+          ensureResultIsMutable();
+          result_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          resultBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder addResult(com.dpas.HelloWorld.Announcement value) {
+        if (resultBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureResultIsMutable();
+          result_.add(value);
+          onChanged();
+        } else {
+          resultBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder addResult(
+          int index, com.dpas.HelloWorld.Announcement value) {
+        if (resultBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureResultIsMutable();
+          result_.add(index, value);
+          onChanged();
+        } else {
+          resultBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder addResult(
+          com.dpas.HelloWorld.Announcement.Builder builderForValue) {
+        if (resultBuilder_ == null) {
+          ensureResultIsMutable();
+          result_.add(builderForValue.build());
+          onChanged();
+        } else {
+          resultBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder addResult(
+          int index, com.dpas.HelloWorld.Announcement.Builder builderForValue) {
+        if (resultBuilder_ == null) {
+          ensureResultIsMutable();
+          result_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          resultBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder addAllResult(
+          java.lang.Iterable<? extends com.dpas.HelloWorld.Announcement> values) {
+        if (resultBuilder_ == null) {
+          ensureResultIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, result_);
+          onChanged();
+        } else {
+          resultBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder clearResult() {
+        if (resultBuilder_ == null) {
+          result_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          resultBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder removeResult(int index) {
+        if (resultBuilder_ == null) {
+          ensureResultIsMutable();
+          result_.remove(index);
+          onChanged();
+        } else {
+          resultBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement.Builder getResultBuilder(
+          int index) {
+        return getResultFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public com.dpas.HelloWorld.AnnouncementOrBuilder getResultOrBuilder(
+          int index) {
+        if (resultBuilder_ == null) {
+          return result_.get(index);  } else {
+          return resultBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
+           getResultOrBuilderList() {
+        if (resultBuilder_ != null) {
+          return resultBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(result_);
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement.Builder addResultBuilder() {
+        return getResultFieldBuilder().addBuilder(
+            com.dpas.HelloWorld.Announcement.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement.Builder addResultBuilder(
+          int index) {
+        return getResultFieldBuilder().addBuilder(
+            index, com.dpas.HelloWorld.Announcement.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public java.util.List<com.dpas.HelloWorld.Announcement.Builder> 
+           getResultBuilderList() {
+        return getResultFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder> 
+          getResultFieldBuilder() {
+        if (resultBuilder_ == null) {
+          resultBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder>(
+                  result_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          result_ = null;
+        }
+        return resultBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.dpas.ReadResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.dpas.ReadResponse)
+    private static final com.dpas.HelloWorld.ReadResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.dpas.HelloWorld.ReadResponse();
+    }
+
+    public static com.dpas.HelloWorld.ReadResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ReadResponse>
+        PARSER = new com.google.protobuf.AbstractParser<ReadResponse>() {
+      public ReadResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReadResponse(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ReadResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReadResponse> getParserForType() {
+      return PARSER;
+    }
+
+    public com.dpas.HelloWorld.ReadResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ReadGeneralRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.dpas.ReadGeneralRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>int32 number = 1;</code>
+     */
+    int getNumber();
+  }
+  /**
+   * Protobuf type {@code com.dpas.ReadGeneralRequest}
+   */
+  public  static final class ReadGeneralRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.dpas.ReadGeneralRequest)
+      ReadGeneralRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ReadGeneralRequest.newBuilder() to construct.
+    private ReadGeneralRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ReadGeneralRequest() {
+      number_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ReadGeneralRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              number_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_ReadGeneralRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_ReadGeneralRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.dpas.HelloWorld.ReadGeneralRequest.class, com.dpas.HelloWorld.ReadGeneralRequest.Builder.class);
+    }
+
+    public static final int NUMBER_FIELD_NUMBER = 1;
+    private int number_;
+    /**
+     * <code>int32 number = 1;</code>
+     */
+    public int getNumber() {
+      return number_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (number_ != 0) {
+        output.writeInt32(1, number_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (number_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, number_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.dpas.HelloWorld.ReadGeneralRequest)) {
+        return super.equals(obj);
+      }
+      com.dpas.HelloWorld.ReadGeneralRequest other = (com.dpas.HelloWorld.ReadGeneralRequest) obj;
+
+      boolean result = true;
+      result = result && (getNumber()
+          == other.getNumber());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getNumber();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.dpas.HelloWorld.ReadGeneralRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.dpas.ReadGeneralRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.dpas.ReadGeneralRequest)
+        com.dpas.HelloWorld.ReadGeneralRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadGeneralRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadGeneralRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.dpas.HelloWorld.ReadGeneralRequest.class, com.dpas.HelloWorld.ReadGeneralRequest.Builder.class);
+      }
+
+      // Construct using com.dpas.HelloWorld.ReadGeneralRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        number_ = 0;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadGeneralRequest_descriptor;
+      }
+
+      public com.dpas.HelloWorld.ReadGeneralRequest getDefaultInstanceForType() {
+        return com.dpas.HelloWorld.ReadGeneralRequest.getDefaultInstance();
+      }
+
+      public com.dpas.HelloWorld.ReadGeneralRequest build() {
+        com.dpas.HelloWorld.ReadGeneralRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.dpas.HelloWorld.ReadGeneralRequest buildPartial() {
+        com.dpas.HelloWorld.ReadGeneralRequest result = new com.dpas.HelloWorld.ReadGeneralRequest(this);
+        result.number_ = number_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.dpas.HelloWorld.ReadGeneralRequest) {
+          return mergeFrom((com.dpas.HelloWorld.ReadGeneralRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.dpas.HelloWorld.ReadGeneralRequest other) {
+        if (other == com.dpas.HelloWorld.ReadGeneralRequest.getDefaultInstance()) return this;
+        if (other.getNumber() != 0) {
+          setNumber(other.getNumber());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.dpas.HelloWorld.ReadGeneralRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.dpas.HelloWorld.ReadGeneralRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int number_ ;
+      /**
+       * <code>int32 number = 1;</code>
+       */
+      public int getNumber() {
+        return number_;
+      }
+      /**
+       * <code>int32 number = 1;</code>
+       */
+      public Builder setNumber(int value) {
+        
+        number_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 number = 1;</code>
+       */
+      public Builder clearNumber() {
+        
+        number_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.dpas.ReadGeneralRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.dpas.ReadGeneralRequest)
+    private static final com.dpas.HelloWorld.ReadGeneralRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.dpas.HelloWorld.ReadGeneralRequest();
+    }
+
+    public static com.dpas.HelloWorld.ReadGeneralRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ReadGeneralRequest>
+        PARSER = new com.google.protobuf.AbstractParser<ReadGeneralRequest>() {
+      public ReadGeneralRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReadGeneralRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ReadGeneralRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReadGeneralRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public com.dpas.HelloWorld.ReadGeneralRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ReadGeneralResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.dpas.ReadGeneralResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    java.util.List<com.dpas.HelloWorld.Announcement> 
+        getResultList();
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    com.dpas.HelloWorld.Announcement getResult(int index);
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    int getResultCount();
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
+        getResultOrBuilderList();
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    com.dpas.HelloWorld.AnnouncementOrBuilder getResultOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code com.dpas.ReadGeneralResponse}
+   */
+  public  static final class ReadGeneralResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.dpas.ReadGeneralResponse)
+      ReadGeneralResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ReadGeneralResponse.newBuilder() to construct.
+    private ReadGeneralResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ReadGeneralResponse() {
+      result_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ReadGeneralResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                result_ = new java.util.ArrayList<com.dpas.HelloWorld.Announcement>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              result_.add(
+                  input.readMessage(com.dpas.HelloWorld.Announcement.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          result_ = java.util.Collections.unmodifiableList(result_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_ReadGeneralResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.dpas.HelloWorld.internal_static_com_dpas_ReadGeneralResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.dpas.HelloWorld.ReadGeneralResponse.class, com.dpas.HelloWorld.ReadGeneralResponse.Builder.class);
+    }
+
+    public static final int RESULT_FIELD_NUMBER = 1;
+    private java.util.List<com.dpas.HelloWorld.Announcement> result_;
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    public java.util.List<com.dpas.HelloWorld.Announcement> getResultList() {
+      return result_;
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    public java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
+        getResultOrBuilderList() {
+      return result_;
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    public int getResultCount() {
+      return result_.size();
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    public com.dpas.HelloWorld.Announcement getResult(int index) {
+      return result_.get(index);
+    }
+    /**
+     * <code>repeated .com.dpas.Announcement result = 1;</code>
+     */
+    public com.dpas.HelloWorld.AnnouncementOrBuilder getResultOrBuilder(
+        int index) {
+      return result_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < result_.size(); i++) {
+        output.writeMessage(1, result_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < result_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, result_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.dpas.HelloWorld.ReadGeneralResponse)) {
+        return super.equals(obj);
+      }
+      com.dpas.HelloWorld.ReadGeneralResponse other = (com.dpas.HelloWorld.ReadGeneralResponse) obj;
+
+      boolean result = true;
+      result = result && getResultList()
+          .equals(other.getResultList());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getResultCount() > 0) {
+        hash = (37 * hash) + RESULT_FIELD_NUMBER;
+        hash = (53 * hash) + getResultList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.dpas.HelloWorld.ReadGeneralResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.dpas.HelloWorld.ReadGeneralResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.dpas.ReadGeneralResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.dpas.ReadGeneralResponse)
+        com.dpas.HelloWorld.ReadGeneralResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadGeneralResponse_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadGeneralResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.dpas.HelloWorld.ReadGeneralResponse.class, com.dpas.HelloWorld.ReadGeneralResponse.Builder.class);
+      }
+
+      // Construct using com.dpas.HelloWorld.ReadGeneralResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getResultFieldBuilder();
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (resultBuilder_ == null) {
+          result_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          resultBuilder_.clear();
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.dpas.HelloWorld.internal_static_com_dpas_ReadGeneralResponse_descriptor;
+      }
+
+      public com.dpas.HelloWorld.ReadGeneralResponse getDefaultInstanceForType() {
+        return com.dpas.HelloWorld.ReadGeneralResponse.getDefaultInstance();
+      }
+
+      public com.dpas.HelloWorld.ReadGeneralResponse build() {
+        com.dpas.HelloWorld.ReadGeneralResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.dpas.HelloWorld.ReadGeneralResponse buildPartial() {
+        com.dpas.HelloWorld.ReadGeneralResponse result = new com.dpas.HelloWorld.ReadGeneralResponse(this);
+        int from_bitField0_ = bitField0_;
+        if (resultBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            result_ = java.util.Collections.unmodifiableList(result_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.result_ = result_;
+        } else {
+          result.result_ = resultBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.dpas.HelloWorld.ReadGeneralResponse) {
+          return mergeFrom((com.dpas.HelloWorld.ReadGeneralResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.dpas.HelloWorld.ReadGeneralResponse other) {
+        if (other == com.dpas.HelloWorld.ReadGeneralResponse.getDefaultInstance()) return this;
+        if (resultBuilder_ == null) {
+          if (!other.result_.isEmpty()) {
+            if (result_.isEmpty()) {
+              result_ = other.result_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureResultIsMutable();
+              result_.addAll(other.result_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.result_.isEmpty()) {
+            if (resultBuilder_.isEmpty()) {
+              resultBuilder_.dispose();
+              resultBuilder_ = null;
+              result_ = other.result_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              resultBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getResultFieldBuilder() : null;
+            } else {
+              resultBuilder_.addAllMessages(other.result_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.dpas.HelloWorld.ReadGeneralResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.dpas.HelloWorld.ReadGeneralResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<com.dpas.HelloWorld.Announcement> result_ =
+        java.util.Collections.emptyList();
+      private void ensureResultIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          result_ = new java.util.ArrayList<com.dpas.HelloWorld.Announcement>(result_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder> resultBuilder_;
+
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public java.util.List<com.dpas.HelloWorld.Announcement> getResultList() {
+        if (resultBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(result_);
+        } else {
+          return resultBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public int getResultCount() {
+        if (resultBuilder_ == null) {
+          return result_.size();
+        } else {
+          return resultBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement getResult(int index) {
+        if (resultBuilder_ == null) {
+          return result_.get(index);
+        } else {
+          return resultBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder setResult(
+          int index, com.dpas.HelloWorld.Announcement value) {
+        if (resultBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureResultIsMutable();
+          result_.set(index, value);
+          onChanged();
+        } else {
+          resultBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder setResult(
+          int index, com.dpas.HelloWorld.Announcement.Builder builderForValue) {
+        if (resultBuilder_ == null) {
+          ensureResultIsMutable();
+          result_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          resultBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder addResult(com.dpas.HelloWorld.Announcement value) {
+        if (resultBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureResultIsMutable();
+          result_.add(value);
+          onChanged();
+        } else {
+          resultBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder addResult(
+          int index, com.dpas.HelloWorld.Announcement value) {
+        if (resultBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureResultIsMutable();
+          result_.add(index, value);
+          onChanged();
+        } else {
+          resultBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder addResult(
+          com.dpas.HelloWorld.Announcement.Builder builderForValue) {
+        if (resultBuilder_ == null) {
+          ensureResultIsMutable();
+          result_.add(builderForValue.build());
+          onChanged();
+        } else {
+          resultBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder addResult(
+          int index, com.dpas.HelloWorld.Announcement.Builder builderForValue) {
+        if (resultBuilder_ == null) {
+          ensureResultIsMutable();
+          result_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          resultBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder addAllResult(
+          java.lang.Iterable<? extends com.dpas.HelloWorld.Announcement> values) {
+        if (resultBuilder_ == null) {
+          ensureResultIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, result_);
+          onChanged();
+        } else {
+          resultBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder clearResult() {
+        if (resultBuilder_ == null) {
+          result_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          resultBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public Builder removeResult(int index) {
+        if (resultBuilder_ == null) {
+          ensureResultIsMutable();
+          result_.remove(index);
+          onChanged();
+        } else {
+          resultBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement.Builder getResultBuilder(
+          int index) {
+        return getResultFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public com.dpas.HelloWorld.AnnouncementOrBuilder getResultOrBuilder(
+          int index) {
+        if (resultBuilder_ == null) {
+          return result_.get(index);  } else {
+          return resultBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
+           getResultOrBuilderList() {
+        if (resultBuilder_ != null) {
+          return resultBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(result_);
+        }
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement.Builder addResultBuilder() {
+        return getResultFieldBuilder().addBuilder(
+            com.dpas.HelloWorld.Announcement.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public com.dpas.HelloWorld.Announcement.Builder addResultBuilder(
+          int index) {
+        return getResultFieldBuilder().addBuilder(
+            index, com.dpas.HelloWorld.Announcement.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.dpas.Announcement result = 1;</code>
+       */
+      public java.util.List<com.dpas.HelloWorld.Announcement.Builder> 
+           getResultBuilderList() {
+        return getResultFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder> 
+          getResultFieldBuilder() {
+        if (resultBuilder_ == null) {
+          resultBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder>(
+                  result_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          result_ = null;
+        }
+        return resultBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.dpas.ReadGeneralResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.dpas.ReadGeneralResponse)
+    private static final com.dpas.HelloWorld.ReadGeneralResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.dpas.HelloWorld.ReadGeneralResponse();
+    }
+
+    public static com.dpas.HelloWorld.ReadGeneralResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ReadGeneralResponse>
+        PARSER = new com.google.protobuf.AbstractParser<ReadGeneralResponse>() {
+      public ReadGeneralResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReadGeneralResponse(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ReadGeneralResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReadGeneralResponse> getParserForType() {
+      return PARSER;
+    }
+
+    public com.dpas.HelloWorld.ReadGeneralResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_dpas_HelloRequest_descriptor;
   private static final 
@@ -1398,6 +8304,61 @@ public final class HelloWorld {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_dpas_HelloResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_dpas_RegisterRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_dpas_RegisterRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_dpas_RegisterResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_dpas_RegisterResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_dpas_Announcement_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_dpas_Announcement_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_dpas_PostRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_dpas_PostRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_dpas_PostResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_dpas_PostResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_dpas_PostGeneralRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_dpas_PostGeneralRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_dpas_PostGeneralResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_dpas_PostGeneralResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_dpas_ReadRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_dpas_ReadRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_dpas_ReadResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_dpas_ReadResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_dpas_ReadGeneralRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_dpas_ReadGeneralRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_dpas_ReadGeneralResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_dpas_ReadGeneralResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1409,9 +8370,32 @@ public final class HelloWorld {
     java.lang.String[] descriptorData = {
       "\n\020HelloWorld.proto\022\010com.dpas\"-\n\014HelloReq" +
       "uest\022\014\n\004name\030\001 \001(\t\022\017\n\007hobbies\030\002 \003(\t\"!\n\rH" +
-      "elloResponse\022\020\n\010greeting\030\001 \001(\t2P\n\021HelloW" +
-      "orldService\022;\n\010greeting\022\026.com.dpas.Hello" +
-      "Request\032\027.com.dpas.HelloResponseb\006proto3"
+      "elloResponse\022\020\n\010greeting\030\001 \001(\t\"0\n\017Regist" +
+      "erRequest\022\013\n\003key\030\001 \001(\t\022\020\n\010username\030\002 \001(\t" +
+      "\"\"\n\020RegisterResponse\022\016\n\006result\030\001 \001(\010\"b\n\014" +
+      "Announcement\022\013\n\003key\030\001 \001(\t\022\017\n\007message\030\002 \001" +
+      "(\t\022\021\n\tsignature\030\003 \001(\t\022!\n\001a\030\004 \003(\0132\026.com.d" +
+      "pas.Announcement\"3\n\013PostRequest\022$\n\004post\030" +
+      "\001 \001(\0132\026.com.dpas.Announcement\"\036\n\014PostRes" +
+      "ponse\022\016\n\006result\030\001 \001(\010\":\n\022PostGeneralRequ" +
+      "est\022$\n\004post\030\001 \001(\0132\026.com.dpas.Announcemen" +
+      "t\"%\n\023PostGeneralResponse\022\016\n\006result\030\001 \001(\010" +
+      "\"*\n\013ReadRequest\022\013\n\003key\030\001 \001(\t\022\016\n\006number\030\002" +
+      " \001(\005\"6\n\014ReadResponse\022&\n\006result\030\001 \003(\0132\026.c" +
+      "om.dpas.Announcement\"$\n\022ReadGeneralReque" +
+      "st\022\016\n\006number\030\001 \001(\005\"=\n\023ReadGeneralRespons" +
+      "e\022&\n\006result\030\001 \003(\0132\026.com.dpas.Announcemen" +
+      "t2\231\003\n\021HelloWorldService\022;\n\010greeting\022\026.co" +
+      "m.dpas.HelloRequest\032\027.com.dpas.HelloResp" +
+      "onse\022A\n\010register\022\031.com.dpas.RegisterRequ" +
+      "est\032\032.com.dpas.RegisterResponse\0225\n\004post\022" +
+      "\025.com.dpas.PostRequest\032\026.com.dpas.PostRe" +
+      "sponse\022J\n\013postGeneral\022\034.com.dpas.PostGen" +
+      "eralRequest\032\035.com.dpas.PostGeneralRespon" +
+      "se\0225\n\004read\022\025.com.dpas.ReadRequest\032\026.com." +
+      "dpas.ReadResponse\022J\n\013readGeneral\022\034.com.d" +
+      "pas.ReadGeneralRequest\032\035.com.dpas.ReadGe" +
+      "neralResponseb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1437,6 +8421,72 @@ public final class HelloWorld {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_dpas_HelloResponse_descriptor,
         new java.lang.String[] { "Greeting", });
+    internal_static_com_dpas_RegisterRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_com_dpas_RegisterRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_dpas_RegisterRequest_descriptor,
+        new java.lang.String[] { "Key", "Username", });
+    internal_static_com_dpas_RegisterResponse_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_com_dpas_RegisterResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_dpas_RegisterResponse_descriptor,
+        new java.lang.String[] { "Result", });
+    internal_static_com_dpas_Announcement_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_com_dpas_Announcement_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_dpas_Announcement_descriptor,
+        new java.lang.String[] { "Key", "Message", "Signature", "A", });
+    internal_static_com_dpas_PostRequest_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_com_dpas_PostRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_dpas_PostRequest_descriptor,
+        new java.lang.String[] { "Post", });
+    internal_static_com_dpas_PostResponse_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_com_dpas_PostResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_dpas_PostResponse_descriptor,
+        new java.lang.String[] { "Result", });
+    internal_static_com_dpas_PostGeneralRequest_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_com_dpas_PostGeneralRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_dpas_PostGeneralRequest_descriptor,
+        new java.lang.String[] { "Post", });
+    internal_static_com_dpas_PostGeneralResponse_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_com_dpas_PostGeneralResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_dpas_PostGeneralResponse_descriptor,
+        new java.lang.String[] { "Result", });
+    internal_static_com_dpas_ReadRequest_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_com_dpas_ReadRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_dpas_ReadRequest_descriptor,
+        new java.lang.String[] { "Key", "Number", });
+    internal_static_com_dpas_ReadResponse_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_com_dpas_ReadResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_dpas_ReadResponse_descriptor,
+        new java.lang.String[] { "Result", });
+    internal_static_com_dpas_ReadGeneralRequest_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_com_dpas_ReadGeneralRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_dpas_ReadGeneralRequest_descriptor,
+        new java.lang.String[] { "Number", });
+    internal_static_com_dpas_ReadGeneralResponse_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_com_dpas_ReadGeneralResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_dpas_ReadGeneralResponse_descriptor,
+        new java.lang.String[] { "Result", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
