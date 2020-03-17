@@ -274,12 +274,15 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         } else {
             ArrayList<HelloWorld.Announcement> tmp = particular.get(key);
-
+            HelloWorld.ReadResponse.Builder builder = HelloWorld.ReadResponse.newBuilder();
 			if (number > 0){
-				List<HelloWorld.Announcement> firstNElementsList = tmp.stream().limit(number).collect(Collectors.toList());
-				HelloWorld.ReadResponse response = HelloWorld.ReadResponse.newBuilder()
-						.addAllResult(firstNElementsList).build();
-				responseObserver.onNext(response);
+                ListIterator<HelloWorld.Announcement> listIter = tmp.listIterator(tmp.size());
+                for(int i = 0; i < number; i++){
+                    builder.addResult(listIter.previous());
+                }
+
+                HelloWorld.ReadResponse response = builder.build();
+                responseObserver.onNext(response);
 			}else {
 				HelloWorld.ReadResponse response = HelloWorld.ReadResponse.newBuilder()
 						.addAllResult(tmp).build();
@@ -304,11 +307,15 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         checkFile(GENERAL_FILE);
 
         ArrayList<HelloWorld.Announcement> general = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
+        HelloWorld.ReadGeneralResponse.Builder builder = HelloWorld.ReadGeneralResponse.newBuilder();
 
         if (number > 0){
-			List<HelloWorld.Announcement> firstNElementsList = general.stream().limit(number).collect(Collectors.toList());
-			HelloWorld.ReadGeneralResponse response = HelloWorld.ReadGeneralResponse.newBuilder()
-					.addAllResult(firstNElementsList).build();
+            ListIterator<HelloWorld.Announcement> listIter = general.listIterator(general.size());
+            for(int i = 0; i < number; i++){
+               builder.addResult(listIter.previous());
+            }
+
+			HelloWorld.ReadGeneralResponse response = builder.build();
 			responseObserver.onNext(response);
 		}else {
 			HelloWorld.ReadGeneralResponse response = HelloWorld.ReadGeneralResponse.newBuilder()

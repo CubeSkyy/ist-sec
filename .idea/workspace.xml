@@ -3,23 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ea876c7c-9e33-4d0b-9bbb-196703d83fe7" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/dpas/client/HelloClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/dpas/client/HelloClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/target/classes/com/dpas/client/HelloClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/client/target/classes/com/dpas/client/HelloClient.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorld$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorld$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorld.class" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorld.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceBaseDescriptorSupplier.class" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceBaseDescriptorSupplier.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceBlockingStub.class" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceBlockingStub.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceFileDescriptorSupplier.class" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceFileDescriptorSupplier.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceFutureStub.class" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceFutureStub.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceImplBase.class" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceImplBase.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceMethodDescriptorSupplier.class" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceMethodDescriptorSupplier.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceStub.class" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$HelloWorldServiceStub.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$MethodHandlers.class" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc$MethodHandlers.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc.class" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/classes/com/dpas/HelloWorldServiceGrpc.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/dpas-contract-1.0.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/dpas-contract-1.0.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/generated-sources/protobuf/grpc-java/com/dpas/HelloWorldServiceGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/generated-sources/protobuf/grpc-java/com/dpas/HelloWorldServiceGrpc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/generated-sources/protobuf/java/com/dpas/HelloWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/generated-sources/protobuf/java/com/dpas/HelloWorld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contract/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/contract/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/general.tmp" beforeDir="false" afterPath="$PROJECT_DIR$/server/general.tmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/com/dpas/server/HelloWorldServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/dpas/server/HelloWorldServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -246,6 +230,7 @@
       <workItem from="1584011054753" duration="174000" />
       <workItem from="1584011246096" duration="378000" />
       <workItem from="1584011665189" duration="4524000" />
+      <workItem from="1584466240121" duration="374000" />
     </task>
     <servers />
   </component>
@@ -269,38 +254,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1281" y="314" key="#xdebugger.evaluate/0.0.1920.1040@0.0.1920.1040" timestamp="1584014215415" />
-    <state width="1877" height="232" key="GridCell.Tab.0.bottom" timestamp="1584463810925">
+    <state width="1877" height="412" key="GridCell.Tab.0.bottom" timestamp="1584466606068">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="232" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584463810925" />
-    <state width="1877" height="232" key="GridCell.Tab.0.center" timestamp="1584463810925">
+    <state width="1877" height="412" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584466606068" />
+    <state width="1877" height="412" key="GridCell.Tab.0.center" timestamp="1584466606068">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="232" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584463810925" />
-    <state width="1877" height="232" key="GridCell.Tab.0.left" timestamp="1584463810925">
+    <state width="1877" height="412" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584466606068" />
+    <state width="1877" height="412" key="GridCell.Tab.0.left" timestamp="1584466606068">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="232" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584463810925" />
-    <state width="1877" height="232" key="GridCell.Tab.0.right" timestamp="1584463810925">
+    <state width="1877" height="412" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584466606068" />
+    <state width="1877" height="412" key="GridCell.Tab.0.right" timestamp="1584466606068">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="232" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584463810925" />
-    <state width="1877" height="390" key="GridCell.Tab.1.bottom" timestamp="1584463743080">
+    <state width="1877" height="412" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584466606068" />
+    <state width="1877" height="390" key="GridCell.Tab.1.bottom" timestamp="1584464312955">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="390" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584463743080" />
-    <state width="1877" height="390" key="GridCell.Tab.1.center" timestamp="1584463743080">
+    <state width="1877" height="390" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584464312955" />
+    <state width="1877" height="390" key="GridCell.Tab.1.center" timestamp="1584464312955">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="390" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584463743080" />
-    <state width="1877" height="390" key="GridCell.Tab.1.left" timestamp="1584463743080">
+    <state width="1877" height="390" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584464312955" />
+    <state width="1877" height="390" key="GridCell.Tab.1.left" timestamp="1584464312955">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="390" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584463743080" />
-    <state width="1877" height="390" key="GridCell.Tab.1.right" timestamp="1584463743080">
+    <state width="1877" height="390" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584464312955" />
+    <state width="1877" height="390" key="GridCell.Tab.1.right" timestamp="1584464312955">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="390" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584463743080" />
+    <state width="1877" height="390" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584464312955" />
     <state x="440" y="94" key="SettingsEditor" timestamp="1584012198505">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
