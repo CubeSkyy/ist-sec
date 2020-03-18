@@ -22,9 +22,9 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     public static final String USERS_FILE = "users.tmp";
     public static final String PARTICULAR_FILE = "particular.tmp";
     public static final String GENERAL_FILE = "general.tmp";
-    public static final String MSG_USERS = "Users successfully written to file.";
-    public static final String MSG_PARTICULAR = "Particular post successfully written to file.";
-    public static final String MSG_GENERAL = "General post successfully written to file.";
+    public static final String MSG_USERS = "Users successfully read/written to file.";
+    public static final String MSG_PARTICULAR = "Particular post successfully read/written to file.";
+    public static final String MSG_GENERAL = "General post successfully read/written to file.";
 
     public void checkFile(String filename) {
 
@@ -157,7 +157,6 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         String key = post.getKey();
         String message = post.getMessage();
-        String signature = post.getSignature();
 
         if (message.length() > 255) {
             Status status = Status.INVALID_ARGUMENT;
@@ -215,7 +214,6 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         String key = post.getKey();
         String message = post.getMessage();
-        String signature = post.getSignature();
 
         if (message.length() > 255) {
             Status status = Status.INVALID_ARGUMENT;
@@ -284,6 +282,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
                 HelloWorld.ReadResponse response = builder.build();
                 responseObserver.onNext(response);
 			}else {
+                Collections.reverse(tmp);
 				HelloWorld.ReadResponse response = HelloWorld.ReadResponse.newBuilder()
 						.addAllResult(tmp).build();
 				responseObserver.onNext(response);
@@ -318,6 +317,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 			HelloWorld.ReadGeneralResponse response = builder.build();
 			responseObserver.onNext(response);
 		}else {
+            Collections.reverse(general);
 			HelloWorld.ReadGeneralResponse response = HelloWorld.ReadGeneralResponse.newBuilder()
 					.addAllResult(general).build();
 			responseObserver.onNext(response);
