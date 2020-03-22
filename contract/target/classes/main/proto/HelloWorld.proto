@@ -35,12 +35,12 @@ message RegisterResponse {
 message Announcement {
     string key = 1;
     string message = 2;
-    string signature = 3;
-    repeated Announcement a = 4;
+    repeated Announcement a = 3;
 }
 
 message PostRequest {
     Announcement post = 1;
+    bytes signature = 2;
 }
 
 message PostResponse {
@@ -49,6 +49,7 @@ message PostResponse {
 
 message PostGeneralRequest {
     Announcement post = 1;
+    bytes signature = 2;
 }
 
 message PostGeneralResponse {
@@ -62,6 +63,7 @@ message ReadRequest {
 
 message ReadResponse {
     repeated Announcement result = 1;
+    bytes signature = 2;
 }
 
 message ReadGeneralRequest {
@@ -70,6 +72,7 @@ message ReadGeneralRequest {
 
 message ReadGeneralResponse {
     repeated Announcement result = 1;
+    bytes signature = 2;
 }
 
 // Defining a Service, a Service can have multiple RPC operations

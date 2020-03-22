@@ -2527,35 +2527,25 @@ public final class HelloWorld {
         getMessageBytes();
 
     /**
-     * <code>string signature = 3;</code>
-     */
-    java.lang.String getSignature();
-    /**
-     * <code>string signature = 3;</code>
-     */
-    com.google.protobuf.ByteString
-        getSignatureBytes();
-
-    /**
-     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     * <code>repeated .com.dpas.Announcement a = 3;</code>
      */
     java.util.List<com.dpas.HelloWorld.Announcement> 
         getAList();
     /**
-     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     * <code>repeated .com.dpas.Announcement a = 3;</code>
      */
     com.dpas.HelloWorld.Announcement getA(int index);
     /**
-     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     * <code>repeated .com.dpas.Announcement a = 3;</code>
      */
     int getACount();
     /**
-     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     * <code>repeated .com.dpas.Announcement a = 3;</code>
      */
     java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
         getAOrBuilderList();
     /**
-     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     * <code>repeated .com.dpas.Announcement a = 3;</code>
      */
     com.dpas.HelloWorld.AnnouncementOrBuilder getAOrBuilder(
         int index);
@@ -2575,7 +2565,6 @@ public final class HelloWorld {
     private Announcement() {
       key_ = "";
       message_ = "";
-      signature_ = "";
       a_ = java.util.Collections.emptyList();
     }
 
@@ -2623,15 +2612,9 @@ public final class HelloWorld {
               break;
             }
             case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              signature_ = s;
-              break;
-            }
-            case 34: {
-              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
                 a_ = new java.util.ArrayList<com.dpas.HelloWorld.Announcement>();
-                mutable_bitField0_ |= 0x00000008;
+                mutable_bitField0_ |= 0x00000004;
               }
               a_.add(
                   input.readMessage(com.dpas.HelloWorld.Announcement.parser(), extensionRegistry));
@@ -2645,7 +2628,7 @@ public final class HelloWorld {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
           a_ = java.util.Collections.unmodifiableList(a_);
         }
         this.unknownFields = unknownFields.build();
@@ -2733,69 +2716,35 @@ public final class HelloWorld {
       }
     }
 
-    public static final int SIGNATURE_FIELD_NUMBER = 3;
-    private volatile java.lang.Object signature_;
-    /**
-     * <code>string signature = 3;</code>
-     */
-    public java.lang.String getSignature() {
-      java.lang.Object ref = signature_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        signature_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string signature = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getSignatureBytes() {
-      java.lang.Object ref = signature_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        signature_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int A_FIELD_NUMBER = 4;
+    public static final int A_FIELD_NUMBER = 3;
     private java.util.List<com.dpas.HelloWorld.Announcement> a_;
     /**
-     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     * <code>repeated .com.dpas.Announcement a = 3;</code>
      */
     public java.util.List<com.dpas.HelloWorld.Announcement> getAList() {
       return a_;
     }
     /**
-     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     * <code>repeated .com.dpas.Announcement a = 3;</code>
      */
     public java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
         getAOrBuilderList() {
       return a_;
     }
     /**
-     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     * <code>repeated .com.dpas.Announcement a = 3;</code>
      */
     public int getACount() {
       return a_.size();
     }
     /**
-     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     * <code>repeated .com.dpas.Announcement a = 3;</code>
      */
     public com.dpas.HelloWorld.Announcement getA(int index) {
       return a_.get(index);
     }
     /**
-     * <code>repeated .com.dpas.Announcement a = 4;</code>
+     * <code>repeated .com.dpas.Announcement a = 3;</code>
      */
     public com.dpas.HelloWorld.AnnouncementOrBuilder getAOrBuilder(
         int index) {
@@ -2820,11 +2769,8 @@ public final class HelloWorld {
       if (!getMessageBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
       }
-      if (!getSignatureBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, signature_);
-      }
       for (int i = 0; i < a_.size(); i++) {
-        output.writeMessage(4, a_.get(i));
+        output.writeMessage(3, a_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -2840,12 +2786,9 @@ public final class HelloWorld {
       if (!getMessageBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
       }
-      if (!getSignatureBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, signature_);
-      }
       for (int i = 0; i < a_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, a_.get(i));
+          .computeMessageSize(3, a_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2867,8 +2810,6 @@ public final class HelloWorld {
           .equals(other.getKey());
       result = result && getMessage()
           .equals(other.getMessage());
-      result = result && getSignature()
-          .equals(other.getSignature());
       result = result && getAList()
           .equals(other.getAList());
       result = result && unknownFields.equals(other.unknownFields);
@@ -2886,8 +2827,6 @@ public final class HelloWorld {
       hash = (53 * hash) + getKey().hashCode();
       hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getMessage().hashCode();
-      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
-      hash = (53 * hash) + getSignature().hashCode();
       if (getACount() > 0) {
         hash = (37 * hash) + A_FIELD_NUMBER;
         hash = (53 * hash) + getAList().hashCode();
@@ -3026,11 +2965,9 @@ public final class HelloWorld {
 
         message_ = "";
 
-        signature_ = "";
-
         if (aBuilder_ == null) {
           a_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000004);
         } else {
           aBuilder_.clear();
         }
@@ -3060,11 +2997,10 @@ public final class HelloWorld {
         int to_bitField0_ = 0;
         result.key_ = key_;
         result.message_ = message_;
-        result.signature_ = signature_;
         if (aBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
             a_ = java.util.Collections.unmodifiableList(a_);
-            bitField0_ = (bitField0_ & ~0x00000008);
+            bitField0_ = (bitField0_ & ~0x00000004);
           }
           result.a_ = a_;
         } else {
@@ -3120,15 +3056,11 @@ public final class HelloWorld {
           message_ = other.message_;
           onChanged();
         }
-        if (!other.getSignature().isEmpty()) {
-          signature_ = other.signature_;
-          onChanged();
-        }
         if (aBuilder_ == null) {
           if (!other.a_.isEmpty()) {
             if (a_.isEmpty()) {
               a_ = other.a_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000004);
             } else {
               ensureAIsMutable();
               a_.addAll(other.a_);
@@ -3141,7 +3073,7 @@ public final class HelloWorld {
               aBuilder_.dispose();
               aBuilder_ = null;
               a_ = other.a_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000004);
               aBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getAFieldBuilder() : null;
@@ -3316,81 +3248,12 @@ public final class HelloWorld {
         return this;
       }
 
-      private java.lang.Object signature_ = "";
-      /**
-       * <code>string signature = 3;</code>
-       */
-      public java.lang.String getSignature() {
-        java.lang.Object ref = signature_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          signature_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string signature = 3;</code>
-       */
-      public com.google.protobuf.ByteString
-          getSignatureBytes() {
-        java.lang.Object ref = signature_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          signature_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string signature = 3;</code>
-       */
-      public Builder setSignature(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        signature_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string signature = 3;</code>
-       */
-      public Builder clearSignature() {
-        
-        signature_ = getDefaultInstance().getSignature();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string signature = 3;</code>
-       */
-      public Builder setSignatureBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        signature_ = value;
-        onChanged();
-        return this;
-      }
-
       private java.util.List<com.dpas.HelloWorld.Announcement> a_ =
         java.util.Collections.emptyList();
       private void ensureAIsMutable() {
-        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
           a_ = new java.util.ArrayList<com.dpas.HelloWorld.Announcement>(a_);
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000004;
          }
       }
 
@@ -3398,7 +3261,7 @@ public final class HelloWorld {
           com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder> aBuilder_;
 
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public java.util.List<com.dpas.HelloWorld.Announcement> getAList() {
         if (aBuilder_ == null) {
@@ -3408,7 +3271,7 @@ public final class HelloWorld {
         }
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public int getACount() {
         if (aBuilder_ == null) {
@@ -3418,7 +3281,7 @@ public final class HelloWorld {
         }
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public com.dpas.HelloWorld.Announcement getA(int index) {
         if (aBuilder_ == null) {
@@ -3428,7 +3291,7 @@ public final class HelloWorld {
         }
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public Builder setA(
           int index, com.dpas.HelloWorld.Announcement value) {
@@ -3445,7 +3308,7 @@ public final class HelloWorld {
         return this;
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public Builder setA(
           int index, com.dpas.HelloWorld.Announcement.Builder builderForValue) {
@@ -3459,7 +3322,7 @@ public final class HelloWorld {
         return this;
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public Builder addA(com.dpas.HelloWorld.Announcement value) {
         if (aBuilder_ == null) {
@@ -3475,7 +3338,7 @@ public final class HelloWorld {
         return this;
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public Builder addA(
           int index, com.dpas.HelloWorld.Announcement value) {
@@ -3492,7 +3355,7 @@ public final class HelloWorld {
         return this;
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public Builder addA(
           com.dpas.HelloWorld.Announcement.Builder builderForValue) {
@@ -3506,7 +3369,7 @@ public final class HelloWorld {
         return this;
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public Builder addA(
           int index, com.dpas.HelloWorld.Announcement.Builder builderForValue) {
@@ -3520,7 +3383,7 @@ public final class HelloWorld {
         return this;
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public Builder addAllA(
           java.lang.Iterable<? extends com.dpas.HelloWorld.Announcement> values) {
@@ -3535,12 +3398,12 @@ public final class HelloWorld {
         return this;
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public Builder clearA() {
         if (aBuilder_ == null) {
           a_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000004);
           onChanged();
         } else {
           aBuilder_.clear();
@@ -3548,7 +3411,7 @@ public final class HelloWorld {
         return this;
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public Builder removeA(int index) {
         if (aBuilder_ == null) {
@@ -3561,14 +3424,14 @@ public final class HelloWorld {
         return this;
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public com.dpas.HelloWorld.Announcement.Builder getABuilder(
           int index) {
         return getAFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public com.dpas.HelloWorld.AnnouncementOrBuilder getAOrBuilder(
           int index) {
@@ -3578,7 +3441,7 @@ public final class HelloWorld {
         }
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public java.util.List<? extends com.dpas.HelloWorld.AnnouncementOrBuilder> 
            getAOrBuilderList() {
@@ -3589,14 +3452,14 @@ public final class HelloWorld {
         }
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public com.dpas.HelloWorld.Announcement.Builder addABuilder() {
         return getAFieldBuilder().addBuilder(
             com.dpas.HelloWorld.Announcement.getDefaultInstance());
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public com.dpas.HelloWorld.Announcement.Builder addABuilder(
           int index) {
@@ -3604,7 +3467,7 @@ public final class HelloWorld {
             index, com.dpas.HelloWorld.Announcement.getDefaultInstance());
       }
       /**
-       * <code>repeated .com.dpas.Announcement a = 4;</code>
+       * <code>repeated .com.dpas.Announcement a = 3;</code>
        */
       public java.util.List<com.dpas.HelloWorld.Announcement.Builder> 
            getABuilderList() {
@@ -3617,7 +3480,7 @@ public final class HelloWorld {
           aBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               com.dpas.HelloWorld.Announcement, com.dpas.HelloWorld.Announcement.Builder, com.dpas.HelloWorld.AnnouncementOrBuilder>(
                   a_,
-                  ((bitField0_ & 0x00000008) == 0x00000008),
+                  ((bitField0_ & 0x00000004) == 0x00000004),
                   getParentForChildren(),
                   isClean());
           a_ = null;
@@ -3689,6 +3552,11 @@ public final class HelloWorld {
      * <code>.com.dpas.Announcement post = 1;</code>
      */
     com.dpas.HelloWorld.AnnouncementOrBuilder getPostOrBuilder();
+
+    /**
+     * <code>bytes signature = 2;</code>
+     */
+    com.google.protobuf.ByteString getSignature();
   }
   /**
    * Protobuf type {@code com.dpas.PostRequest}
@@ -3703,6 +3571,7 @@ public final class HelloWorld {
       super(builder);
     }
     private PostRequest() {
+      signature_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -3747,6 +3616,11 @@ public final class HelloWorld {
                 post_ = subBuilder.buildPartial();
               }
 
+              break;
+            }
+            case 18: {
+
+              signature_ = input.readBytes();
               break;
             }
           }
@@ -3794,6 +3668,15 @@ public final class HelloWorld {
       return getPost();
     }
 
+    public static final int SIGNATURE_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString signature_;
+    /**
+     * <code>bytes signature = 2;</code>
+     */
+    public com.google.protobuf.ByteString getSignature() {
+      return signature_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -3809,6 +3692,9 @@ public final class HelloWorld {
       if (post_ != null) {
         output.writeMessage(1, getPost());
       }
+      if (!signature_.isEmpty()) {
+        output.writeBytes(2, signature_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -3820,6 +3706,10 @@ public final class HelloWorld {
       if (post_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getPost());
+      }
+      if (!signature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, signature_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3842,6 +3732,8 @@ public final class HelloWorld {
         result = result && getPost()
             .equals(other.getPost());
       }
+      result = result && getSignature()
+          .equals(other.getSignature());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -3857,6 +3749,8 @@ public final class HelloWorld {
         hash = (37 * hash) + POST_FIELD_NUMBER;
         hash = (53 * hash) + getPost().hashCode();
       }
+      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getSignature().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3992,6 +3886,8 @@ public final class HelloWorld {
           post_ = null;
           postBuilder_ = null;
         }
+        signature_ = com.google.protobuf.ByteString.EMPTY;
+
         return this;
       }
 
@@ -4019,6 +3915,7 @@ public final class HelloWorld {
         } else {
           result.post_ = postBuilder_.build();
         }
+        result.signature_ = signature_;
         onBuilt();
         return result;
       }
@@ -4062,6 +3959,9 @@ public final class HelloWorld {
         if (other == com.dpas.HelloWorld.PostRequest.getDefaultInstance()) return this;
         if (other.hasPost()) {
           mergePost(other.getPost());
+        }
+        if (other.getSignature() != com.google.protobuf.ByteString.EMPTY) {
+          setSignature(other.getSignature());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -4205,6 +4105,35 @@ public final class HelloWorld {
           post_ = null;
         }
         return postBuilder_;
+      }
+
+      private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public com.google.protobuf.ByteString getSignature() {
+        return signature_;
+      }
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public Builder setSignature(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        signature_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public Builder clearSignature() {
+        
+        signature_ = getDefaultInstance().getSignature();
+        onChanged();
+        return this;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -4723,6 +4652,11 @@ public final class HelloWorld {
      * <code>.com.dpas.Announcement post = 1;</code>
      */
     com.dpas.HelloWorld.AnnouncementOrBuilder getPostOrBuilder();
+
+    /**
+     * <code>bytes signature = 2;</code>
+     */
+    com.google.protobuf.ByteString getSignature();
   }
   /**
    * Protobuf type {@code com.dpas.PostGeneralRequest}
@@ -4737,6 +4671,7 @@ public final class HelloWorld {
       super(builder);
     }
     private PostGeneralRequest() {
+      signature_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -4781,6 +4716,11 @@ public final class HelloWorld {
                 post_ = subBuilder.buildPartial();
               }
 
+              break;
+            }
+            case 18: {
+
+              signature_ = input.readBytes();
               break;
             }
           }
@@ -4828,6 +4768,15 @@ public final class HelloWorld {
       return getPost();
     }
 
+    public static final int SIGNATURE_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString signature_;
+    /**
+     * <code>bytes signature = 2;</code>
+     */
+    public com.google.protobuf.ByteString getSignature() {
+      return signature_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -4843,6 +4792,9 @@ public final class HelloWorld {
       if (post_ != null) {
         output.writeMessage(1, getPost());
       }
+      if (!signature_.isEmpty()) {
+        output.writeBytes(2, signature_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -4854,6 +4806,10 @@ public final class HelloWorld {
       if (post_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getPost());
+      }
+      if (!signature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, signature_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4876,6 +4832,8 @@ public final class HelloWorld {
         result = result && getPost()
             .equals(other.getPost());
       }
+      result = result && getSignature()
+          .equals(other.getSignature());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -4891,6 +4849,8 @@ public final class HelloWorld {
         hash = (37 * hash) + POST_FIELD_NUMBER;
         hash = (53 * hash) + getPost().hashCode();
       }
+      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getSignature().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -5026,6 +4986,8 @@ public final class HelloWorld {
           post_ = null;
           postBuilder_ = null;
         }
+        signature_ = com.google.protobuf.ByteString.EMPTY;
+
         return this;
       }
 
@@ -5053,6 +5015,7 @@ public final class HelloWorld {
         } else {
           result.post_ = postBuilder_.build();
         }
+        result.signature_ = signature_;
         onBuilt();
         return result;
       }
@@ -5096,6 +5059,9 @@ public final class HelloWorld {
         if (other == com.dpas.HelloWorld.PostGeneralRequest.getDefaultInstance()) return this;
         if (other.hasPost()) {
           mergePost(other.getPost());
+        }
+        if (other.getSignature() != com.google.protobuf.ByteString.EMPTY) {
+          setSignature(other.getSignature());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -5239,6 +5205,35 @@ public final class HelloWorld {
           post_ = null;
         }
         return postBuilder_;
+      }
+
+      private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public com.google.protobuf.ByteString getSignature() {
+        return signature_;
+      }
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public Builder setSignature(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        signature_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public Builder clearSignature() {
+        
+        signature_ = getDefaultInstance().getSignature();
+        onChanged();
+        return this;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -6356,6 +6351,11 @@ public final class HelloWorld {
      */
     com.dpas.HelloWorld.AnnouncementOrBuilder getResultOrBuilder(
         int index);
+
+    /**
+     * <code>bytes signature = 2;</code>
+     */
+    com.google.protobuf.ByteString getSignature();
   }
   /**
    * Protobuf type {@code com.dpas.ReadResponse}
@@ -6371,6 +6371,7 @@ public final class HelloWorld {
     }
     private ReadResponse() {
       result_ = java.util.Collections.emptyList();
+      signature_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -6413,6 +6414,11 @@ public final class HelloWorld {
                   input.readMessage(com.dpas.HelloWorld.Announcement.parser(), extensionRegistry));
               break;
             }
+            case 18: {
+
+              signature_ = input.readBytes();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -6440,6 +6446,7 @@ public final class HelloWorld {
               com.dpas.HelloWorld.ReadResponse.class, com.dpas.HelloWorld.ReadResponse.Builder.class);
     }
 
+    private int bitField0_;
     public static final int RESULT_FIELD_NUMBER = 1;
     private java.util.List<com.dpas.HelloWorld.Announcement> result_;
     /**
@@ -6475,6 +6482,15 @@ public final class HelloWorld {
       return result_.get(index);
     }
 
+    public static final int SIGNATURE_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString signature_;
+    /**
+     * <code>bytes signature = 2;</code>
+     */
+    public com.google.protobuf.ByteString getSignature() {
+      return signature_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -6490,6 +6506,9 @@ public final class HelloWorld {
       for (int i = 0; i < result_.size(); i++) {
         output.writeMessage(1, result_.get(i));
       }
+      if (!signature_.isEmpty()) {
+        output.writeBytes(2, signature_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -6501,6 +6520,10 @@ public final class HelloWorld {
       for (int i = 0; i < result_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, result_.get(i));
+      }
+      if (!signature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, signature_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -6520,6 +6543,8 @@ public final class HelloWorld {
       boolean result = true;
       result = result && getResultList()
           .equals(other.getResultList());
+      result = result && getSignature()
+          .equals(other.getSignature());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -6535,6 +6560,8 @@ public final class HelloWorld {
         hash = (37 * hash) + RESULT_FIELD_NUMBER;
         hash = (53 * hash) + getResultList().hashCode();
       }
+      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getSignature().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -6671,6 +6698,8 @@ public final class HelloWorld {
         } else {
           resultBuilder_.clear();
         }
+        signature_ = com.google.protobuf.ByteString.EMPTY;
+
         return this;
       }
 
@@ -6694,6 +6723,7 @@ public final class HelloWorld {
       public com.dpas.HelloWorld.ReadResponse buildPartial() {
         com.dpas.HelloWorld.ReadResponse result = new com.dpas.HelloWorld.ReadResponse(this);
         int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         if (resultBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
             result_ = java.util.Collections.unmodifiableList(result_);
@@ -6703,6 +6733,8 @@ public final class HelloWorld {
         } else {
           result.result_ = resultBuilder_.build();
         }
+        result.signature_ = signature_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -6769,6 +6801,9 @@ public final class HelloWorld {
               resultBuilder_.addAllMessages(other.result_);
             }
           }
+        }
+        if (other.getSignature() != com.google.protobuf.ByteString.EMPTY) {
+          setSignature(other.getSignature());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -7036,6 +7071,35 @@ public final class HelloWorld {
           result_ = null;
         }
         return resultBuilder_;
+      }
+
+      private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public com.google.protobuf.ByteString getSignature() {
+        return signature_;
+      }
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public Builder setSignature(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        signature_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public Builder clearSignature() {
+        
+        signature_ = getDefaultInstance().getSignature();
+        onChanged();
+        return this;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -7564,6 +7628,11 @@ public final class HelloWorld {
      */
     com.dpas.HelloWorld.AnnouncementOrBuilder getResultOrBuilder(
         int index);
+
+    /**
+     * <code>bytes signature = 2;</code>
+     */
+    com.google.protobuf.ByteString getSignature();
   }
   /**
    * Protobuf type {@code com.dpas.ReadGeneralResponse}
@@ -7579,6 +7648,7 @@ public final class HelloWorld {
     }
     private ReadGeneralResponse() {
       result_ = java.util.Collections.emptyList();
+      signature_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -7621,6 +7691,11 @@ public final class HelloWorld {
                   input.readMessage(com.dpas.HelloWorld.Announcement.parser(), extensionRegistry));
               break;
             }
+            case 18: {
+
+              signature_ = input.readBytes();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -7648,6 +7723,7 @@ public final class HelloWorld {
               com.dpas.HelloWorld.ReadGeneralResponse.class, com.dpas.HelloWorld.ReadGeneralResponse.Builder.class);
     }
 
+    private int bitField0_;
     public static final int RESULT_FIELD_NUMBER = 1;
     private java.util.List<com.dpas.HelloWorld.Announcement> result_;
     /**
@@ -7683,6 +7759,15 @@ public final class HelloWorld {
       return result_.get(index);
     }
 
+    public static final int SIGNATURE_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString signature_;
+    /**
+     * <code>bytes signature = 2;</code>
+     */
+    public com.google.protobuf.ByteString getSignature() {
+      return signature_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -7698,6 +7783,9 @@ public final class HelloWorld {
       for (int i = 0; i < result_.size(); i++) {
         output.writeMessage(1, result_.get(i));
       }
+      if (!signature_.isEmpty()) {
+        output.writeBytes(2, signature_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -7709,6 +7797,10 @@ public final class HelloWorld {
       for (int i = 0; i < result_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, result_.get(i));
+      }
+      if (!signature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, signature_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -7728,6 +7820,8 @@ public final class HelloWorld {
       boolean result = true;
       result = result && getResultList()
           .equals(other.getResultList());
+      result = result && getSignature()
+          .equals(other.getSignature());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -7743,6 +7837,8 @@ public final class HelloWorld {
         hash = (37 * hash) + RESULT_FIELD_NUMBER;
         hash = (53 * hash) + getResultList().hashCode();
       }
+      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getSignature().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -7879,6 +7975,8 @@ public final class HelloWorld {
         } else {
           resultBuilder_.clear();
         }
+        signature_ = com.google.protobuf.ByteString.EMPTY;
+
         return this;
       }
 
@@ -7902,6 +8000,7 @@ public final class HelloWorld {
       public com.dpas.HelloWorld.ReadGeneralResponse buildPartial() {
         com.dpas.HelloWorld.ReadGeneralResponse result = new com.dpas.HelloWorld.ReadGeneralResponse(this);
         int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         if (resultBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
             result_ = java.util.Collections.unmodifiableList(result_);
@@ -7911,6 +8010,8 @@ public final class HelloWorld {
         } else {
           result.result_ = resultBuilder_.build();
         }
+        result.signature_ = signature_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -7977,6 +8078,9 @@ public final class HelloWorld {
               resultBuilder_.addAllMessages(other.result_);
             }
           }
+        }
+        if (other.getSignature() != com.google.protobuf.ByteString.EMPTY) {
+          setSignature(other.getSignature());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -8245,6 +8349,35 @@ public final class HelloWorld {
         }
         return resultBuilder_;
       }
+
+      private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public com.google.protobuf.ByteString getSignature() {
+        return signature_;
+      }
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public Builder setSignature(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        signature_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes signature = 2;</code>
+       */
+      public Builder clearSignature() {
+        
+        signature_ = getDefaultInstance().getSignature();
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFieldsProto3(unknownFields);
@@ -8372,30 +8505,31 @@ public final class HelloWorld {
       "uest\022\014\n\004name\030\001 \001(\t\022\017\n\007hobbies\030\002 \003(\t\"!\n\rH" +
       "elloResponse\022\020\n\010greeting\030\001 \001(\t\"0\n\017Regist" +
       "erRequest\022\013\n\003key\030\001 \001(\t\022\020\n\010username\030\002 \001(\t" +
-      "\"\"\n\020RegisterResponse\022\016\n\006result\030\001 \001(\010\"b\n\014" +
+      "\"\"\n\020RegisterResponse\022\016\n\006result\030\001 \001(\010\"O\n\014" +
       "Announcement\022\013\n\003key\030\001 \001(\t\022\017\n\007message\030\002 \001" +
-      "(\t\022\021\n\tsignature\030\003 \001(\t\022!\n\001a\030\004 \003(\0132\026.com.d" +
-      "pas.Announcement\"3\n\013PostRequest\022$\n\004post\030" +
-      "\001 \001(\0132\026.com.dpas.Announcement\"\036\n\014PostRes" +
-      "ponse\022\016\n\006result\030\001 \001(\010\":\n\022PostGeneralRequ" +
+      "(\t\022!\n\001a\030\003 \003(\0132\026.com.dpas.Announcement\"F\n" +
+      "\013PostRequest\022$\n\004post\030\001 \001(\0132\026.com.dpas.An" +
+      "nouncement\022\021\n\tsignature\030\002 \001(\014\"\036\n\014PostRes" +
+      "ponse\022\016\n\006result\030\001 \001(\010\"M\n\022PostGeneralRequ" +
       "est\022$\n\004post\030\001 \001(\0132\026.com.dpas.Announcemen" +
-      "t\"%\n\023PostGeneralResponse\022\016\n\006result\030\001 \001(\010" +
-      "\"*\n\013ReadRequest\022\013\n\003key\030\001 \001(\t\022\016\n\006number\030\002" +
-      " \001(\005\"6\n\014ReadResponse\022&\n\006result\030\001 \003(\0132\026.c" +
-      "om.dpas.Announcement\"$\n\022ReadGeneralReque" +
-      "st\022\016\n\006number\030\001 \001(\005\"=\n\023ReadGeneralRespons" +
-      "e\022&\n\006result\030\001 \003(\0132\026.com.dpas.Announcemen" +
-      "t2\231\003\n\021HelloWorldService\022;\n\010greeting\022\026.co" +
-      "m.dpas.HelloRequest\032\027.com.dpas.HelloResp" +
-      "onse\022A\n\010register\022\031.com.dpas.RegisterRequ" +
-      "est\032\032.com.dpas.RegisterResponse\0225\n\004post\022" +
-      "\025.com.dpas.PostRequest\032\026.com.dpas.PostRe" +
-      "sponse\022J\n\013postGeneral\022\034.com.dpas.PostGen" +
-      "eralRequest\032\035.com.dpas.PostGeneralRespon" +
-      "se\0225\n\004read\022\025.com.dpas.ReadRequest\032\026.com." +
-      "dpas.ReadResponse\022J\n\013readGeneral\022\034.com.d" +
-      "pas.ReadGeneralRequest\032\035.com.dpas.ReadGe" +
-      "neralResponseb\006proto3"
+      "t\022\021\n\tsignature\030\002 \001(\014\"%\n\023PostGeneralRespo" +
+      "nse\022\016\n\006result\030\001 \001(\010\"*\n\013ReadRequest\022\013\n\003ke" +
+      "y\030\001 \001(\t\022\016\n\006number\030\002 \001(\005\"I\n\014ReadResponse\022" +
+      "&\n\006result\030\001 \003(\0132\026.com.dpas.Announcement\022" +
+      "\021\n\tsignature\030\002 \001(\014\"$\n\022ReadGeneralRequest" +
+      "\022\016\n\006number\030\001 \001(\005\"P\n\023ReadGeneralResponse\022" +
+      "&\n\006result\030\001 \003(\0132\026.com.dpas.Announcement\022" +
+      "\021\n\tsignature\030\002 \001(\0142\231\003\n\021HelloWorldService" +
+      "\022;\n\010greeting\022\026.com.dpas.HelloRequest\032\027.c" +
+      "om.dpas.HelloResponse\022A\n\010register\022\031.com." +
+      "dpas.RegisterRequest\032\032.com.dpas.Register" +
+      "Response\0225\n\004post\022\025.com.dpas.PostRequest\032" +
+      "\026.com.dpas.PostResponse\022J\n\013postGeneral\022\034" +
+      ".com.dpas.PostGeneralRequest\032\035.com.dpas." +
+      "PostGeneralResponse\0225\n\004read\022\025.com.dpas.R" +
+      "eadRequest\032\026.com.dpas.ReadResponse\022J\n\013re" +
+      "adGeneral\022\034.com.dpas.ReadGeneralRequest\032" +
+      "\035.com.dpas.ReadGeneralResponseb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -8438,13 +8572,13 @@ public final class HelloWorld {
     internal_static_com_dpas_Announcement_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_dpas_Announcement_descriptor,
-        new java.lang.String[] { "Key", "Message", "Signature", "A", });
+        new java.lang.String[] { "Key", "Message", "A", });
     internal_static_com_dpas_PostRequest_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_com_dpas_PostRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_dpas_PostRequest_descriptor,
-        new java.lang.String[] { "Post", });
+        new java.lang.String[] { "Post", "Signature", });
     internal_static_com_dpas_PostResponse_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_com_dpas_PostResponse_fieldAccessorTable = new
@@ -8456,7 +8590,7 @@ public final class HelloWorld {
     internal_static_com_dpas_PostGeneralRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_dpas_PostGeneralRequest_descriptor,
-        new java.lang.String[] { "Post", });
+        new java.lang.String[] { "Post", "Signature", });
     internal_static_com_dpas_PostGeneralResponse_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_com_dpas_PostGeneralResponse_fieldAccessorTable = new
@@ -8474,7 +8608,7 @@ public final class HelloWorld {
     internal_static_com_dpas_ReadResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_dpas_ReadResponse_descriptor,
-        new java.lang.String[] { "Result", });
+        new java.lang.String[] { "Result", "Signature", });
     internal_static_com_dpas_ReadGeneralRequest_descriptor =
       getDescriptor().getMessageTypes().get(11);
     internal_static_com_dpas_ReadGeneralRequest_fieldAccessorTable = new
@@ -8486,7 +8620,7 @@ public final class HelloWorld {
     internal_static_com_dpas_ReadGeneralResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_dpas_ReadGeneralResponse_descriptor,
-        new java.lang.String[] { "Result", });
+        new java.lang.String[] { "Result", "Signature", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
