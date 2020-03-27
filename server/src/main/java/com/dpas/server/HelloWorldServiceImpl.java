@@ -9,12 +9,11 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServiceImplBase {
@@ -66,11 +65,12 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     public void writeToFile(Object users, String type, String msg) {
 
         try {
-            FileOutputStream fos = new FileOutputStream(type);
+            FileOutputStream fos = new FileOutputStream(type+"Backup");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(users);
             System.out.println(msg);
             oos.close();
+            Files.move(Paths.get(type+"Backup"), Paths.get(type), StandardCopyOption.ATOMIC_MOVE);
 
         } catch (IOException e) {
             e.printStackTrace();
