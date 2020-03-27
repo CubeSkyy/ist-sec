@@ -56,26 +56,39 @@ public class HelloClient {
 		// Here we create a blocking stub, but an async stub,
 		// or an async stub with Future are always possible.
 		HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub = HelloWorldServiceGrpc.newBlockingStub(channel);
-		HelloWorld.Announcement referral = HelloWorld.Announcement.newBuilder().setKey("referred1").setMessage("referred1").build();
-		HelloWorld.Announcement referral2 = HelloWorld.Announcement.newBuilder().setKey("referred2").setMessage("referred2").build();
+		//HelloWorld.Announcement referral = HelloWorld.Announcement.newBuilder().setKey("referred1").setMessage("referred1").build();
+		//HelloWorld.Announcement referral2 = HelloWorld.Announcement.newBuilder().setKey("referred2").setMessage("referred2").build();  + .addA(referral).addA(referral2)
 
 
 		HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey("publickey1").build();
 		HelloWorld.RegisterResponse responseRegister = stub.register(requestRegister);
 		System.out.println("REGISTER: " + responseRegister);
 
-		HelloWorld.GetTokenRequest requestGetToken = HelloWorld.GetTokenRequest.newBuilder().setKey("publickey1").build();
+		requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey("publickey2").build();
+		responseRegister = stub.register(requestRegister);
+		System.out.println("REGISTER: " + responseRegister);
+
+		HelloWorld.GetTokenRequest requestGetToken = HelloWorld.GetTokenRequest.newBuilder().setKey("publickey2").build();
 		HelloWorld.GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
 		System.out.println("GET TOKEN: " + responseGetToken);
 
-		HelloWorld.Announcement post = HelloWorld.Announcement.newBuilder().setKey("publickey1").setMessage("message1").setToken(responseGetToken.getToken()).addA(referral).addA(referral2).build();
-		HelloWorld.PostRequest requestPost = HelloWorld.PostRequest.newBuilder().setPost(post).build();
-		HelloWorld.PostResponse responsePost = stub.post(requestPost);
-		System.out.println("POST: " + responsePost);
+		HelloWorld.Announcement post = HelloWorld.Announcement.newBuilder().setKey("publickey2").setMessage("message1").setToken(responseGetToken.getToken()).build();
+		HelloWorld.PostGeneralRequest requestGeneralPost = HelloWorld.PostGeneralRequest.newBuilder().setPost(post).build();
+		HelloWorld.PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
+		System.out.println("POST: " + responseGeneralPost);
 
-		HelloWorld.ReadRequest requestRead = HelloWorld.ReadRequest.newBuilder().setNumber(0).setKey("publickey1").build();
-		HelloWorld.ReadResponse responseRead = stub.read(requestRead);
-		System.out.println("READ: " + responseRead);
+		requestGetToken = HelloWorld.GetTokenRequest.newBuilder().setKey("publickey1").build();
+		responseGetToken = stub.getToken(requestGetToken);
+		System.out.println("GET TOKEN: " + responseGetToken);
+
+		post = HelloWorld.Announcement.newBuilder().setKey("publickey1").setMessage("message1").setToken(responseGetToken.getToken()).build();
+		requestGeneralPost = HelloWorld.PostGeneralRequest.newBuilder().setPost(post).build();
+		responseGeneralPost = stub.postGeneral(requestGeneralPost);
+		System.out.println("POST: " + responseGeneralPost);
+
+		HelloWorld.ReadGeneralRequest requestGeneralRead = HelloWorld.ReadGeneralRequest.newBuilder().setNumber(0).build();
+		HelloWorld.ReadGeneralResponse responseGeneralRead = stub.readGeneral(requestGeneralRead);
+		System.out.println("READ: " + responseGeneralRead);
 
 		// A Channel should be shutdown before stopping the process.
 		channel.shutdownNow();

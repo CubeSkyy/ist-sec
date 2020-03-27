@@ -26,6 +26,9 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     public static final String MSG_PARTICULAR = "Particular post successfully read/written to file.";
     public static final String MSG_GENERAL = "General post successfully read/written to file.";
 
+    // TODO persist post ID
+    public static int postId = 1;
+
     public void checkFile(String filename) {
 
         File f = new File(filename);
@@ -205,14 +208,26 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         }
 
+        checkFile(USERS_FILE);
 
-		/*
-		TODO check if key is registered to a user
-		TODO check if signature corresponds to message+announcement+token
-		TODO remove  token from file
-		 */
+        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
+        System.out.println("Class of retrieved info: " + users.getClass().getName());
+
+        if (!users.containsKey(key)) {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("User is not registered");
+            responseObserver.onError(status.asRuntimeException());
+        }
+
+        // TODO check if signature corresponds to message+announcement+token
+        // TODO remove  token from file
 
         checkFile(PARTICULAR_FILE);
+
+        HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
+        postBuilder.setClientId(postId);
+        postId++;
+        post = postBuilder.build();
 
         HashMap<String, ArrayList<HelloWorld.Announcement>> particular = (HashMap<String, ArrayList<HelloWorld.Announcement>>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
         System.out.println("Class of retrieved info: " + particular.getClass().getName());
@@ -262,13 +277,27 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             status = status.withDescription("Invalid message length. Message needs to be smaller than 255 characters.");
             responseObserver.onError(status.asRuntimeException());
         }
-		/*
-		TODO check if key is registered to a user
-		TODO check if signature corresponds to message+announcement+token
-		TODO remove  token from file
-		 */
+
+        checkFile(USERS_FILE);
+
+        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
+        System.out.println("Class of retrieved info: " + users.getClass().getName());
+
+        if (!users.containsKey(key)) {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("User is not registered");
+            responseObserver.onError(status.asRuntimeException());
+        }
+
+        // TODO check if signature corresponds to message+announcement+token
+        // TODO remove  token from file
 
         checkFile(GENERAL_FILE);
+
+        HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
+        postBuilder.setClientId(postId);
+        postId++;
+        post = postBuilder.build();
 
         ArrayList<HelloWorld.Announcement> general = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
         System.out.println("Class of retrieved info: " + general.getClass().getName());
@@ -368,5 +397,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         responseObserver.onCompleted();
     }
+
+    // TODO implement read with post ID
 
 }
