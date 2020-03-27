@@ -15,6 +15,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Timer;
 
 public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServiceImplBase {
 
@@ -182,6 +185,27 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         HelloWorld.GetTokenResponse response = HelloWorld.GetTokenResponse.newBuilder()
                 .setToken(token).build();
 
+        Timer timer = new Timer(30000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                checkFile(USERS_FILE);
+
+                HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
+                System.out.println("Class of retrieved info: " + users.getClass().getName());
+
+                if (users.get(key).equals(token)) {
+
+                    users.replace(key, null);
+                    writeToFile(users, USERS_FILE, MSG_USERS);
+
+                    System.out.println("User token expired: " + users);
+                }
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+
+
         // Use responseObserver to send a single response back
         responseObserver.onNext(response);
 
@@ -220,12 +244,13 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         }
 
         // TODO check if signature corresponds to message+announcement+token
-        // TODO remove  token from file
+        // TODO remove token from file
 
         checkFile(PARTICULAR_FILE);
 
         HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
-        postBuilder.setClientId(postId);
+        postBuilder.setPostId(postId);
+        postBuilder.setToken("");
         postId++;
         post = postBuilder.build();
 
@@ -245,7 +270,6 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         writeToFile(particular, PARTICULAR_FILE, MSG_PARTICULAR);
 
         System.out.println("Particular posts: " + particular);
-
 
         // You must use a builder to construct a new Protobuffer object
         HelloWorld.PostResponse response = HelloWorld.PostResponse.newBuilder()
@@ -295,7 +319,8 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         checkFile(GENERAL_FILE);
 
         HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
-        postBuilder.setClientId(postId);
+        postBuilder.setPostId(postId);
+        postBuilder.setToken("");
         postId++;
         post = postBuilder.build();
 
@@ -338,11 +363,14 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         HashMap<String, ArrayList<HelloWorld.Announcement>> particular = (HashMap<String, ArrayList<HelloWorld.Announcement>>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
 
+        // TODO resolve post ID into a real post and add it to the response
+
         if (!particular.containsKey(key)) {
             Status status = Status.INVALID_ARGUMENT;
             status = status.withDescription("Invalid key. There is no user with the specified key.");
             responseObserver.onError(status.asRuntimeException());
         } else {
+
             ArrayList<HelloWorld.Announcement> tmp = particular.get(key);
             HelloWorld.ReadResponse.Builder builder = HelloWorld.ReadResponse.newBuilder();
 			if (number > 0){
@@ -379,6 +407,8 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         ArrayList<HelloWorld.Announcement> general = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
         HelloWorld.ReadGeneralResponse.Builder builder = HelloWorld.ReadGeneralResponse.newBuilder();
+
+        // TODO resolve post ID into a real post and add it to the response
 
         if (number > 0){
             ListIterator<HelloWorld.Announcement> listIter = general.listIterator(general.size());
