@@ -19,18 +19,17 @@ public class RegisterTest extends RollbackTestAbstractClass{
     @Test
     public void register_once() throws Exception {
         RegisterResponse reply =
-                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).setUsername(DataStore.TEST_USERNAME).build());
+                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).build());
 
         assertTrue(reply.getResult());
-
     }
 
     @Test
     public void register_twice_equal() throws Exception {
         RegisterResponse reply =
-                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).setUsername(DataStore.TEST_USERNAME).build());
+                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).build());
         RegisterResponse reply2 =
-                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).setUsername(DataStore.TEST_USERNAME).build());
+                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).build());
 
 
         assertTrue(reply.getResult());
@@ -41,9 +40,9 @@ public class RegisterTest extends RollbackTestAbstractClass{
     @Test
     public void register_twice_dif() throws Exception {
         RegisterResponse reply =
-                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).setUsername(DataStore.TEST_USERNAME).build());
+                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).build());
         RegisterResponse reply2 =
-                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY2).setUsername(DataStore.TEST_USERNAME2).build());
+                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY2).build());
 
 
         assertTrue(reply.getResult());
@@ -54,25 +53,7 @@ public class RegisterTest extends RollbackTestAbstractClass{
     @Test
     public void register_empty_key() throws Exception {
         RegisterResponse reply =
-                blockingStub.register(RegisterRequest.newBuilder().setKey("").setUsername(DataStore.TEST_USERNAME).build());
-
-        assertFalse(reply.getResult());
-
-    }
-
-    @Test
-    public void register_empty_username() throws Exception {
-        RegisterResponse reply =
-                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).setUsername("").build());
-
-        assertFalse(reply.getResult());
-
-    }
-
-    @Test
-    public void register_null_username() throws Exception {
-        RegisterResponse reply =
-                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).setUsername(null).build());
+                blockingStub.register(RegisterRequest.newBuilder().setKey("").build());
 
         assertFalse(reply.getResult());
 
@@ -81,7 +62,7 @@ public class RegisterTest extends RollbackTestAbstractClass{
     @Test
     public void register_null_key() throws Exception {
         RegisterResponse reply =
-                blockingStub.register(RegisterRequest.newBuilder().setKey(null).setUsername(DataStore.TEST_USERNAME).build());
+                blockingStub.register(RegisterRequest.newBuilder().setKey(null).build());
 
         assertFalse(reply.getResult());
 

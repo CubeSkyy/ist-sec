@@ -26,7 +26,7 @@ public class ReadTest extends RollbackTestAbstractClass {
     @Test
     public void readGeneralNoRef() throws Exception {
         RegisterResponse registerReply =
-                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).setUsername(DataStore.TEST_USERNAME).build());
+                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).build());
 
 
         HelloWorld.Announcement generalPost = HelloWorld.Announcement.newBuilder().setKey(DataStore.TEST_KEY).setMessage(DataStore.TEST_MESSAGE).build();
@@ -47,7 +47,7 @@ public class ReadTest extends RollbackTestAbstractClass {
     @Test
     public void readGeneralWrongRef() throws Exception {
         RegisterResponse registerReply =
-                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).setUsername(DataStore.TEST_USERNAME).build());
+                blockingStub.register(RegisterRequest.newBuilder().setKey(DataStore.TEST_KEY).build());
 
         HelloWorld.Announcement refPost = HelloWorld.Announcement.newBuilder().setKey(DataStore.TEST_KEY2).setMessage(DataStore.TEST_MESSAGE).build();
 
