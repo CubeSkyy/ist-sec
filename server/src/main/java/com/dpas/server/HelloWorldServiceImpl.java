@@ -7,6 +7,7 @@ import com.dpas.HelloWorldServiceGrpc;
 import io.grpc.Grpc;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.io.ObjectOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServiceImplBase {
 
@@ -25,6 +25,9 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     public static final String MSG_USERS = "Users successfully read/written to file.";
     public static final String MSG_PARTICULAR = "Particular post successfully read/written to file.";
     public static final String MSG_GENERAL = "General post successfully read/written to file.";
+
+    // TODO persist post ID
+    public static int postId = 1;
 
     public void checkFile(String filename) {
 
@@ -126,7 +129,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         if (!users.containsKey(key)) {
 
-            users.put(key, request.getUsername());
+            users.put(key, null);
             writeToFile(users, USERS_FILE, MSG_USERS);
         } else
             System.out.println("User is already registered.");
@@ -137,6 +140,47 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         // You must use a builder to construct a new Protobuffer object
         HelloWorld.RegisterResponse response = HelloWorld.RegisterResponse.newBuilder()
                 .setResult(true).build();
+
+        // Use responseObserver to send a single response back
+        responseObserver.onNext(response);
+
+        // When you are done, you must call onCompleted
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public synchronized void getToken(HelloWorld.GetTokenRequest request, StreamObserver<HelloWorld.GetTokenResponse> responseObserver) {
+        // HelloRequest has auto-generated toString method that shows its contents
+        System.out.println(request);
+
+        String key = request.getKey();
+
+		/*
+			TODO check if public key is owned by user with a digital signature
+		*/
+
+        checkFile(USERS_FILE);
+
+        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
+        System.out.println("Class of retrieved info: " + users.getClass().getName());
+
+        if (!users.containsKey(key)) {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("User is not registered");
+            responseObserver.onError(status.asRuntimeException());
+        }
+
+        String token = RandomStringUtils.randomAlphanumeric(10);
+
+        users.replace(key, token);
+        writeToFile(users, USERS_FILE, MSG_USERS);
+
+        System.out.println("Users: " + users);
+
+
+        // You must use a builder to construct a new Protobuffer object
+        HelloWorld.GetTokenResponse response = HelloWorld.GetTokenResponse.newBuilder()
+                .setToken(token).build();
 
         // Use responseObserver to send a single response back
         responseObserver.onNext(response);
@@ -164,13 +208,26 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         }
 
+        checkFile(USERS_FILE);
 
-		/*
-		TODO check if key is registered to a user
-		TODO check if signature corresponds to message+announcement
-		 */
+        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
+        System.out.println("Class of retrieved info: " + users.getClass().getName());
+
+        if (!users.containsKey(key)) {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("User is not registered");
+            responseObserver.onError(status.asRuntimeException());
+        }
+
+        // TODO check if signature corresponds to message+announcement+token
+        // TODO remove  token from file
 
         checkFile(PARTICULAR_FILE);
+
+        HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
+        postBuilder.setClientId(postId);
+        postId++;
+        post = postBuilder.build();
 
         HashMap<String, ArrayList<HelloWorld.Announcement>> particular = (HashMap<String, ArrayList<HelloWorld.Announcement>>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
         System.out.println("Class of retrieved info: " + particular.getClass().getName());
@@ -220,12 +277,27 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             status = status.withDescription("Invalid message length. Message needs to be smaller than 255 characters.");
             responseObserver.onError(status.asRuntimeException());
         }
-		/*
-		TODO check if key is registered to a user
-		TODO check if signature corresponds to message+announcement
-		 */
+
+        checkFile(USERS_FILE);
+
+        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
+        System.out.println("Class of retrieved info: " + users.getClass().getName());
+
+        if (!users.containsKey(key)) {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("User is not registered");
+            responseObserver.onError(status.asRuntimeException());
+        }
+
+        // TODO check if signature corresponds to message+announcement+token
+        // TODO remove  token from file
 
         checkFile(GENERAL_FILE);
+
+        HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
+        postBuilder.setClientId(postId);
+        postId++;
+        post = postBuilder.build();
 
         ArrayList<HelloWorld.Announcement> general = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
         System.out.println("Class of retrieved info: " + general.getClass().getName());
@@ -325,5 +397,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         responseObserver.onCompleted();
     }
+
+    // TODO implement read with post ID
 
 }

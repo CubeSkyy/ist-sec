@@ -25,17 +25,26 @@ message HelloResponse {
 
 message RegisterRequest {
     string key = 1;
-    string username = 2;
 }
 
 message RegisterResponse {
     bool result = 1;
 }
 
+message GetTokenRequest {
+    string key = 1;
+}
+
+message GetTokenResponse {
+    string token = 1;
+}
+
 message Announcement {
     string key = 1;
     string message = 2;
-    repeated Announcement a = 3;
+    int32 clientId = 3;
+    repeated Announcement a = 4;
+    string token = 5;
 }
 
 message PostRequest {
@@ -80,6 +89,7 @@ service HelloWorldService {
   // Define a RPC operation
   rpc greeting(HelloRequest) returns (HelloResponse);
   rpc register(RegisterRequest) returns (RegisterResponse);
+  rpc getToken(GetTokenRequest) returns (GetTokenResponse);
   rpc post(PostRequest) returns (PostResponse);
   rpc postGeneral(PostGeneralRequest) returns (PostGeneralResponse);
   rpc read(ReadRequest) returns (ReadResponse);
