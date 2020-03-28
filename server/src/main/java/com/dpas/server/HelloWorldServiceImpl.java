@@ -424,9 +424,35 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 					.addAllResult(general).build();
 			responseObserver.onNext(response);
 		}
-
         responseObserver.onCompleted();
     }
+
+    private HelloWorld.Announcement getPost(int postId){
+        checkFile(GENERAL_FILE);
+
+        ArrayList<HelloWorld.Announcement> general = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
+
+        for(HelloWorld.Announcement ann : general) {
+            if (ann.getPostId() == postId) {
+                return ann;
+            }
+        }
+        checkFile(PARTICULAR_FILE);
+        HashMap<String, ArrayList<HelloWorld.Announcement>> particular = (HashMap<String, ArrayList<HelloWorld.Announcement>>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
+
+            for (Map.Entry<String, ArrayList<HelloWorld.Announcement>> entry : particular.entrySet()){
+                for(HelloWorld.Announcement announcement : entry.getValue()){
+                    if(announcement.getPostId() == postId){
+                        return announcement;
+                    }
+                }
+            }
+
+
+        return null;
+    }
+
+
 
     // TODO implement read with post ID
 

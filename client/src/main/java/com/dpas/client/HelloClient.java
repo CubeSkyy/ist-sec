@@ -86,6 +86,11 @@ public class HelloClient {
 		responseGeneralPost = stub.postGeneral(requestGeneralPost);
 		System.out.println("POST: " + responseGeneralPost);
 
+		post = HelloWorld.Announcement.newBuilder().setKey("publickey1").setMessage("message3").setToken(responseGetToken.getToken()).build();
+		HelloWorld.PostRequest requestTest = HelloWorld.PostRequest.newBuilder().setPost(post).build();
+		HelloWorld.PostResponse responseTest = stub.post(requestTest);
+		System.out.println("POST: " + responseTest);
+
 		HelloWorld.ReadGeneralRequest requestGeneralRead = HelloWorld.ReadGeneralRequest.newBuilder().setNumber(0).build();
 		HelloWorld.ReadGeneralResponse responseGeneralRead = stub.readGeneral(requestGeneralRead);
 		System.out.println("READ: " + responseGeneralRead);
