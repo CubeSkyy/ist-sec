@@ -363,8 +363,6 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         HashMap<String, ArrayList<HelloWorld.Announcement>> particular = (HashMap<String, ArrayList<HelloWorld.Announcement>>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
 
-        // TODO resolve post ID into a real post and add it to the response
-
         if (!particular.containsKey(key)) {
             Status status = Status.INVALID_ARGUMENT;
             status = status.withDescription("Invalid key. There is no user with the specified key.");
@@ -372,21 +370,47 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         } else {
 
             ArrayList<HelloWorld.Announcement> tmp = particular.get(key);
-            HelloWorld.ReadResponse.Builder builder = HelloWorld.ReadResponse.newBuilder();
+            ArrayList<HelloWorld.Announcement> result = new ArrayList<HelloWorld.Announcement>();
+
 			if (number > 0){
                 ListIterator<HelloWorld.Announcement> listIter = tmp.listIterator(tmp.size());
                 for(int i = 0; i < number; i++){
-                    builder.addResult(listIter.previous());
+                    result.add(listIter.previous());
                 }
 
-                HelloWorld.ReadResponse response = builder.build();
-                responseObserver.onNext(response);
-			}else {
+			} else {
                 Collections.reverse(tmp);
-				HelloWorld.ReadResponse response = HelloWorld.ReadResponse.newBuilder()
-						.addAllResult(tmp).build();
-				responseObserver.onNext(response);
+				result.addAll(tmp);
 			}
+
+			// resolve post IDs into real posts and add them to the response
+
+            for (int i=0; i < result.size(); i++) {
+
+                List<HelloWorld.Announcement> currPostRefs = result.get(i).getAList();
+
+                if (currPostRefs.size() > 0) {
+                    HelloWorld.Announcement.Builder currPostBuilder = result.get(i).toBuilder();
+
+                    List<Integer> ids = new ArrayList<Integer>();
+
+                    for (HelloWorld.Announcement ref: currPostRefs) {
+                        ids.add(ref.getPostId());
+                    }
+
+                    List<HelloWorld.Announcement> updatedPosts = getPost(ids);
+
+                    currPostBuilder.clearA().addAllA(updatedPosts);
+                    HelloWorld.Announcement currPost = currPostBuilder.build();
+                    result.set(i, currPost);
+
+                }
+            }
+
+            // TODO sign response with the private key of the server
+
+            HelloWorld.ReadResponse response = HelloWorld.ReadResponse.newBuilder().addAllResult(result).build();
+            responseObserver.onNext(response);
 
         }
 
@@ -406,35 +430,64 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         checkFile(GENERAL_FILE);
 
         ArrayList<HelloWorld.Announcement> general = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
-        HelloWorld.ReadGeneralResponse.Builder builder = HelloWorld.ReadGeneralResponse.newBuilder();
+        ArrayList<HelloWorld.Announcement> result = new ArrayList<HelloWorld.Announcement>();
 
         // TODO resolve post ID into a real post and add it to the response
 
         if (number > 0){
             ListIterator<HelloWorld.Announcement> listIter = general.listIterator(general.size());
             for(int i = 0; i < number; i++){
-               builder.addResult(listIter.previous());
+               result.add(listIter.previous());
             }
 
-			HelloWorld.ReadGeneralResponse response = builder.build();
-			responseObserver.onNext(response);
-		}else {
+		} else {
             Collections.reverse(general);
-			HelloWorld.ReadGeneralResponse response = HelloWorld.ReadGeneralResponse.newBuilder()
-					.addAllResult(general).build();
-			responseObserver.onNext(response);
+			result.addAll(general);
 		}
+
+        // resolve post IDs into real posts and add them to the response
+
+        for (int i=0; i < result.size(); i++) {
+
+            List<HelloWorld.Announcement> currPostRefs = result.get(i).getAList();
+
+            if (currPostRefs.size() > 0) {
+                HelloWorld.Announcement.Builder currPostBuilder = result.get(i).toBuilder();
+
+                List<Integer> ids = new ArrayList<Integer>();
+
+                for (HelloWorld.Announcement ref: currPostRefs) {
+                    ids.add(ref.getPostId());
+                }
+
+                List<HelloWorld.Announcement> updatedPosts = getPost(ids);
+
+                currPostBuilder.clearA().addAllA(updatedPosts);
+                HelloWorld.Announcement currPost = currPostBuilder.build();
+                result.set(i, currPost);
+
+            }
+        }
+
+        // TODO sign response with the private key of the server
+
+        HelloWorld.ReadGeneralResponse response = HelloWorld.ReadGeneralResponse.newBuilder().addAllResult(result).build();
+        responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
 
-    private HelloWorld.Announcement getPost(int postId){
+    private List<HelloWorld.Announcement> getPost(List<Integer> ids){
         checkFile(GENERAL_FILE);
 
         ArrayList<HelloWorld.Announcement> general = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
+        List<HelloWorld.Announcement> result = new ArrayList<HelloWorld.Announcement>();
 
         for(HelloWorld.Announcement ann : general) {
-            if (ann.getPostId() == postId) {
-                return ann;
+            if (ids.contains(ann.getPostId())) {
+                result.add(ann);
+                ids.removeAll(Arrays.asList(ann.getPostId()));
+                if (ids.size() == 0)
+                    return result;
             }
         }
         checkFile(PARTICULAR_FILE);
@@ -442,18 +495,17 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
             for (Map.Entry<String, ArrayList<HelloWorld.Announcement>> entry : particular.entrySet()){
                 for(HelloWorld.Announcement announcement : entry.getValue()){
-                    if(announcement.getPostId() == postId){
-                        return announcement;
+                    if(ids.contains(announcement.getPostId())){
+                        result.add(announcement);
+                        ids.removeAll(Arrays.asList(announcement.getPostId()));
+                        if (ids.size() == 0)
+                            return result;
                     }
                 }
             }
 
 
-        return null;
+        return result;
     }
-
-
-
-    // TODO implement read with post ID
 
 }
