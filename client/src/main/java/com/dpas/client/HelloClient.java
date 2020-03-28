@@ -68,7 +68,7 @@ public class HelloClient {
 		responseRegister = stub.register(requestRegister);
 		System.out.println("REGISTER: " + responseRegister);
 
-		/*
+
 		HelloWorld.GetTokenRequest requestGetToken = HelloWorld.GetTokenRequest.newBuilder().setKey("publickey2").build();
 		HelloWorld.GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
 		System.out.println("GET TOKEN: " + responseGetToken);
@@ -86,8 +86,8 @@ public class HelloClient {
 		requestGeneralPost = HelloWorld.PostGeneralRequest.newBuilder().setPost(post).build();
 		responseGeneralPost = stub.postGeneral(requestGeneralPost);
 		System.out.println("POST: " + responseGeneralPost);
-		*/
 
+		/*
 		HelloWorld.GetTokenRequest requestGetToken = HelloWorld.GetTokenRequest.newBuilder().setKey("publickey2").build();
 		HelloWorld.GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
 		System.out.println("GET TOKEN: " + responseGetToken);
@@ -106,15 +106,19 @@ public class HelloClient {
 		responsePost = stub.post(requestPost);
 		System.out.println("POST: " + responsePost);
 
-		/*
+		*/
+
+
 		HelloWorld.ReadGeneralRequest requestGeneralRead = HelloWorld.ReadGeneralRequest.newBuilder().setNumber(0).build();
 		HelloWorld.ReadGeneralResponse responseGeneralRead = stub.readGeneral(requestGeneralRead);
 		System.out.println("READ: " + responseGeneralRead);
-		*/
 
+
+		/*
 		HelloWorld.ReadRequest requestRead = HelloWorld.ReadRequest.newBuilder().setKey("publickey2").setNumber(0).build();
 		HelloWorld.ReadResponse responseRead = stub.read(requestRead);
 		System.out.println("READ: " + responseRead);
+		*/
 
 		// A Channel should be shutdown before stopping the process.
 		channel.shutdownNow();

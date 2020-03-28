@@ -24,12 +24,11 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     public static final String USERS_FILE = "users.tmp";
     public static final String PARTICULAR_FILE = "particular.tmp";
     public static final String GENERAL_FILE = "general.tmp";
+    public static final String POSTID_FILE = "postid.tmp";
     public static final String MSG_USERS = "Users successfully read/written to file.";
     public static final String MSG_PARTICULAR = "Particular post successfully read/written to file.";
     public static final String MSG_GENERAL = "General post successfully read/written to file.";
-
-    // TODO persist post ID
-    public static int postId = 1;
+    public static final String MSG_POSTID = "Current post ID successfully read/written to file.";
 
     public void checkFile(String filename) {
 
@@ -50,6 +49,10 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
                     case GENERAL_FILE:
                         writeToFile(new ArrayList<HelloWorld.Announcement>(), GENERAL_FILE, MSG_GENERAL);
+                        break;
+
+                    case POSTID_FILE:
+                        writeToFile(1, POSTID_FILE, MSG_POSTID);
                         break;
 
                     default:
@@ -247,11 +250,14 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         // TODO remove token from file
 
         checkFile(PARTICULAR_FILE);
+        checkFile(POSTID_FILE);
+
+        int postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
+        writeToFile(postId+1, POSTID_FILE, MSG_POSTID);
 
         HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
         postBuilder.setPostId(postId);
         postBuilder.setToken("");
-        postId++;
         post = postBuilder.build();
 
         HashMap<String, ArrayList<HelloWorld.Announcement>> particular = (HashMap<String, ArrayList<HelloWorld.Announcement>>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
@@ -317,11 +323,14 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         // TODO remove  token from file
 
         checkFile(GENERAL_FILE);
+        checkFile(POSTID_FILE);
+
+        int postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
+        writeToFile(postId+1, POSTID_FILE, MSG_POSTID);
 
         HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
         postBuilder.setPostId(postId);
         postBuilder.setToken("");
-        postId++;
         post = postBuilder.build();
 
         ArrayList<HelloWorld.Announcement> general = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
