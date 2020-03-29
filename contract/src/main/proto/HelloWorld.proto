@@ -49,6 +49,7 @@ message Announcement {
 message PostRequest {
     Announcement post = 1;
     bytes signature = 2;
+    bytes hash = 3;
 }
 
 message PostResponse {
@@ -58,6 +59,7 @@ message PostResponse {
 message PostGeneralRequest {
     Announcement post = 1;
     bytes signature = 2;
+    bytes hash = 3;
 }
 
 message PostGeneralResponse {
@@ -72,6 +74,7 @@ message ReadRequest {
 message ReadResponse {
     repeated Announcement result = 1;
     bytes signature = 2;
+    bytes hash = 3;
 }
 
 message ReadGeneralRequest {
@@ -81,6 +84,7 @@ message ReadGeneralRequest {
 message ReadGeneralResponse {
     repeated Announcement result = 1;
     bytes signature = 2;
+    bytes hash = 3;
 }
 
 // Defining a Service, a Service can have multiple RPC operations

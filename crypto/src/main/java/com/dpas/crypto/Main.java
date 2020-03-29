@@ -11,7 +11,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import static javax.xml.bind.DatatypeConverter.printHexBinary;
 import java.security.PrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.security.PublicKey;
+import java.security.Signature;
 
 
 public class Main {
@@ -25,7 +26,6 @@ public class Main {
 	}
 
 	public static byte[] getHashFromObject (Object obj) throws Exception {
-
 		// Make a hash of the object that we want to sign
 		final String DIGEST_ALGO = "SHA-512";
 		MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGO);
@@ -38,29 +38,31 @@ public class Main {
 
 		messageDigest.update(bObj);
 		byte[] digest = messageDigest.digest();
-		//System.out.println("Digest value:");
-		//System.out.println(printHexBinary(digest));
 		return digest;
 
 
 	}
 
-	public static byte[] getSignatureFromHash (byte[] hash, PrivateKey key) throws Exception {
+	public static byte[] getSignatureFromHash (byte[] hash, PrivateKey privateKey) throws Exception {
 
-		Cipher cipher = Cipher.getInstance(ASYM_CIPHER);
+		/*Cipher cipher = Cipher.getInstance(ASYM_CIPHER);
 
 		cipher.init(Cipher.ENCRYPT_MODE, key);
 		byte[] cipherBytes = cipher.doFinal(hash);
-		return cipherBytes;
+		return cipherBytes;*/
 
-
+		Signature signature = Signature.getInstance("SHA256withRSA");
+		signature.initSign(privateKey);
+		signature.update(hash);
+		byte[] sign = signature.sign();
+		return sign;
 	}
 
-	public static byte[] getHashFromSignature (byte[] signature, RSAPublicKey key) throws Exception {
+	public static byte[] getHashFromSignature (byte[] signature, PublicKey publicKey) throws Exception {
 
 		Cipher cipher = Cipher.getInstance(ASYM_CIPHER);
 
-		cipher.init(Cipher.DECRYPT_MODE, key);
+		cipher.init(Cipher.DECRYPT_MODE, publicKey);
 		byte[] decipherBytes = cipher.doFinal(signature);
 		return decipherBytes;
 

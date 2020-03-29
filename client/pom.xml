@@ -34,7 +34,11 @@
 			<artifactId>dpas-contract</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-		<!-- JUnit -->
+		<dependency>
+			<groupId>com.dpas</groupId>
+			<artifactId>dpas-crypto</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency><!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
