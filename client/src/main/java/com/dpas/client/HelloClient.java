@@ -81,6 +81,7 @@ public class HelloClient {
 		}*/
 
 
+
 		// A Channel should be shutdown before stopping the process.
 		channel.shutdownNow();
 	}

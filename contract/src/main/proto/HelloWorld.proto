@@ -42,8 +42,9 @@ message GetTokenResponse {
 message Announcement {
     string key = 1;
     string message = 2;
-    repeated Announcement a = 3;
-    string token = 4;
+    int32 postId = 3;
+    repeated Announcement a = 4;
+    string token = 5;
 }
 
 message PostRequest {
