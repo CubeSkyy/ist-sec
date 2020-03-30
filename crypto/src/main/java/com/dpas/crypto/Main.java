@@ -17,6 +17,7 @@ import java.io.*;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.util.Arrays;
 
 
 public class Main {
@@ -119,7 +120,6 @@ public class Main {
 
     /*--------------------------------------------------VALIDATE------------------------------------------------------*/
     public static void validate(byte[] signature, String userAlias, String message, byte[] hash) throws Exception {
-
         byte[] messageHash = getHashFromObject(message);
 
         PublicKey publicKey = getPublicKey(userAlias);
@@ -134,7 +134,7 @@ public class Main {
             throw new Exception("Invalid signature! Board compromised!");
         }
 
-        if(!messageHash.equals(hash)){
+        if(!Arrays.equals(messageHash, hash)){
             throw new Exception("Hash does not correspond! Board compromised!");
         }
     }

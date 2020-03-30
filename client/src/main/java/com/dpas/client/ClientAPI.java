@@ -77,8 +77,10 @@ public class ClientAPI {
 
     private void post(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         HelloWorld.Announcement post = buildAnnouncement(stub, command);
-        byte[] hash = Main.getHashFromObject(command);
+
+        byte[] hash = Main.getHashFromObject(command[2]);
         byte[] signature = Main.getSignature(hash, command[1]);
+
         HelloWorld.PostRequest requestPost = HelloWorld.PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature)).setHash(ByteString.copyFrom(hash)).build();
         HelloWorld.PostResponse responsePost = stub.post(requestPost);
         System.out.println("POST: " + responsePost);
@@ -86,8 +88,10 @@ public class ClientAPI {
 
     private void postGeneral(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         HelloWorld.Announcement post = buildAnnouncement(stub, command);
-        byte[] hash = Main.getHashFromObject(command);
+
+        byte[] hash = Main.getHashFromObject(command[2]);
         byte[] signature = Main.getSignature(hash, command[1]);
+
         HelloWorld.PostGeneralRequest requestGeneralPost = HelloWorld.PostGeneralRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature)).setHash(ByteString.copyFrom(hash)).build();
         HelloWorld.PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
         System.out.println("POST: " + responseGeneralPost);
@@ -100,9 +104,9 @@ public class ClientAPI {
 
         ByteString sigByteString = responseRead.getSignature();
         ByteString hashByteString = responseRead.getHash();
+
         String userAlias = responseRead.getResult(0).getKey();
         String message = responseRead.getResult(0).getMessage();
-
 
         byte[] signature = sigByteString.toByteArray();
         byte[] hash = hashByteString.toByteArray();
@@ -118,6 +122,7 @@ public class ClientAPI {
 
         ByteString sigByteString = responseReadGeneral.getSignature();
         ByteString hashByteString = responseReadGeneral.getHash();
+
         String userAlias = responseReadGeneral.getResult(1).getKey();
         String message = responseReadGeneral.getResult(0).getMessage();
 
