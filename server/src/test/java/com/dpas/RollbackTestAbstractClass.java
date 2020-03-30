@@ -24,7 +24,7 @@ public abstract class RollbackTestAbstractClass {
 
         // Create a server, add service, start, and register for automatic graceful shutdown.
         grpcCleanup.register(InProcessServerBuilder
-                .forName(serverName).directExecutor().addService(new HelloWorldServiceImpl()).build().start());
+                .forName(serverName).directExecutor().addService(HelloWorldServiceImpl.getInstance()).build().start());
 
         blockingStub = HelloWorldServiceGrpc.newBlockingStub(
                 // Create a client channel and register for automatic graceful shutdown.

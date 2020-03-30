@@ -21,6 +21,14 @@ import javax.swing.Timer;
 
 public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServiceImplBase {
 
+    public static HelloWorldServiceImpl instance = null;
+    private HashMap<String, String> usersMap;
+    private HashMap<String, ArrayList<HelloWorld.Announcement>> particularMap;
+    private ArrayList<HelloWorld.Announcement> generalMap;
+
+
+    private int postId;
+
     public static final String USERS_FILE = "users.tmp";
     public static final String PARTICULAR_FILE = "particular.tmp";
     public static final String GENERAL_FILE = "general.tmp";
@@ -29,6 +37,49 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     public static final String MSG_PARTICULAR = "Particular post successfully read/written to file.";
     public static final String MSG_GENERAL = "General post successfully read/written to file.";
     public static final String MSG_POSTID = "Current post ID successfully read/written to file.";
+
+
+
+    public static HelloWorldServiceImpl getInstance() {
+        if(instance == null){
+            instance = new HelloWorldServiceImpl();
+        }
+        return instance;
+    }
+
+
+    private HelloWorldServiceImpl(){
+        checkFile(USERS_FILE);
+        usersMap = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
+
+        checkFile(PARTICULAR_FILE);
+        particularMap = (HashMap<String, ArrayList<HelloWorld.Announcement>>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
+
+        checkFile(GENERAL_FILE);
+        generalMap = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
+
+
+        checkFile(POSTID_FILE);
+        postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
+    }
+
+
+    private HashMap<String, String> getUsersMap() {
+        return usersMap;
+    }
+
+    private HashMap<String, ArrayList<HelloWorld.Announcement>> getParticularMap() {
+        return particularMap;
+    }
+
+    private ArrayList<HelloWorld.Announcement> getGeneralMap() {
+        return generalMap;
+    }
+
+    private int getPostId() {
+        return postId;
+    }
+
 
     public void checkFile(String filename) {
 
@@ -128,19 +179,15 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 			TODO check if public key is owned by user with a digital signature
 		*/
 
-        checkFile(USERS_FILE);
+        System.out.println("Class of retrieved info: " + getUsersMap().getClass().getName());
 
-        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
-        System.out.println("Class of retrieved info: " + users.getClass().getName());
-
-        if (!users.containsKey(key)) {
-
-            users.put(key, null);
-            writeToFile(users, USERS_FILE, MSG_USERS);
+        if (!getUsersMap().containsKey(key)) {
+            getUsersMap().put(key, null);
+            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
         } else
             System.out.println("User is already registered.");
 
-        System.out.println("Users: " + users);
+        System.out.println("Users: " + getUsersMap());
 
 
         // You must use a builder to construct a new Protobuffer object
@@ -165,12 +212,9 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 			TODO check if public key is owned by user with a digital signature
 		*/
 
-        checkFile(USERS_FILE);
+        System.out.println("Class of retrieved info: " + getUsersMap().getClass().getName());
 
-        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
-        System.out.println("Class of retrieved info: " + users.getClass().getName());
-
-        if (!users.containsKey(key)) {
+        if (!getUsersMap().containsKey(key)) {
             Status status = Status.INVALID_ARGUMENT;
             status = status.withDescription("User is not registered");
             responseObserver.onError(status.asRuntimeException());
@@ -178,10 +222,10 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         String token = RandomStringUtils.randomAlphanumeric(10);
 
-        users.replace(key, token);
-        writeToFile(users, USERS_FILE, MSG_USERS);
+        getUsersMap().replace(key, token);
+        writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
-        System.out.println("Users: " + users);
+        System.out.println("Users: " + usersMap);
 
 
         // You must use a builder to construct a new Protobuffer object
@@ -191,17 +235,15 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         Timer timer = new Timer(30000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                checkFile(USERS_FILE);
 
-                HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
-                System.out.println("Class of retrieved info: " + users.getClass().getName());
+                System.out.println("Class of retrieved info: " + getUsersMap().getClass().getName());
 
-                if (users.get(key).equals(token)) {
+                if (getUsersMap().get(key).equals(token)) {
 
-                    users.replace(key, null);
-                    writeToFile(users, USERS_FILE, MSG_USERS);
+                    getUsersMap().replace(key, null);
+                    writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
-                    System.out.println("User token expired: " + users);
+                    System.out.println("User token expired: " + getUsersMap());
                 }
             }
         });
@@ -235,12 +277,9 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         }
 
-        checkFile(USERS_FILE);
+        System.out.println("Class of retrieved info: " + getUsersMap().getClass().getName());
 
-        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
-        System.out.println("Class of retrieved info: " + users.getClass().getName());
-
-        if (!users.containsKey(key)) {
+        if (!getUsersMap().containsKey(key)) {
             Status status = Status.INVALID_ARGUMENT;
             status = status.withDescription("User is not registered");
             responseObserver.onError(status.asRuntimeException());
@@ -249,33 +288,30 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         // TODO check if signature corresponds to message+announcement+token
         // TODO remove token from file
 
-        checkFile(PARTICULAR_FILE);
-        checkFile(POSTID_FILE);
+        postId++;
+        writeToFile(getPostId(), POSTID_FILE, MSG_POSTID);
 
-        int postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
-        writeToFile(postId+1, POSTID_FILE, MSG_POSTID);
 
         HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
-        postBuilder.setPostId(postId);
+        postBuilder.setPostId(getPostId());
         postBuilder.setToken("");
         post = postBuilder.build();
 
-        HashMap<String, ArrayList<HelloWorld.Announcement>> particular = (HashMap<String, ArrayList<HelloWorld.Announcement>>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
-        System.out.println("Class of retrieved info: " + particular.getClass().getName());
+        System.out.println("Class of retrieved info: " + getParticularMap().getClass().getName());
 
-        if (!particular.containsKey(key)) {
+        if (!getParticularMap().containsKey(key)) {
             ArrayList<HelloWorld.Announcement> tmp = new ArrayList<HelloWorld.Announcement>();
             tmp.add(post);
-            particular.put(key, tmp);
+            getParticularMap().put(key, tmp);
         } else {
-            ArrayList<HelloWorld.Announcement> tmp = particular.get(key);
+            ArrayList<HelloWorld.Announcement> tmp = getParticularMap().get(key);
             tmp.add(post);
-            particular.replace(key, tmp);
+            getParticularMap().replace(key, tmp);
         }
 
-        writeToFile(particular, PARTICULAR_FILE, MSG_PARTICULAR);
+        writeToFile(getParticularMap(), PARTICULAR_FILE, MSG_PARTICULAR);
 
-        System.out.println("Particular posts: " + particular);
+        System.out.println("Particular posts: " + getParticularMap());
 
         // You must use a builder to construct a new Protobuffer object
         HelloWorld.PostResponse response = HelloWorld.PostResponse.newBuilder()
@@ -308,12 +344,9 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         }
 
-        checkFile(USERS_FILE);
+        System.out.println("Class of retrieved info: " + getUsersMap().getClass().getName());
 
-        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
-        System.out.println("Class of retrieved info: " + users.getClass().getName());
-
-        if (!users.containsKey(key)) {
+        if (!getUsersMap().containsKey(key)) {
             Status status = Status.INVALID_ARGUMENT;
             status = status.withDescription("User is not registered");
             responseObserver.onError(status.asRuntimeException());
@@ -321,26 +354,21 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         // TODO check if signature corresponds to message+announcement+token
         // TODO remove  token from file
-
-        checkFile(GENERAL_FILE);
-        checkFile(POSTID_FILE);
-
-        int postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
-        writeToFile(postId+1, POSTID_FILE, MSG_POSTID);
+        postId++;
+        writeToFile(getPostId(), POSTID_FILE, MSG_POSTID);
 
         HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
-        postBuilder.setPostId(postId);
+        postBuilder.setPostId(getPostId());
         postBuilder.setToken("");
         post = postBuilder.build();
 
-        ArrayList<HelloWorld.Announcement> general = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
-        System.out.println("Class of retrieved info: " + general.getClass().getName());
+        System.out.println("Class of retrieved info: " + getGeneralMap().getClass().getName());
 
-        general.add(post);
+        getGeneralMap().add(post);
 
-        writeToFile(general, GENERAL_FILE, MSG_GENERAL);
+        writeToFile(getGeneralMap(), GENERAL_FILE, MSG_GENERAL);
 
-        System.out.println("General posts: " + general);
+        System.out.println("General posts: " + getGeneralMap());
 
 
         // You must use a builder to construct a new Protobuffer object
@@ -368,17 +396,13 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         }
 
-        checkFile(PARTICULAR_FILE);
-
-        HashMap<String, ArrayList<HelloWorld.Announcement>> particular = (HashMap<String, ArrayList<HelloWorld.Announcement>>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
-
-        if (!particular.containsKey(key)) {
+        if (!getParticularMap().containsKey(key)) {
             Status status = Status.INVALID_ARGUMENT;
             status = status.withDescription("Invalid key. There is no user with the specified key.");
             responseObserver.onError(status.asRuntimeException());
         } else {
 
-            ArrayList<HelloWorld.Announcement> tmp = particular.get(key);
+            ArrayList<HelloWorld.Announcement> tmp = getParticularMap().get(key);
             ArrayList<HelloWorld.Announcement> result = new ArrayList<HelloWorld.Announcement>();
 
 			if (number > 0){
@@ -436,9 +460,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         }
 
-        checkFile(GENERAL_FILE);
-
-        ArrayList<HelloWorld.Announcement> general = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
+        ArrayList<HelloWorld.Announcement> general = getGeneralMap();
         ArrayList<HelloWorld.Announcement> result = new ArrayList<HelloWorld.Announcement>();
 
         // TODO resolve post ID into a real post and add it to the response
@@ -486,12 +508,10 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     }
 
     private List<HelloWorld.Announcement> getPost(List<Integer> ids){
-        checkFile(GENERAL_FILE);
 
-        ArrayList<HelloWorld.Announcement> general = (ArrayList<HelloWorld.Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
         List<HelloWorld.Announcement> result = new ArrayList<HelloWorld.Announcement>();
 
-        for(HelloWorld.Announcement ann : general) {
+        for(HelloWorld.Announcement ann : getGeneralMap()) {
             if (ids.contains(ann.getPostId())) {
                 result.add(ann);
                 ids.removeAll(Arrays.asList(ann.getPostId()));
@@ -499,10 +519,8 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
                     return result;
             }
         }
-        checkFile(PARTICULAR_FILE);
-        HashMap<String, ArrayList<HelloWorld.Announcement>> particular = (HashMap<String, ArrayList<HelloWorld.Announcement>>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
 
-            for (Map.Entry<String, ArrayList<HelloWorld.Announcement>> entry : particular.entrySet()){
+            for (Map.Entry<String, ArrayList<HelloWorld.Announcement>> entry : getParticularMap().entrySet()){
                 for(HelloWorld.Announcement announcement : entry.getValue()){
                     if(ids.contains(announcement.getPostId())){
                         result.add(announcement);

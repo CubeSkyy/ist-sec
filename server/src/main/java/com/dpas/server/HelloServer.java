@@ -15,14 +15,13 @@ public class HelloServer {
 		}
 
 		final int port = Integer.parseInt(args[0]);
-		final BindableService impl = new HelloWorldServiceImpl();
+		final BindableService impl = HelloWorldServiceImpl.getInstance();
 
 		// Create a new server to listen on port
 		Server server = ServerBuilder.forPort(port).addService(impl).build();
 
 		// Start the server
 		server.start();
-
 		// Server threads are running in the background.
 		System.out.println("Server started");
 
