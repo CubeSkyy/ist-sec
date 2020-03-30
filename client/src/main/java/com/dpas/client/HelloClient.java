@@ -67,7 +67,7 @@ public class HelloClient {
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			String input = (String) ois.readObject();
 			if(input != null){*/
-		String input = "register|leaf\nregister|publickey2\npost|leaf|ola isto e um teste|leaf|announcement extra\nread|leaf|0";
+		String input = "register|leaf\nregister|user1\npost|leaf|ola isto e um teste|user1|announcement extra\nread|leaf|0";
 				String[] commands = input.split("\n");
 				for(String command: commands){
 					library.receive(stub, command);

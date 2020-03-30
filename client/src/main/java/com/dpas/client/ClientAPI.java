@@ -4,11 +4,6 @@ import com.dpas.HelloWorld;
 import com.dpas.HelloWorldServiceGrpc;
 import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
-
-import java.io.*;
-import java.security.*;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,66 +43,6 @@ public class ClientAPI {
         }
     }
 
-    private static KeyPair keys(String alias)
-            throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
-        //alias atuais => "leaf", "user1", "user2"
-
-        FileInputStream fis = new FileInputStream("keystore.jks");
-        KeyStore keyStore = KeyStore.getInstance("JCEKS");
-        char[] pwd = "password".toCharArray();
-        keyStore.load(fis, pwd);
-
-        Key key = keyStore.getKey(alias, pwd);
-        if(key instanceof PrivateKey){
-            Certificate cert = keyStore.getCertificate(alias);
-            PublicKey publicKey = cert.getPublicKey();
-            KeyPair keyPair = new KeyPair(publicKey, (PrivateKey) key);
-            return keyPair;
-        }
-        return null;
-    }
-
-    private byte[] getSignature(byte[] hash, String userAlias) throws Exception {
-        KeyPair keys = keys(userAlias);
-        PrivateKey privateKey = keys.getPrivate();
-
-        byte[] signature = Main.getSignatureFromHash(hash, privateKey);
-        return signature;
-    }
-
-    public static PublicKey getPublicKey(String userAlias)
-            throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
-        FileInputStream fis = new FileInputStream("keystore.jks");
-        KeyStore keyStore = KeyStore.getInstance("JCEKS");
-        char[] pwd = "password".toCharArray();
-        keyStore.load(fis, pwd);
-        Certificate cert = keyStore.getCertificate(userAlias);
-        return cert.getPublicKey();
-    }
-
-    private void validate(ByteString sigByteString, String userAlias, String message, ByteString hashByteString) throws Exception {
-
-        byte[] signature = sigByteString.toByteArray();
-        byte[] hash = hashByteString.toByteArray();
-        byte[] messageHash = Main.getHashFromObject(message);
-
-        PublicKey publicKey = getPublicKey(userAlias);
-
-        Signature sig = Signature.getInstance("SHA256withRSA");
-        sig.initVerify(publicKey);
-        sig.update(messageHash);
-        boolean verify = sig.verify(signature);
-
-        System.out.println("Signature is valid: " + verify);
-        if(!verify){
-            throw new Exception("Invalid signature! Board compromised!");
-        }
-
-        if(!messageHash.equals(hash)){
-            throw new Exception("Hash does not correspond! Board compromised!");
-        }
-    }
-
     /*----------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------COMMANDS--------------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -143,7 +78,7 @@ public class ClientAPI {
     private void post(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         HelloWorld.Announcement post = buildAnnouncement(stub, command);
         byte[] hash = Main.getHashFromObject(command);
-        byte[] signature = getSignature(hash, command[1]);
+        byte[] signature = Main.getSignature(hash, command[1]);
         HelloWorld.PostRequest requestPost = HelloWorld.PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature)).setHash(ByteString.copyFrom(hash)).build();
         HelloWorld.PostResponse responsePost = stub.post(requestPost);
         System.out.println("POST: " + responsePost);
@@ -152,7 +87,7 @@ public class ClientAPI {
     private void postGeneral(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         HelloWorld.Announcement post = buildAnnouncement(stub, command);
         byte[] hash = Main.getHashFromObject(command);
-        byte[] signature = getSignature(hash, command[1]);
+        byte[] signature = Main.getSignature(hash, command[1]);
         HelloWorld.PostGeneralRequest requestGeneralPost = HelloWorld.PostGeneralRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature)).setHash(ByteString.copyFrom(hash)).build();
         HelloWorld.PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
         System.out.println("POST: " + responseGeneralPost);
@@ -168,7 +103,11 @@ public class ClientAPI {
         String userAlias = responseRead.getResult(0).getKey();
         String message = responseRead.getResult(0).getMessage();
 
-        validate(sigByteString, userAlias, message, hashByteString);
+
+        byte[] signature = sigByteString.toByteArray();
+        byte[] hash = hashByteString.toByteArray();
+
+        Main.validate(signature, userAlias, message, hash);
 
         System.out.println("READ: " + responseRead);
     }
@@ -182,7 +121,10 @@ public class ClientAPI {
         String userAlias = responseReadGeneral.getResult(1).getKey();
         String message = responseReadGeneral.getResult(0).getMessage();
 
-        validate(sigByteString, userAlias, message, hashByteString);
+        byte[] signature = sigByteString.toByteArray();
+        byte[] hash = hashByteString.toByteArray();
+
+        Main.validate(signature, userAlias, message, hash);
 
         System.out.println("READ: " + responseReadGeneral);
     }
