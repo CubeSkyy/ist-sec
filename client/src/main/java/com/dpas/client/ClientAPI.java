@@ -46,14 +46,14 @@ public class ClientAPI {
     /*----------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------COMMANDS--------------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
-    private void register(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) {
+    public void register(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) {
         HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey(command[1]).build();
         HelloWorld.RegisterResponse responseRegister = stub.register(requestRegister);
         System.out.println("REGISTER: " + responseRegister);
     }
 
     /*--------------------------------------------------POSTS---------------------------------------------------------*/
-    private HelloWorld.Announcement buildAnnouncement(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) {
+    public HelloWorld.Announcement buildAnnouncement(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) {
         List<HelloWorld.Announcement> referral = new ArrayList<HelloWorld.Announcement>();
         if(command.length > 2){
             int i = 3;
@@ -75,7 +75,7 @@ public class ClientAPI {
         return post.build();
     }
 
-    private void post(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public void post(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         HelloWorld.Announcement post = buildAnnouncement(stub, command);
 
         byte[] hash = Main.getHashFromObject(command[2]);
@@ -86,7 +86,7 @@ public class ClientAPI {
         System.out.println("POST: " + responsePost);
     }
 
-    private void postGeneral(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public void postGeneral(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         HelloWorld.Announcement post = buildAnnouncement(stub, command);
 
         byte[] hash = Main.getHashFromObject(command[2]);
@@ -98,7 +98,7 @@ public class ClientAPI {
     }
 
     /*--------------------------------------------------READS---------------------------------------------------------*/
-    private void read(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public void read(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         HelloWorld.ReadRequest requestRead = HelloWorld.ReadRequest.newBuilder().setNumber(Integer.parseInt(command[2])).setKey(command[1]).build();
         HelloWorld.ReadResponse responseRead = stub.read(requestRead);
 
@@ -116,7 +116,7 @@ public class ClientAPI {
         System.out.println("READ: " + responseRead);
     }
 
-    private void readGeneral(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public void readGeneral(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         HelloWorld.ReadGeneralRequest requestReadGeneral = HelloWorld.ReadGeneralRequest.newBuilder().setNumber(Integer.parseInt(command[1])).build();
         HelloWorld.ReadGeneralResponse responseReadGeneral = stub.readGeneral(requestReadGeneral);
 
