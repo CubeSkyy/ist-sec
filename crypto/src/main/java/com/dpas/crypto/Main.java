@@ -22,16 +22,7 @@ import java.util.Arrays;
 
 public class Main {
 
-	/*final static String ASYM_CIPHER = "RSA/ECB/PKCS1Padding";
-
-	public static Key readKey(String resourcePath) throws Exception {
-		// TODO
-		// altera o return type para o que achares melhor
-		return null;
-	}*/
-
 	public static byte[] getHashFromObject (Object obj) throws Exception {
-		// Make a hash of the object that we want to sign
 		final String DIGEST_ALGO = "SHA-512";
 		MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGO);
 
@@ -44,14 +35,12 @@ public class Main {
 		messageDigest.update(bObj);
 		byte[] digest = messageDigest.digest();
 		return digest;
-
-
 	}
 
 	/*--------------------------------------------------KEYS----------------------------------------------------------*/
     private static KeyPair getKeys(String alias)
             throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
-        //alias atuais => "leaf", "user1", "user2"
+        //alias atuais => "user1", "user2", "user3"
 
         FileInputStream fis = new FileInputStream("keystore.jks");
         KeyStore keyStore = KeyStore.getInstance("JCEKS");
@@ -72,7 +61,6 @@ public class Main {
             throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
         KeyPair keys = getKeys(userAlias);
         return keys.getPrivate();
-
     }
 
     public static PublicKey getPublicKey(String userAlias)
@@ -87,30 +75,12 @@ public class Main {
 
     /*------------------------------------------------SIGNATURE-------------------------------------------------------*/
 	public static byte[] getSignatureFromHash (byte[] hash, PrivateKey privateKey) throws Exception {
-
-		/*Cipher cipher = Cipher.getInstance(ASYM_CIPHER);
-
-		cipher.init(Cipher.ENCRYPT_MODE, key);
-		byte[] cipherBytes = cipher.doFinal(hash);
-		return cipherBytes;*/
-
 		Signature signature = Signature.getInstance("SHA256withRSA");
 		signature.initSign(privateKey);
 		signature.update(hash);
 		byte[] sign = signature.sign();
 		return sign;
 	}
-
-	/*public static byte[] getHashFromSignature (byte[] signature, PublicKey publicKey) throws Exception {
-
-		Cipher cipher = Cipher.getInstance(ASYM_CIPHER);
-
-		cipher.init(Cipher.DECRYPT_MODE, publicKey);
-		byte[] decipherBytes = cipher.doFinal(signature);
-		return decipherBytes;
-
-
-	}*/
 
     public static byte[] getSignature(byte[] hash, String userAlias) throws Exception {
         PrivateKey privateKey = getPrivateKey(userAlias);
@@ -119,9 +89,7 @@ public class Main {
     }
 
     /*--------------------------------------------------VALIDATE------------------------------------------------------*/
-    public static void validate(byte[] signature, String userAlias, String message, byte[] hash) throws Exception {
-        byte[] messageHash = getHashFromObject(message);
-
+    public static void validate(byte[] signature, String userAlias, byte[] messageHash, byte[] hash) throws Exception {
         PublicKey publicKey = getPublicKey(userAlias);
 
         Signature sig = Signature.getInstance("SHA256withRSA");
@@ -139,10 +107,13 @@ public class Main {
         }
     }
 
-	public static void main(String[] args) {
-
-		System.out.println("Crypto is up");
-
-	}
+    public static boolean hasCertificate(String userAlias)
+            throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
+        FileInputStream fis = new FileInputStream("keystore.jks");
+        KeyStore keyStore = KeyStore.getInstance("JCEKS");
+        char[] pwd = "password".toCharArray();
+        keyStore.load(fis, pwd);
+        return keyStore.containsAlias(userAlias);
+    }
 
 }

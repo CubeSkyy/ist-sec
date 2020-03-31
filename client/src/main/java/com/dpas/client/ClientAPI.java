@@ -57,7 +57,7 @@ public class ClientAPI {
         List<HelloWorld.Announcement> referral = new ArrayList<HelloWorld.Announcement>();
         if(command.length > 2){
             int i = 3;
-            while(i < command.length){
+            while(i < command.length-1){
                 referral.add(HelloWorld.Announcement.newBuilder().setKey(command[i]).setMessage(command[i+1]).build());
                 i+=2;
             }
@@ -110,8 +110,9 @@ public class ClientAPI {
 
         byte[] signature = sigByteString.toByteArray();
         byte[] hash = hashByteString.toByteArray();
+        byte[] messageHash = Main.getHashFromObject(message);
 
-        Main.validate(signature, userAlias, message, hash);
+        Main.validate(signature, userAlias, messageHash, hash);
 
         System.out.println("READ: " + responseRead);
     }
@@ -123,13 +124,17 @@ public class ClientAPI {
         ByteString sigByteString = responseReadGeneral.getSignature();
         ByteString hashByteString = responseReadGeneral.getHash();
 
-        String userAlias = responseReadGeneral.getResult(1).getKey();
-        String message = responseReadGeneral.getResult(0).getMessage();
+
+        ArrayList<HelloWorld.Announcement> message = new ArrayList<HelloWorld.Announcement>();
+        for(int i = 0; i < responseReadGeneral.getResultCount(); i++){
+            message.add(responseReadGeneral.getResult(i));
+        }
 
         byte[] signature = sigByteString.toByteArray();
         byte[] hash = hashByteString.toByteArray();
 
-        Main.validate(signature, userAlias, message, hash);
+        byte[] messageHash = Main.getHashFromObject(message);
+        Main.validate(signature, "server1", messageHash, hash);
 
         System.out.println("READ: " + responseReadGeneral);
     }
