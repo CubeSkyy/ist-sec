@@ -4,6 +4,9 @@ import com.dpas.HelloWorld;
 import com.dpas.HelloWorldServiceGrpc;
 import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import com.dpas.HelloWorld.Announcement;
@@ -33,7 +36,7 @@ public class ClientAPI {
 
     public void receive(HelloWorldServiceBlockingStub stub, String input) throws Exception {
         try {
-            String[] command = input.split("\\|");
+            String[] command = getCommand(input);
             System.out.println("Command: " + command[0]);
             switch (command[0]) {
                 case "register":
@@ -61,7 +64,11 @@ public class ClientAPI {
         }
     }
 
-    
+
+    public String[] getCommand(String command){
+        return command.split("\\|");
+    }
+
     /*----------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------COMMANDS--------------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
