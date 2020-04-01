@@ -253,22 +253,6 @@ public class ClientAPI {
 
     public void readGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
 
-
-        //TODO:Verify server integrity and authenticity when its implemented in server side
-//        ByteString sigByteString = responseReadGeneral.getSignature();
-//        ByteString hashByteString = responseReadGeneral.getHash();
-//
-//
-//        ArrayList<Announcement> message = new ArrayList<Announcement>();
-//        for(int i = 0; i < responseReadGeneral.getResultCount(); i++){
-//            message.add(responseReadGeneral.getResult(i));
-//        }
-//
-//        byte[] signature = sigByteString.toByteArray();
-//        byte[] hash = hashByteString.toByteArray();
-//
-//        byte[] messageHash = Main.getHashFromObject(message);
-//        Main.validate(signature, "server1", messageHash, hash);
         String userAlias = command[1];
         int number = Integer.parseInt(command[2]);
         /*-------------------------------GET TOKEN VALIDATION-------------------------------*/

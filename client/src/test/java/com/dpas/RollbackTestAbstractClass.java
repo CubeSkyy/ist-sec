@@ -1,13 +1,15 @@
 package com.dpas;
 
+import com.dpas.client.ClientAPI;
 import com.dpas.server.HelloWorldServiceImpl;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
+import io.grpc.testing.GrpcCleanupRule;
 import org.junit.After;
 import org.junit.Before;
-import io.grpc.testing.GrpcCleanupRule;
 import org.junit.Rule;
+
 import java.io.File;
 
 import static com.dpas.server.HelloWorldServiceImpl.*;
@@ -19,6 +21,7 @@ public abstract class RollbackTestAbstractClass {
     public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
     public ManagedChannel inProcessChannel;
 
+    public ClientAPI client;
     @Before
     public void setUp() throws Exception {
         // Generate a unique in-process server name.
@@ -33,7 +36,10 @@ public abstract class RollbackTestAbstractClass {
 
         blockingStub = HelloWorldServiceGrpc.newBlockingStub(inProcessChannel);
 
+        client = ClientAPI.getInstance();
+
     }
+
 
     @After
     public void tearDown() {
