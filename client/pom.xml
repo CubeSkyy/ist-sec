@@ -3,11 +3,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<!-- http://maven.apache.org/pom.html#Quick_Overview -->
 
-	<groupId>com.dpas</groupId>
 	<artifactId>dpas-client</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
+	<parent>
+		<groupId>com.dpas</groupId>
+		<artifactId>dpas</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
 	<name>${project.artifactId}</name>
 
 	<properties>
@@ -18,10 +22,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
 
 		<!-- application properties -->
-		<mainclass>com.dpas.client.HelloClient</mainclass>
 
 		<server.host>localhost</server.host>
 		<server.port>8080</server.port>
@@ -38,6 +40,7 @@
 			<groupId>com.dpas</groupId>
 			<artifactId>dpas-crypto</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
+			<scope>compile</scope>
 		</dependency><!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -67,22 +70,27 @@
 
 	<build>
 		<plugins>
-			<!-- Plugin that provides two goals to execute system and Java programs --> 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<compilerArgs>
+						<arg>-Xlint:unchecked</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>${exec-maven-plugin.version}</version>
+				<version>1.6.0</version>
 				<executions>
 					<execution>
-						<goals>
-							<goal>java</goal>
-						</goals>
+						<goals><goal>java</goal></goals>
 					</execution>
 				</executions>
 				<configuration>
-					<!-- to prevent deprecation warning: -->
-					<killAfter>-1</killAfter>
-					<mainClass>${mainclass}</mainClass>
+					<mainClass>com.dpas.client.HelloClient</mainClass>
 					<arguments>
 						<argument>${server.host}</argument>
 						<argument>${server.port}</argument>

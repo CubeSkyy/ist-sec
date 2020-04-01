@@ -6,6 +6,18 @@ import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
 import java.util.ArrayList;
 import java.util.List;
+import com.dpas.HelloWorld.Announcement;
+import com.dpas.HelloWorld.GetTokenRequest;
+import com.dpas.HelloWorld.GetTokenResponse;
+import com.dpas.HelloWorld.PostRequest;
+import com.dpas.HelloWorld.PostResponse;
+import com.dpas.HelloWorld.PostGeneralRequest;
+import com.dpas.HelloWorld.PostGeneralResponse;
+import com.dpas.HelloWorld.ReadRequest;
+import com.dpas.HelloWorld.ReadResponse;
+import com.dpas.HelloWorld.ReadGeneralRequest;
+import com.dpas.HelloWorld.ReadGeneralResponse;
+import com.dpas.HelloWorldServiceGrpc.HelloWorldServiceBlockingStub;
 
 public class ClientAPI {
     public static ClientAPI instance = null;
@@ -17,7 +29,7 @@ public class ClientAPI {
         return instance;
     }
 
-    public void receive(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String input) throws Exception {
+    public void receive(HelloWorldServiceBlockingStub stub, String input) throws Exception {
         String[] command = input.split("\\|");
         System.out.println("Command: " + command[0]);
         switch (command[0]){
@@ -43,93 +55,107 @@ public class ClientAPI {
         }
     }
 
+    
     /*----------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------COMMANDS--------------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
-    public void register(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) {
+    public void register(HelloWorldServiceBlockingStub stub, String[] command) {
+        //TODO:Have client send signature so server can verify identity
         HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey(command[1]).build();
         HelloWorld.RegisterResponse responseRegister = stub.register(requestRegister);
         System.out.println("REGISTER: " + responseRegister);
     }
 
     /*--------------------------------------------------POSTS---------------------------------------------------------*/
-    public HelloWorld.Announcement buildAnnouncement(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) {
-        List<HelloWorld.Announcement> referral = new ArrayList<HelloWorld.Announcement>();
+    public Announcement buildAnnouncement(String[] command) {
+        List<Announcement> referral = new ArrayList<Announcement>();
         if(command.length > 2){
             int i = 3;
-            while(i < command.length){
-                referral.add(HelloWorld.Announcement.newBuilder().setKey(command[i]).setMessage(command[i+1]).build());
+            while(i < command.length-1){
+                referral.add(Announcement.newBuilder().setKey(command[i]).setMessage(command[i+1]).build());
                 i+=2;
             }
         }
-
-        HelloWorld.GetTokenRequest requestGetToken = HelloWorld.GetTokenRequest.newBuilder().setKey(command[1]).build();
-        HelloWorld.GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
-        System.out.println("GET TOKEN: " + responseGetToken);
-
-        HelloWorld.Announcement.Builder post = HelloWorld.Announcement.newBuilder().setKey(command[1]).setMessage(command[2]).setToken(responseGetToken.getToken());
-        for (HelloWorld.Announcement ref : referral) {
-            post.addA(ref);
-        }
+        Announcement.Builder post = Announcement.newBuilder().setKey(command[1]).setMessage(command[2]);
+        post.addAllA(referral);
 
         return post.build();
     }
 
-    public void post(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
-        HelloWorld.Announcement post = buildAnnouncement(stub, command);
+    public void post(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+        Announcement post = buildAnnouncement(command);
+
+        GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(command[1]).build();
+        GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
+        System.out.println("GET TOKEN: " + responseGetToken);
 
         byte[] hash = Main.getHashFromObject(command[2]);
         byte[] signature = Main.getSignature(hash, command[1]);
 
-        HelloWorld.PostRequest requestPost = HelloWorld.PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature)).setHash(ByteString.copyFrom(hash)).build();
-        HelloWorld.PostResponse responsePost = stub.post(requestPost);
+        PostRequest requestPost = PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature))
+                .setHash(ByteString.copyFrom(hash)).setToken(responseGetToken.getToken()).build();
+        PostResponse responsePost = stub.post(requestPost);
         System.out.println("POST: " + responsePost);
     }
 
-    public void postGeneral(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
-        HelloWorld.Announcement post = buildAnnouncement(stub, command);
+    public void postGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+        Announcement post = buildAnnouncement(command);
+
+        GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(command[1]).build();
+        GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
+        System.out.println("GET TOKEN: " + responseGetToken);
 
         byte[] hash = Main.getHashFromObject(command[2]);
         byte[] signature = Main.getSignature(hash, command[1]);
 
-        HelloWorld.PostGeneralRequest requestGeneralPost = HelloWorld.PostGeneralRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature)).setHash(ByteString.copyFrom(hash)).build();
-        HelloWorld.PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
+        PostGeneralRequest requestGeneralPost = PostGeneralRequest.newBuilder()
+                .setPost(post).setSignature(ByteString.copyFrom(signature))
+                .setHash(ByteString.copyFrom(hash)).setToken(responseGetToken.getToken()).build();
+
+        PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
         System.out.println("POST: " + responseGeneralPost);
     }
 
     /*--------------------------------------------------READS---------------------------------------------------------*/
-    public void read(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
-        HelloWorld.ReadRequest requestRead = HelloWorld.ReadRequest.newBuilder().setNumber(Integer.parseInt(command[2])).setKey(command[1]).build();
-        HelloWorld.ReadResponse responseRead = stub.read(requestRead);
+    public void read(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+        ReadRequest requestRead = ReadRequest.newBuilder().setNumber(Integer.parseInt(command[2])).setKey(command[1]).build();
+        ReadResponse responseRead = stub.read(requestRead);
 
-        ByteString sigByteString = responseRead.getSignature();
-        ByteString hashByteString = responseRead.getHash();
-
-        String userAlias = responseRead.getResult(0).getKey();
-        String message = responseRead.getResult(0).getMessage();
-
-        byte[] signature = sigByteString.toByteArray();
-        byte[] hash = hashByteString.toByteArray();
-
-        Main.validate(signature, userAlias, message, hash);
+        //TODO:Verify server integrity and authenticity when its implemented in server side
+//        ByteString sigByteString = responseRead.getSignature();
+//        ByteString hashByteString = responseRead.getHash();
+//
+//        String userAlias = responseRead.getResult(0).getKey();
+//        String message = responseRead.getResult(0).getMessage();
+//
+//        byte[] signature = sigByteString.toByteArray();
+//        byte[] hash = hashByteString.toByteArray();
+//        byte[] messageHash = Main.getHashFromObject(message);
+//
+//        Main.validate(signature, userAlias, messageHash, hash);
 
         System.out.println("READ: " + responseRead);
     }
 
-    public void readGeneral(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
-        HelloWorld.ReadGeneralRequest requestReadGeneral = HelloWorld.ReadGeneralRequest.newBuilder().setNumber(Integer.parseInt(command[1])).build();
-        HelloWorld.ReadGeneralResponse responseReadGeneral = stub.readGeneral(requestReadGeneral);
+    public void readGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+        ReadGeneralRequest requestReadGeneral = ReadGeneralRequest.newBuilder().setNumber(Integer.parseInt(command[1])).build();
+        ReadGeneralResponse responseReadGeneral = stub.readGeneral(requestReadGeneral);
 
-        ByteString sigByteString = responseReadGeneral.getSignature();
-        ByteString hashByteString = responseReadGeneral.getHash();
-
-        String userAlias = responseReadGeneral.getResult(1).getKey();
-        String message = responseReadGeneral.getResult(0).getMessage();
-
-        byte[] signature = sigByteString.toByteArray();
-        byte[] hash = hashByteString.toByteArray();
-
-        Main.validate(signature, userAlias, message, hash);
+        //TODO:Verify server integrity and authenticity when its implemented in server side
+//        ByteString sigByteString = responseReadGeneral.getSignature();
+//        ByteString hashByteString = responseReadGeneral.getHash();
+//
+//
+//        ArrayList<Announcement> message = new ArrayList<Announcement>();
+//        for(int i = 0; i < responseReadGeneral.getResultCount(); i++){
+//            message.add(responseReadGeneral.getResult(i));
+//        }
+//
+//        byte[] signature = sigByteString.toByteArray();
+//        byte[] hash = hashByteString.toByteArray();
+//
+//        byte[] messageHash = Main.getHashFromObject(message);
+//        Main.validate(signature, "server1", messageHash, hash);
 
         System.out.println("READ: " + responseReadGeneral);
     }

@@ -2,5 +2,6 @@ crypto/target
 contract/target
 server/target
 client/target
+crypto/target
 .idea/
 

@@ -9,7 +9,9 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
+
 import static javax.xml.bind.DatatypeConverter.printHexBinary;
+
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
@@ -22,36 +24,25 @@ import java.util.Arrays;
 
 public class Main {
 
-	/*final static String ASYM_CIPHER = "RSA/ECB/PKCS1Padding";
+    public static byte[] getHashFromObject(Object obj) throws Exception {
+        final String DIGEST_ALGO = "SHA-512";
+        MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGO);
 
-	public static Key readKey(String resourcePath) throws Exception {
-		// TODO
-		// altera o return type para o que achares melhor
-		return null;
-	}*/
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bos);
+        out.writeObject(obj);
+        out.flush();
+        byte[] bObj = bos.toByteArray();
 
-	public static byte[] getHashFromObject (Object obj) throws Exception {
-		// Make a hash of the object that we want to sign
-		final String DIGEST_ALGO = "SHA-512";
-		MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGO);
+        messageDigest.update(bObj);
+        byte[] digest = messageDigest.digest();
+        return digest;
+    }
 
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutputStream out = new ObjectOutputStream(bos);
-		out.writeObject(obj);
-		out.flush();
-		byte[] bObj = bos.toByteArray();
-
-		messageDigest.update(bObj);
-		byte[] digest = messageDigest.digest();
-		return digest;
-
-
-	}
-
-	/*--------------------------------------------------KEYS----------------------------------------------------------*/
+    /*--------------------------------------------------KEYS----------------------------------------------------------*/
     private static KeyPair getKeys(String alias)
             throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
-        //alias atuais => "leaf", "user1", "user2"
+        //alias atuais => "user1", "user2", "user3"
 
         FileInputStream fis = new FileInputStream("keystore.jks");
         KeyStore keyStore = KeyStore.getInstance("JCEKS");
@@ -59,7 +50,7 @@ public class Main {
         keyStore.load(fis, pwd);
 
         Key key = keyStore.getKey(alias, pwd);
-        if(key instanceof PrivateKey){
+        if (key instanceof PrivateKey) {
             Certificate cert = keyStore.getCertificate(alias);
             PublicKey publicKey = cert.getPublicKey();
             KeyPair keyPair = new KeyPair(publicKey, (PrivateKey) key);
@@ -72,7 +63,6 @@ public class Main {
             throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
         KeyPair keys = getKeys(userAlias);
         return keys.getPrivate();
-
     }
 
     public static PublicKey getPublicKey(String userAlias)
@@ -86,31 +76,13 @@ public class Main {
     }
 
     /*------------------------------------------------SIGNATURE-------------------------------------------------------*/
-	public static byte[] getSignatureFromHash (byte[] hash, PrivateKey privateKey) throws Exception {
-
-		/*Cipher cipher = Cipher.getInstance(ASYM_CIPHER);
-
-		cipher.init(Cipher.ENCRYPT_MODE, key);
-		byte[] cipherBytes = cipher.doFinal(hash);
-		return cipherBytes;*/
-
-		Signature signature = Signature.getInstance("SHA256withRSA");
-		signature.initSign(privateKey);
-		signature.update(hash);
-		byte[] sign = signature.sign();
-		return sign;
-	}
-
-	/*public static byte[] getHashFromSignature (byte[] signature, PublicKey publicKey) throws Exception {
-
-		Cipher cipher = Cipher.getInstance(ASYM_CIPHER);
-
-		cipher.init(Cipher.DECRYPT_MODE, publicKey);
-		byte[] decipherBytes = cipher.doFinal(signature);
-		return decipherBytes;
-
-
-	}*/
+    public static byte[] getSignatureFromHash(byte[] hash, PrivateKey privateKey) throws Exception {
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initSign(privateKey);
+        signature.update(hash);
+        byte[] sign = signature.sign();
+        return sign;
+    }
 
     public static byte[] getSignature(byte[] hash, String userAlias) throws Exception {
         PrivateKey privateKey = getPrivateKey(userAlias);
@@ -119,9 +91,7 @@ public class Main {
     }
 
     /*--------------------------------------------------VALIDATE------------------------------------------------------*/
-    public static void validate(byte[] signature, String userAlias, String message, byte[] hash) throws Exception {
-        byte[] messageHash = getHashFromObject(message);
-
+    public static void validate(byte[] signature, String userAlias, byte[] messageHash, byte[] hash) throws Exception {
         PublicKey publicKey = getPublicKey(userAlias);
 
         Signature sig = Signature.getInstance("SHA256withRSA");
@@ -130,19 +100,41 @@ public class Main {
         boolean verify = sig.verify(signature);
 
         System.out.println("Signature is valid: " + verify);
-        if(!verify){
+        if (!verify) {
             throw new Exception("Invalid signature! Board compromised!");
         }
 
-        if(!Arrays.equals(messageHash, hash)){
+        if (!Arrays.equals(messageHash, hash)) {
             throw new Exception("Hash does not correspond! Board compromised!");
         }
     }
 
-	public static void main(String[] args) {
 
-		System.out.println("Crypto is up");
+    public static boolean hasCertificate(String userAlias) {
 
-	}
+        try {
+            FileInputStream fis = new FileInputStream("keystore.jks");
+            KeyStore keyStore = KeyStore.getInstance("JCEKS");
+            char[] pwd = "password".toCharArray();
+            keyStore.load(fis, pwd);
+            return keyStore.containsAlias(userAlias);
+        } catch (FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
+
+        } catch (KeyStoreException kse) {
+            kse.printStackTrace();
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+
+        } catch (CertificateException ce) {
+            ce.printStackTrace();
+
+        } catch (NoSuchAlgorithmException nsae) {
+            nsae.printStackTrace();
+        }
+
+        return false;
+    }
 
 }
