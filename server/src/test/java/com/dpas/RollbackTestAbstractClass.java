@@ -1,6 +1,7 @@
 package com.dpas;
 
 import com.dpas.server.HelloWorldServiceImpl;
+import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import org.junit.After;
@@ -16,6 +17,7 @@ public abstract class RollbackTestAbstractClass {
     public HelloWorldServiceGrpc.HelloWorldServiceBlockingStub blockingStub;
     @Rule
     public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
+    public ManagedChannel inProcessChannel;
 
     @Before
     public void setUp() throws Exception {
@@ -24,11 +26,12 @@ public abstract class RollbackTestAbstractClass {
 
         // Create a server, add service, start, and register for automatic graceful shutdown.
         grpcCleanup.register(InProcessServerBuilder
-                .forName(serverName).directExecutor().addService(new HelloWorldServiceImpl()).build().start());
+                .forName(serverName).directExecutor().addService(HelloWorldServiceImpl.getInstance()).build().start());
 
-        blockingStub = HelloWorldServiceGrpc.newBlockingStub(
-                // Create a client channel and register for automatic graceful shutdown.
-                grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build()));
+
+        inProcessChannel = grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build());
+
+        blockingStub = HelloWorldServiceGrpc.newBlockingStub(inProcessChannel);
 
     }
 

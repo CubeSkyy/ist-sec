@@ -19,12 +19,35 @@ import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
+
+import com.dpas.HelloWorld.Announcement;
+import com.dpas.HelloWorld.HelloRequest;
+import com.dpas.HelloWorld.HelloResponse;
+import com.dpas.HelloWorld.GetTokenRequest;
+import com.dpas.HelloWorld.GetTokenResponse;
+import com.dpas.HelloWorld.PostRequest;
+import com.dpas.HelloWorld.PostResponse;
+import com.dpas.HelloWorld.PostGeneralRequest;
+import com.dpas.HelloWorld.PostGeneralResponse;
+import com.dpas.HelloWorld.ReadRequest;
+import com.dpas.HelloWorld.ReadResponse;
+import com.dpas.HelloWorld.ReadGeneralRequest;
+import com.dpas.HelloWorld.ReadGeneralResponse;
 import com.google.protobuf.ByteString;
+
 import java.security.*;
 import java.security.cert.CertificateException;
 
 public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServiceImplBase {
 
+    //TODO: Verify Tokens
+    //TODO: Make All Server Responses Signed so client can verify it was server that sent them
+
+    public static HelloWorldServiceImpl instance = null;
+    private HashMap<String, String> usersMap;
+    private HashMap<String, ArrayList<Announcement>> particularMap;
+    private ArrayList<Announcement> generalMap;
+    private int postId;
     /*--------------------------------------------------FILES---------------------------------------------------------*/
     public static final String USERS_FILE = "users.tmp";
     public static final String PARTICULAR_FILE = "particular.tmp";
@@ -34,6 +57,49 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     public static final String MSG_PARTICULAR = "Particular post successfully read/written to file.";
     public static final String MSG_GENERAL = "General post successfully read/written to file.";
     public static final String MSG_POSTID = "Current post ID successfully read/written to file.";
+
+
+    public static HelloWorldServiceImpl getInstance() {
+        if (instance == null) {
+
+            instance = new HelloWorldServiceImpl();
+        }
+        return instance;
+    }
+
+
+    private HelloWorldServiceImpl() {
+        checkFile(USERS_FILE);
+        usersMap = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
+
+        checkFile(PARTICULAR_FILE);
+        particularMap = (HashMap<String, ArrayList<Announcement>>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
+
+        checkFile(GENERAL_FILE);
+        generalMap = (ArrayList<Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
+
+
+        checkFile(POSTID_FILE);
+        postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
+    }
+
+
+    private HashMap<String, String> getUsersMap() {
+        return usersMap;
+    }
+
+    private HashMap<String, ArrayList<Announcement>> getParticularMap() {
+        return particularMap;
+    }
+
+    private ArrayList<Announcement> getGeneralMap() {
+        return generalMap;
+    }
+
+    private int getPostId() {
+        return postId;
+    }
+
 
     public void checkFile(String filename) {
 
@@ -49,15 +115,15 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
                         break;
 
                     case PARTICULAR_FILE:
-                        writeToFile(new HashMap<String, ArrayList<Post>>(), PARTICULAR_FILE, MSG_PARTICULAR);
+                        writeToFile(new HashMap<String, ArrayList<Announcement>>(), PARTICULAR_FILE, MSG_PARTICULAR);
                         break;
 
                     case GENERAL_FILE:
-                        writeToFile(new GeneralPost(), GENERAL_FILE, MSG_GENERAL);
+                        writeToFile(new ArrayList<Announcement>(), GENERAL_FILE, MSG_GENERAL);
                         break;
 
                     case POSTID_FILE:
-                        writeToFile(1, POSTID_FILE, MSG_POSTID);
+                        writeToFile(0, POSTID_FILE, MSG_POSTID);
                         break;
 
                     default:
@@ -76,12 +142,12 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     public void writeToFile(Object users, String type, String msg) {
 
         try {
-            FileOutputStream fos = new FileOutputStream(type+"Backup");
+            FileOutputStream fos = new FileOutputStream(type + "Backup");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(users);
             System.out.println(msg);
             oos.close();
-            Files.move(Paths.get(type+"Backup"), Paths.get(type), StandardCopyOption.ATOMIC_MOVE);
+            Files.move(Paths.get(type + "Backup"), Paths.get(type), StandardCopyOption.ATOMIC_MOVE);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -106,10 +172,10 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
     /*-------------------------------------------------GREETING-------------------------------------------------------*/
     @Override
-    public void greeting(HelloWorld.HelloRequest request, StreamObserver<HelloWorld.HelloResponse> responseObserver) {
+    public void greeting(HelloRequest request, StreamObserver<HelloResponse> responseObserver) {
         System.out.println(request);
 
-        HelloWorld.HelloResponse response = HelloWorld.HelloResponse.newBuilder()
+        HelloResponse response = HelloResponse.newBuilder()
                 .setGreeting("Hello " + request.getName()).build();
 
         responseObserver.onNext(response);
@@ -118,39 +184,18 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
     /*---------------------------------------------------TOKENS-------------------------------------------------------*/
     @Override
-    public synchronized void getToken(HelloWorld.GetTokenRequest request, StreamObserver<HelloWorld.GetTokenResponse> responseObserver) {
+    public synchronized void getToken(GetTokenRequest request, StreamObserver<GetTokenResponse> responseObserver) {
         System.out.println(request);
 
         String key = request.getKey();
 
-        try {
-            if (!Main.hasCertificate(key)) { //key == userAlias
-                Status status = Status.INVALID_ARGUMENT;
-                status = status.withDescription("User is not registered in keystore.");
-                responseObserver.onError(status.asRuntimeException());
-            }
-        } catch (FileNotFoundException fnfe){
-            fnfe.printStackTrace();
-
-        } catch (KeyStoreException kse){
-            kse.printStackTrace();
-
-        } catch (IOException ioe){
-            ioe.printStackTrace();
-
-        } catch (CertificateException ce){
-            ce.printStackTrace();
-
-        } catch (NoSuchAlgorithmException nsae){
-            nsae.printStackTrace();
-
+        if (!Main.hasCertificate(key)) { //key == userAlias
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("User is not registered in keystore.");
+            responseObserver.onError(status.asRuntimeException());
         }
 
-        checkFile(USERS_FILE);
-
-        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
-
-        if (!users.containsKey(key)) {
+        if (!getUsersMap().containsKey(key)) {
             Status status = Status.INVALID_ARGUMENT;
             status = status.withDescription("User is not registered");
             responseObserver.onError(status.asRuntimeException());
@@ -158,27 +203,23 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         String token = RandomStringUtils.randomAlphanumeric(10);
 
-        users.replace(key, token);
-        writeToFile(users, USERS_FILE, MSG_USERS);
+        getUsersMap().replace(key, token);
+        writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
-        System.out.println("Users: " + users);
+        System.out.println("Users: " + usersMap);
 
-        HelloWorld.GetTokenResponse response = HelloWorld.GetTokenResponse.newBuilder()
+        GetTokenResponse response = GetTokenResponse.newBuilder()
                 .setToken(token).build();
 
         Timer timer = new Timer(30000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                checkFile(USERS_FILE);
+                if (getUsersMap().get(key).equals(token)) {
 
-                HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
+                    getUsersMap().replace(key, null);
+                    writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
-                if (users.get(key).equals(token)) {
-
-                    users.replace(key, null);
-                    writeToFile(users, USERS_FILE, MSG_USERS);
-
-                    System.out.println("User token expired: " + users);
+                    System.out.println("User token expired: " + key + ":" + token);
                 }
             }
         });
@@ -196,41 +237,22 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     public synchronized void register(HelloWorld.RegisterRequest request, StreamObserver<HelloWorld.RegisterResponse> responseObserver) {
         System.out.println(request);
 
+        //TODO: Validate user request to prevent attacks
+
         String key = request.getKey();
-        try {
-            if (!Main.hasCertificate(key)) { //key == userAlias
-                Status status = Status.INVALID_ARGUMENT;
-                status = status.withDescription("User is not registered in keystore.");
-                responseObserver.onError(status.asRuntimeException());
-            }
-        } catch (FileNotFoundException fnfe){
-            fnfe.printStackTrace();
-
-        } catch (KeyStoreException kse){
-            kse.printStackTrace();
-
-        } catch (IOException ioe){
-            ioe.printStackTrace();
-
-        } catch (CertificateException ce){
-            ce.printStackTrace();
-
-        } catch (NoSuchAlgorithmException nsae){
-            nsae.printStackTrace();
-
+        if (!Main.hasCertificate(key)) {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("User is not registered in keystore.");
+            responseObserver.onError(status.asRuntimeException());
         }
 
-        checkFile(USERS_FILE);
-
-        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
-
-        if (!users.containsKey(key)) {
-            users.put(key, null);
-            writeToFile(users, USERS_FILE, MSG_USERS);
+        if (!getUsersMap().containsKey(key)) {
+            getUsersMap().put(key, null);
+            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
         } else
             System.out.println("User is already registered.");
 
-        System.out.println("Users: " + users);
+        System.out.println("Users: " + getUsersMap());
 
         HelloWorld.RegisterResponse response = HelloWorld.RegisterResponse.newBuilder()
                 .setResult(true).build();
@@ -241,12 +263,13 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
     /*--------------------------------------------------POSTS---------------------------------------------------------*/
     @Override
-    public synchronized void post(HelloWorld.PostRequest request, StreamObserver<HelloWorld.PostResponse> responseObserver) {
+    public synchronized void post(PostRequest request, StreamObserver<PostResponse> responseObserver) {
         System.out.println(request);
 
-        HelloWorld.Announcement post = request.getPost();
+        Announcement post = request.getPost();
         String key = post.getKey();
         String message = post.getMessage();
+        String token = request.getToken(); //TODO: Verify tokens
 
         if (message.length() > 255) {
             Status status = Status.INVALID_ARGUMENT;
@@ -254,18 +277,12 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         }
 
-        checkFile(USERS_FILE);
-
-        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
-
-        if (!users.containsKey(key)) {
+        if (!getUsersMap().containsKey(key)) {
             Status status = Status.INVALID_ARGUMENT;
             status = status.withDescription("User is not registered");
             responseObserver.onError(status.asRuntimeException());
         }
 
-
-        Post postToBoard = new Post();
 
         /*-------------------------------SIGNATURE AND HASH---------------------------------*/
         ByteString sigByteString = request.getSignature();
@@ -274,50 +291,36 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         byte[] signature = sigByteString.toByteArray();
         byte[] hash = hashByteString.toByteArray();
 
-        try{
+        //TODO: Make validate return true/false to send a onError() here.
+        try {
             byte[] messageHash = Main.getHashFromObject(message);
             Main.validate(signature, key, messageHash, hash); //key == userAlias
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        postToBoard.setSignature(signature);
-        postToBoard.setHash(hash);
-
         /*------------------------------------POST ID---------------------------------------*/
-        // TODO remove token from file
-
-        checkFile(PARTICULAR_FILE);
-        checkFile(POSTID_FILE);
-
-        int postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
-        writeToFile(postId+1, POSTID_FILE, MSG_POSTID);
+        postId++;
+        writeToFile(getPostId(), POSTID_FILE, MSG_POSTID);
 
         /*----------------------BUILD ANNOUNCEMENTS OF THE POST-----------------------------*/
-        HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
-        postBuilder.setPostId(postId);
-        postBuilder.setToken("");
+        Announcement.Builder postBuilder = post.toBuilder();
+        postBuilder.setPostId(getPostId());
         post = postBuilder.build();
 
-        HashMap<String, Post> particular = (HashMap<String, Post>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
-
-        if (!particular.containsKey(key)) {
-            ArrayList<HelloWorld.Announcement> tmp = new ArrayList<HelloWorld.Announcement>();
+        if (!getParticularMap().containsKey(key)) {
+            ArrayList<Announcement> tmp = new ArrayList<Announcement>();
             tmp.add(post);
-            postToBoard.setPosts(tmp);
-            particular.put(key, postToBoard);
-
+            getParticularMap().put(key, tmp);
         } else {
-            ArrayList<HelloWorld.Announcement> tmp = particular.get(key).getPosts();
+            ArrayList<Announcement> tmp = getParticularMap().get(key);
             tmp.add(post);
-            postToBoard.setPosts(tmp);
-            particular.replace(key, postToBoard);
+            getParticularMap().replace(key, tmp);
         }
 
-        writeToFile(particular, PARTICULAR_FILE, MSG_PARTICULAR);
-        System.out.println("Particular Posts: " + particular);
+        writeToFile(getParticularMap(), PARTICULAR_FILE, MSG_PARTICULAR);
 
-        HelloWorld.PostResponse response = HelloWorld.PostResponse.newBuilder()
+        PostResponse response = PostResponse.newBuilder()
                 .setResult(true).build();
 
         responseObserver.onNext(response);
@@ -326,12 +329,14 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
 
     @Override
-    public synchronized void postGeneral(HelloWorld.PostGeneralRequest request, StreamObserver<HelloWorld.PostGeneralResponse> responseObserver) {
+    public synchronized void postGeneral(PostGeneralRequest request, StreamObserver<PostGeneralResponse> responseObserver) {
         System.out.println(request);
 
-        HelloWorld.Announcement post = request.getPost();
+        Announcement post = request.getPost();
         String key = post.getKey();
         String message = post.getMessage();
+        String token = request.getToken(); //TODO: Verify tokens
+
 
         if (message.length() > 255) {
             Status status = Status.INVALID_ARGUMENT;
@@ -339,19 +344,11 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         }
 
-        checkFile(USERS_FILE);
-
-        HashMap<String, String> users = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
-
-        if (!users.containsKey(key)) {
+        if (!getUsersMap().containsKey(key)) {
             Status status = Status.INVALID_ARGUMENT;
             status = status.withDescription("User is not registered");
             responseObserver.onError(status.asRuntimeException());
         }
-
-
-        GeneralPost general = (GeneralPost) readFromFile(GENERAL_FILE, MSG_GENERAL);
-        Post postToBoard = new Post();
 
         /*-----------------------SIGNATURE AND HASH FROM THE USER---------------------------*/
         ByteString sigByteString = request.getSignature();
@@ -360,99 +357,53 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         byte[] signature = sigByteString.toByteArray();
         byte[] hash = hashByteString.toByteArray();
 
-        try{
+        //TODO: Make validate return true/false to send a onError() here.
+        try {
             byte[] messageHash = Main.getHashFromObject(message);
-
-            Main.validate(signature, key, messageHash, hash); //key == userAlias
-
-            postToBoard.setSignature(signature);
-            postToBoard.setHash(hash);
-        } catch (Exception e){
+            Main.validate(signature, key, messageHash, hash);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         /*------------------------------------POST ID---------------------------------------*/
-        // TODO remove  token from file
-
-        checkFile(GENERAL_FILE);
-        checkFile(POSTID_FILE);
-
-        int postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
-        writeToFile(postId+1, POSTID_FILE, MSG_POSTID);
+        postId++;
+        writeToFile(getPostId(), POSTID_FILE, MSG_POSTID);
 
         /*----------------------BUILD ANNOUNCEMENTS OF THE POST-----------------------------*/
-        HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
-        postBuilder.setPostId(postId);
-        postBuilder.setToken("");
+        Announcement.Builder postBuilder = post.toBuilder();
+        postBuilder.setPostId(getPostId());
         post = postBuilder.build();
 
-        postToBoard.addPosts(post);
-        general.addPosts(postToBoard);
+        getGeneralMap().add(post);
+        writeToFile(getGeneralMap(), GENERAL_FILE, MSG_GENERAL);
 
-        /*----------------------SIGNATURE AND HASH FROM THE SERVER--------------------------*/
-        try {
-            byte[] hashGeneral = Main.getHashFromObject(general.getPosts());
-            byte[] sigGeneral = Main.getSignature(hashGeneral, "server1"); //TODO change to serverAlias when we have multiple servers
 
-            general.setSignature(sigGeneral);
-            general.setHash(hashGeneral);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        //TODO: Change this to PostGeneralResponse so client verifies that the server actualy sent it.
+//        /*----------------------SIGNATURE AND HASH FROM THE SERVER--------------------------*/
+//        try {
+//            byte[] hashGeneral = Main.getHashFromObject(getGeneralMap().getPosts());
+//            byte[] sigGeneral = Main.getSignature(hashGeneral, "server1"); //TODO change to serverAlias when we have multiple servers
+//
+//            getGeneralMap().setSignature(sigGeneral);
+//            getGeneralMap().setHash(hashGeneral);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-        writeToFile(general, GENERAL_FILE, MSG_GENERAL);
+        writeToFile(getGeneralMap(), GENERAL_FILE, MSG_GENERAL);
 
-        System.out.println("General posts: " + general);
+        System.out.println("General posts: " + getGeneralMap());
 
-        HelloWorld.PostGeneralResponse response = HelloWorld.PostGeneralResponse.newBuilder()
+        PostGeneralResponse response = PostGeneralResponse.newBuilder()
                 .setResult(true).build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
 
     }
 
-    private List<HelloWorld.Announcement> getPost(List<Integer> ids){
-        checkFile(GENERAL_FILE);
-
-        GeneralPost generalPost = (GeneralPost) readFromFile(GENERAL_FILE, MSG_GENERAL);
-        ArrayList<HelloWorld.Announcement> general = new ArrayList<HelloWorld.Announcement>();
-
-        for(Post post: generalPost.getPosts()){
-            for(HelloWorld.Announcement announcement : post.getPosts()){
-                general.add(announcement);
-            }
-        }
-
-        List<HelloWorld.Announcement> result = new ArrayList<HelloWorld.Announcement>();
-
-        for(HelloWorld.Announcement ann : general) {
-            if (ids.contains(ann.getPostId())) {
-                result.add(ann);
-                ids.removeAll(Arrays.asList(ann.getPostId()));
-                if (ids.size() == 0)
-                    return result;
-            }
-        }
-        checkFile(PARTICULAR_FILE);
-        HashMap<String, Post> particular = (HashMap<String, Post>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
-
-        for (Map.Entry<String, Post> entry : particular.entrySet()){
-            for(HelloWorld.Announcement announcement : entry.getValue().getPosts()){
-                if(ids.contains(announcement.getPostId())){
-                    result.add(announcement);
-                    ids.removeAll(Arrays.asList(announcement.getPostId()));
-                    if (ids.size() == 0)
-                        return result;
-                }
-            }
-        }
-
-        return result;
-    }
-
     /*--------------------------------------------------READS---------------------------------------------------------*/
     @Override
-    public synchronized void read(HelloWorld.ReadRequest request, StreamObserver<HelloWorld.ReadResponse> responseObserver) {
+    public synchronized void read(ReadRequest request, StreamObserver<ReadResponse> responseObserver) {
         String key = request.getKey();
         int number = request.getNumber();
 
@@ -462,66 +413,32 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         }
 
-        checkFile(PARTICULAR_FILE);
-
-        HashMap<String, Post> particular = (HashMap<String, Post>) readFromFile(PARTICULAR_FILE, MSG_PARTICULAR);
-        System.out.println("Particular Posts from File: " + particular);
-
-        if (!particular.containsKey(key)) {
+        if (!getParticularMap().containsKey(key)) {
             Status status = Status.INVALID_ARGUMENT;
             status = status.withDescription("Invalid key. There is no user with the specified key.");
             responseObserver.onError(status.asRuntimeException());
         } else {
+            ArrayList<Announcement> tmp = getParticularMap().get(key);
+            ArrayList<Announcement> result = new ArrayList<Announcement>();
 
-            Post postFromBoard = particular.get(key);
-            ArrayList<HelloWorld.Announcement> tmp = postFromBoard.getPosts();
-            ArrayList<HelloWorld.Announcement> result = new ArrayList<HelloWorld.Announcement>();
-
-			if (number > 0){
-                ListIterator<HelloWorld.Announcement> listIter = tmp.listIterator(tmp.size());
-                for(int i = 0; i < number; i++){
+            if (number > 0) {
+                ListIterator<Announcement> listIter = tmp.listIterator(tmp.size());
+                for (int i = 0; i < number; i++) {
                     result.add(listIter.previous());
                 }
-			} else {
+            } else {
                 Collections.reverse(tmp);
-				result.addAll(tmp);
-			}
-
-			// resolve post IDs into real posts and add them to the response
-            for (int i=0; i < result.size(); i++) {
-                List<HelloWorld.Announcement> currPostRefs = result.get(i).getAList();
-
-                if (currPostRefs.size() > 0) {
-                    HelloWorld.Announcement.Builder currPostBuilder = result.get(i).toBuilder();
-
-                    List<Integer> ids = new ArrayList<Integer>();
-
-                    for (HelloWorld.Announcement ref: currPostRefs) {
-                        ids.add(ref.getPostId());
-                    }
-
-                    List<HelloWorld.Announcement> updatedPosts = getPost(ids);
-
-                    currPostBuilder.clearA().addAllA(updatedPosts);
-                    HelloWorld.Announcement currPost = currPostBuilder.build();
-                    result.set(i, currPost);
-
-                }
+                result.addAll(tmp);
             }
-            byte[] signature = particular.get(key).getSignature();
-            byte[] hash = particular.get(key).getHash();
 
-            ByteString sigByteString = ByteString.copyFrom(signature);
-            ByteString hashByteString = ByteString.copyFrom(hash);
-
-            HelloWorld.ReadResponse response = HelloWorld.ReadResponse.newBuilder().addAllResult(result).setSignature(sigByteString).setHash(hashByteString).build();
+            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).build();
             responseObserver.onNext(response);
         }
 
         responseObserver.onCompleted();
     }
 
-    public synchronized void readGeneral(HelloWorld.ReadGeneralRequest request, StreamObserver<HelloWorld.ReadGeneralResponse> responseObserver) {
+    public synchronized void readGeneral(ReadGeneralRequest request, StreamObserver<ReadGeneralResponse> responseObserver) {
         int number = request.getNumber();
 
         if (number < 0) {
@@ -530,86 +447,53 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         }
 
-        checkFile(GENERAL_FILE);
 
-        GeneralPost postGeneral = (GeneralPost) readFromFile(GENERAL_FILE, MSG_GENERAL);
-        ArrayList<Post> general = postGeneral.getPosts();
-        ArrayList<Post> result = new ArrayList<Post>();
+        ArrayList<HelloWorld.Announcement> general = getGeneralMap();
+        ArrayList<HelloWorld.Announcement> result = new ArrayList<HelloWorld.Announcement>();
 
-        /*-------------------------------SIGNATURE AND HASH---------------------------------*/
-        //to validate if everything is as it was when written
+        //TODO: Client needs to send signature+hash in readGeneralRequest so server can verify the client
+//        /*-------------------------------SIGNATURE AND HASH---------------------------------*/
+//        //to validate if everything is as it was when written
+//
+//        byte[] generalSignature = postGeneral.getSignature();
+//        byte[] generalHash = postGeneral.getHash();
+//
+//        try {
+//            byte[] postsHash = Main.getHashFromObject(general);
+//            Main.validate(generalSignature, "server1", postsHash, generalHash); //TODO change when we get multiple servers to serverAlias
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        /*----------------------------------------------------------------------------------*/
 
-        byte[] generalSignature = postGeneral.getSignature();
-        byte[] generalHash = postGeneral.getHash();
-
-        try{
-            byte[] postsHash = Main.getHashFromObject(general);
-            Main.validate(generalSignature, "server1", postsHash, generalHash); //TODO change when we get multiple servers to serverAlias
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        /*----------------------------------------------------------------------------------*/
-
-        // TODO resolve post ID into a real post and add it to the response
-
-        if (number > 0){
-            ListIterator<Post> listIter = general.listIterator(general.size());
-            for(int i = 0; i < number; i++){
-               result.add(listIter.previous());
+        if (number > 0) {
+            ListIterator<Announcement> listIter = general.listIterator(general.size());
+            for (int i = 0; i < number; i++) {
+                result.add(listIter.previous());
             }
 
-		} else {
+        } else {
             Collections.reverse(general);
-			result.addAll(general);
-		}
-
-        // resolve post IDs into real posts and add them to the response
-        ArrayList<HelloWorld.Announcement> resultToRead = new ArrayList<HelloWorld.Announcement>();
-
-        for (int i=0; i < result.size(); i++) {
-            for(int j=0; j < result.get(i).getPosts().size(); j++) {
-                resultToRead.add(result.get(i).getPosts().get(j));
-
-                List<HelloWorld.Announcement> currPostRefs = resultToRead.get(i+j).getAList();
-
-                //TODO give postIDs to the ones in the AList
-                if (currPostRefs.size() > 0) {
-                    HelloWorld.Announcement.Builder currPostBuilder = resultToRead.get(i+j).toBuilder();
-
-                    List<Integer> ids = new ArrayList<Integer>();
-
-                    for (HelloWorld.Announcement ref : currPostRefs) {
-                        ids.add(ref.getPostId());
-                        System.out.println("ref.getPostId(): " + ref.getPostId());
-                    }
-
-                    List<HelloWorld.Announcement> updatedPosts = getPost(ids);
-
-                    currPostBuilder.clearA().addAllA(updatedPosts);
-                    HelloWorld.Announcement currPost = currPostBuilder.build();
-                    System.out.println("currPost SENT TO READ: " + currPost);
-
-                    resultToRead.set(i, currPost);
-
-                }
-            }
+            result.addAll(general);
         }
-        /*-----------------------------NEW SIGNATURE AND HASH-------------------------------*/
-        try {
-            byte[] hashGeneral = Main.getHashFromObject(resultToRead);
-            byte[] sigGeneral = Main.getSignature(hashGeneral, "server1"); //TODO change to serverAlias when we have multiple servers
 
-            ByteString sigByteString = ByteString.copyFrom(sigGeneral);
-            ByteString hashByteString = ByteString.copyFrom(hashGeneral);
+//        TODO: Change this to ReadResponse so client verifies that the server actualy sent it and contents didn't change.
+//        /*-----------------------------NEW SIGNATURE AND HASH-------------------------------*/
+//        try {
+//            byte[] hashGeneral = Main.getHashFromObject(resultToRead);
+//            byte[] sigGeneral = Main.getSignature(hashGeneral, "server1"); //TODO change to serverAlias when we have multiple servers
+//
+//            ByteString sigByteString = ByteString.copyFrom(sigGeneral);
+//            ByteString hashByteString = ByteString.copyFrom(hashGeneral);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-            HelloWorld.ReadGeneralResponse response = HelloWorld.ReadGeneralResponse.newBuilder()
-                    .addAllResult(resultToRead).setSignature(sigByteString).setHash(hashByteString).build();
+        ReadGeneralResponse response = ReadGeneralResponse.newBuilder()
+                .addAllResult(result).build();
 
-            responseObserver.onNext(response);
-            responseObserver.onCompleted();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 
 }
