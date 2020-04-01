@@ -261,6 +261,7 @@ public class ClientAPI {
         return responseRead;
     }
 
+
     public ReadGeneralResponse readGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
 
         String userAlias = command[1];
