@@ -271,6 +271,12 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         String message = post.getMessage();
         String token = request.getToken(); //TODO: Verify tokens
 
+        if(!post.getRefList().isEmpty() && Collections.max(post.getRefList()) > getPostId()){
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("Invalid reference. There is no post with that reference");
+            responseObserver.onError(status.asRuntimeException());
+        }
+
         if (message.length() > 255) {
             Status status = Status.INVALID_ARGUMENT;
             status = status.withDescription("Invalid message length. Message needs to be smaller than 255 characters.");
@@ -337,6 +343,12 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         String message = post.getMessage();
         String token = request.getToken(); //TODO: Verify tokens
 
+
+        if(!post.getRefList().isEmpty() && Collections.max(post.getRefList()) > getPostId()){
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("Invalid reference. There is no post with that reference");
+            responseObserver.onError(status.asRuntimeException());
+        }
 
         if (message.length() > 255) {
             Status status = Status.INVALID_ARGUMENT;

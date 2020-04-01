@@ -43,7 +43,7 @@ message Announcement {
     string key = 1;
     string message = 2;
     int32 postId = 3;
-    repeated Announcement a = 4;
+    repeated int32 ref = 4;
 }
 
 message PostRequest {

@@ -30,28 +30,32 @@ public class ClientAPI {
     }
 
     public void receive(HelloWorldServiceBlockingStub stub, String input) throws Exception {
-        String[] command = input.split("\\|");
-        System.out.println("Command: " + command[0]);
-        switch (command[0]){
-            case "register":
-                register(stub, command);
-                break;
-            case "post":
-                post(stub, command);
-                break;
-            case "postGeneral":
-                postGeneral(stub, command);
-                break;
-            case "read":
-                read(stub, command);
-                break;
-            case "readGeneral":
-                readGeneral(stub, command);
-                break;
-            default:
-                System.err.println("Invalid input.");
-                break;
+        try {
+            String[] command = input.split("\\|");
+            System.out.println("Command: " + command[0]);
+            switch (command[0]) {
+                case "register":
+                    register(stub, command);
+                    break;
+                case "post":
+                    post(stub, command);
+                    break;
+                case "postGeneral":
+                    postGeneral(stub, command);
+                    break;
+                case "read":
+                    read(stub, command);
+                    break;
+                case "readGeneral":
+                    readGeneral(stub, command);
+                    break;
+                default:
+                    System.err.println("Invalid input.");
+                    break;
 
+            }
+        }catch (io.grpc.StatusRuntimeException e){
+            System.err.println(e.getMessage());
         }
     }
 
@@ -68,16 +72,16 @@ public class ClientAPI {
 
     /*--------------------------------------------------POSTS---------------------------------------------------------*/
     public Announcement buildAnnouncement(String[] command) {
-        List<Announcement> referral = new ArrayList<Announcement>();
+        List<Integer> referral = new ArrayList<Integer>();
         if(command.length > 2){
             int i = 3;
-            while(i < command.length-1){
-                referral.add(Announcement.newBuilder().setKey(command[i]).setMessage(command[i+1]).build());
-                i+=2;
+            while(i < command.length){
+                referral.add(Integer.parseInt(command[i]));
+                i+=1;
             }
         }
         Announcement.Builder post = Announcement.newBuilder().setKey(command[1]).setMessage(command[2]);
-        post.addAllA(referral);
+        post.addAllRef(referral);
 
         return post.build();
     }

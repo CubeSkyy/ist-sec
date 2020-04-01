@@ -19,10 +19,6 @@ public class HelloClient {
 	private final HelloWorldServiceGrpc.HelloWorldServiceBlockingStub blockingStub;
 
 	public HelloClient(Channel channel) {
-		// 'channel' here is a Channel, not a ManagedChannel, so it is not this code's responsibility to
-		// shut it down.
-
-		// Passing Channels to code makes code easier to test and makes it easier to reuse Channels.
 		blockingStub = HelloWorldServiceGrpc.newBlockingStub(channel);
 	}
 
@@ -41,7 +37,7 @@ public class HelloClient {
 	}
 
 	public static void main(String[] args) throws Exception {
-		// check arguments
+
 		if (args.length < 2) {
 			System.err.println("Argument(s) missing!");
 			System.err.printf("Usage: java %s host port%n", HelloClient.class.getName());
@@ -52,37 +48,18 @@ public class HelloClient {
 		final int port = Integer.parseInt(args[1]);
 		final String target = host + ":" + port;
 
-		// Channel is the abstraction to connect to a service endpoint
-		// Let us use plaintext communication because we do not have certificates
+
 		final ManagedChannel channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
 
-		// It is up to the client to determine whether to block the call
-		// Here we create a blocking stub, but an async stub,
-		// or an async stub with Future are always possible.
 		HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub = HelloWorldServiceGrpc.newBlockingStub(channel);
 
 		ClientAPI library = ClientAPI.getInstance();
-		/*try {
-			FileInputStream fis = new FileInputStream("input.txt");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			String input = (String) ois.readObject();
-			if(input != null){*/
-		String input = "register|user1\nregister|user2\npost|user1|ola isto e um teste|user2|announcement extra\nread|user1|0\npostGeneral|user1|teste do geral\nreadGeneral|0";
+
+		String input = "register|user1\nregister|user2\npost|user1|ola isto e um teste\nread|user1|0\npostGeneral|user1|teste do geral|1\nreadGeneral|0";
 				String[] commands = input.split("\n");
 				for(String command: commands){
 					library.receive(stub, command);
 				}
-		/*	}
-
-			ois.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
-
-
-
-		// A Channel should be shutdown before stopping the process.
 		channel.shutdownNow();
 	}
 
