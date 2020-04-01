@@ -17,6 +17,8 @@ import com.dpas.HelloWorld.ReadRequest;
 import com.dpas.HelloWorld.ReadResponse;
 import com.dpas.HelloWorld.ReadGeneralRequest;
 import com.dpas.HelloWorld.ReadGeneralResponse;
+import com.dpas.HelloWorld.RegisterRequest;
+import com.dpas.HelloWorld.RegisterResponse;
 import com.dpas.HelloWorldServiceGrpc.HelloWorldServiceBlockingStub;
 
 public class ClientAPI {
@@ -63,11 +65,12 @@ public class ClientAPI {
     /*----------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------COMMANDS--------------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
-    public void register(HelloWorldServiceBlockingStub stub, String[] command) {
+    public RegisterResponse register(HelloWorldServiceBlockingStub stub, String[] command) {
         //TODO:Have client send signature so server can verify identity
-        HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey(command[1]).build();
-        HelloWorld.RegisterResponse responseRegister = stub.register(requestRegister);
+        RegisterRequest requestRegister = RegisterRequest.newBuilder().setKey(command[1]).build();
+        RegisterResponse responseRegister = stub.register(requestRegister);
         System.out.println("REGISTER: " + responseRegister);
+        return responseRegister;
     }
 
     /*--------------------------------------------------POSTS---------------------------------------------------------*/
@@ -86,7 +89,7 @@ public class ClientAPI {
         return post.build();
     }
 
-    public void post(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public PostResponse post(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         Announcement post = buildAnnouncement(command);
 
         GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(command[1]).build();
@@ -100,9 +103,11 @@ public class ClientAPI {
                 .setHash(ByteString.copyFrom(hash)).setToken(responseGetToken.getToken()).build();
         PostResponse responsePost = stub.post(requestPost);
         System.out.println("POST: " + responsePost);
+
+        return responsePost;
     }
 
-    public void postGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public PostGeneralResponse postGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         Announcement post = buildAnnouncement(command);
 
         GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(command[1]).build();
@@ -118,10 +123,11 @@ public class ClientAPI {
 
         PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
         System.out.println("POST: " + responseGeneralPost);
+        return responseGeneralPost;
     }
 
     /*--------------------------------------------------READS---------------------------------------------------------*/
-    public void read(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public ReadResponse read(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         ReadRequest requestRead = ReadRequest.newBuilder().setNumber(Integer.parseInt(command[2])).setKey(command[1]).build();
         ReadResponse responseRead = stub.read(requestRead);
 
@@ -139,9 +145,10 @@ public class ClientAPI {
 //        Main.validate(signature, userAlias, messageHash, hash);
 
         System.out.println("READ: " + responseRead);
+        return responseRead;
     }
 
-    public void readGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public ReadGeneralResponse readGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         ReadGeneralRequest requestReadGeneral = ReadGeneralRequest.newBuilder().setNumber(Integer.parseInt(command[1])).build();
         ReadGeneralResponse responseReadGeneral = stub.readGeneral(requestReadGeneral);
 
@@ -162,5 +169,6 @@ public class ClientAPI {
 //        Main.validate(signature, "server1", messageHash, hash);
 
         System.out.println("READ: " + responseReadGeneral);
+        return responseReadGeneral;
     }
 }
