@@ -91,7 +91,7 @@ public class Main {
     }
 
     /*--------------------------------------------------VALIDATE------------------------------------------------------*/
-    public static void validate(byte[] signature, String userAlias, byte[] messageHash, byte[] hash) throws Exception {
+    public static boolean validate(byte[] signature, String userAlias, byte[] messageHash, byte[] hash) throws Exception {
         PublicKey publicKey = getPublicKey(userAlias);
 
         Signature sig = Signature.getInstance("SHA256withRSA");
@@ -101,12 +101,16 @@ public class Main {
 
         System.out.println("Signature is valid: " + verify);
         if (!verify) {
-            throw new Exception("Invalid signature! Board compromised!");
+            System.err.println("Invalid signature! Board compromised!");
+            return false;
         }
 
         if (!Arrays.equals(messageHash, hash)) {
-            throw new Exception("Hash does not correspond! Board compromised!");
+            System.err.println("Hash does not correspond! Board compromised!");
+            return false;
         }
+        System.out.println("Validation complete.");
+        return true;
     }
 
 
@@ -117,7 +121,9 @@ public class Main {
             KeyStore keyStore = KeyStore.getInstance("JCEKS");
             char[] pwd = "password".toCharArray();
             keyStore.load(fis, pwd);
-            return keyStore.containsAlias(userAlias);
+            boolean contains = keyStore.containsAlias(userAlias);
+            System.out.println("Has Certificate: " + contains);
+            return contains;
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
 

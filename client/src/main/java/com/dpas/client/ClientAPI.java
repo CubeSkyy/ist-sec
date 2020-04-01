@@ -17,6 +17,7 @@ import com.dpas.HelloWorld.ReadRequest;
 import com.dpas.HelloWorld.ReadResponse;
 import com.dpas.HelloWorld.ReadGeneralRequest;
 import com.dpas.HelloWorld.ReadGeneralResponse;
+import org.apache.commons.lang3.ArrayUtils;
 import com.dpas.HelloWorldServiceGrpc.HelloWorldServiceBlockingStub;
 
 public class ClientAPI {
@@ -63,9 +64,38 @@ public class ClientAPI {
     /*----------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------COMMANDS--------------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
-    public void register(HelloWorldServiceBlockingStub stub, String[] command) {
-        //TODO:Have client send signature so server can verify identity
-        HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey(command[1]).build();
+    public void register(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+        String userAlias = command[1];
+        /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
+        byte[] keyHash = Main.getHashFromObject(userAlias);
+        byte[] keySig = Main.getSignature(keyHash, userAlias);
+
+        GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(userAlias).setSignature(ByteString.copyFrom(keySig))
+                .setHash(ByteString.copyFrom(keyHash)).build();
+        GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
+        System.out.println("GET TOKEN: " + responseGetToken);
+
+        ByteString serverSigByteString = responseGetToken.getSignature();
+        ByteString serverHashByteString = responseGetToken.getHash();
+        String token = responseGetToken.getToken();
+
+        byte[] serverSig = serverSigByteString.toByteArray();
+        byte[] serverHash = serverHashByteString.toByteArray();
+        byte[] tokenHash = Main.getHashFromObject(token);
+
+        boolean valid = Main.validate(serverSig, "server1", tokenHash, serverHash); //TODO change to serverAlias when we have multiple servers
+        if(!valid){
+            System.err.println("Invalid signature and/or hash. GetToken request corrupted.");
+        }
+        /*----------------------------------------------------------------------------------*/
+
+        byte[] userAliasHash = Main.getHashFromObject(command[1]);
+
+        byte[] hash = ArrayUtils.addAll(userAliasHash, tokenHash);
+        byte[] signature = Main.getSignature(hash, command[1]);
+
+        HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey(command[1]).setSignature(ByteString.copyFrom(signature))
+                .setHash(ByteString.copyFrom(hash)).setToken(token).build();
         HelloWorld.RegisterResponse responseRegister = stub.register(requestRegister);
         System.out.println("REGISTER: " + responseRegister);
     }
@@ -89,11 +119,33 @@ public class ClientAPI {
     public void post(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         Announcement post = buildAnnouncement(command);
 
-        GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(command[1]).build();
+        String userAlias = command[1];
+        /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
+        byte[] keyHash = Main.getHashFromObject(userAlias);
+        byte[] keySig = Main.getSignature(keyHash, userAlias);
+
+        GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(userAlias).setSignature(ByteString.copyFrom(keySig))
+                .setHash(ByteString.copyFrom(keyHash)).build();
         GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
         System.out.println("GET TOKEN: " + responseGetToken);
 
-        byte[] hash = Main.getHashFromObject(command[2]);
+        ByteString serverSigByteString = responseGetToken.getSignature();
+        ByteString serverHashByteString = responseGetToken.getHash();
+        String token = responseGetToken.getToken();
+
+        byte[] serverSig = serverSigByteString.toByteArray();
+        byte[] serverHash = serverHashByteString.toByteArray();
+        byte[] tokenHash = Main.getHashFromObject(token);
+
+        boolean valid = Main.validate(serverSig, "server1", tokenHash, serverHash); //TODO change to serverAlias when we have multiple servers
+        if(!valid){
+            System.err.println("Invalid signature and/or hash. GetToken request corrupted.");
+        }
+        /*----------------------------------------------------------------------------------*/
+
+        byte[] postHash = Main.getHashFromObject(post);
+
+        byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
         byte[] signature = Main.getSignature(hash, command[1]);
 
         PostRequest requestPost = PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature))
@@ -105,45 +157,102 @@ public class ClientAPI {
     public void postGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         Announcement post = buildAnnouncement(command);
 
-        GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(command[1]).build();
+        String userAlias = command[1];
+        /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
+        byte[] keyHash = Main.getHashFromObject(userAlias);
+        byte[] keySig = Main.getSignature(keyHash, userAlias);
+
+        GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(userAlias).setSignature(ByteString.copyFrom(keySig))
+                .setHash(ByteString.copyFrom(keyHash)).build();
         GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
         System.out.println("GET TOKEN: " + responseGetToken);
 
-        byte[] hash = Main.getHashFromObject(command[2]);
+        ByteString serverSigByteString = responseGetToken.getSignature();
+        ByteString serverHashByteString = responseGetToken.getHash();
+        String token = responseGetToken.getToken();
+
+        byte[] serverSig = serverSigByteString.toByteArray();
+        byte[] serverHash = serverHashByteString.toByteArray();
+        byte[] tokenHash = Main.getHashFromObject(token);
+
+        boolean valid = Main.validate(serverSig, "server1", tokenHash, serverHash); //TODO change to serverAlias when we have multiple servers
+        if(!valid){
+            System.err.println("Invalid signature and/or hash. GetToken request corrupted.");
+        }
+        /*----------------------------------------------------------------------------------*/
+
+        byte[] postHash = Main.getHashFromObject(post);
+        byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
         byte[] signature = Main.getSignature(hash, command[1]);
 
         PostGeneralRequest requestGeneralPost = PostGeneralRequest.newBuilder()
                 .setPost(post).setSignature(ByteString.copyFrom(signature))
-                .setHash(ByteString.copyFrom(hash)).setToken(responseGetToken.getToken()).build();
+                .setHash(ByteString.copyFrom(hash)).setToken(token).build();
 
         PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
-        System.out.println("POST: " + responseGeneralPost);
+        System.out.println("POST GENERAL: " + responseGeneralPost);
     }
 
     /*--------------------------------------------------READS---------------------------------------------------------*/
     public void read(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
-        ReadRequest requestRead = ReadRequest.newBuilder().setNumber(Integer.parseInt(command[2])).setKey(command[1]).build();
+        String userAlias = command[1];
+        String key = command[2];
+        int number = Integer.parseInt(command[3]);
+        /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
+        byte[] userAliasHash = Main.getHashFromObject(userAlias);
+        byte[] keySig = Main.getSignature(userAliasHash, userAlias);
+
+        GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(userAlias).setSignature(ByteString.copyFrom(keySig))
+                .setHash(ByteString.copyFrom(userAliasHash)).build();
+        GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
+        System.out.println("GET TOKEN: " + responseGetToken);
+
+        ByteString serverSigByteString = responseGetToken.getSignature();
+        ByteString serverHashByteString = responseGetToken.getHash();
+        String token = responseGetToken.getToken();
+
+        byte[] serverSig = serverSigByteString.toByteArray();
+        byte[] serverHash = serverHashByteString.toByteArray();
+        byte[] tokenHash = Main.getHashFromObject(token);
+
+        boolean valid = Main.validate(serverSig, "server1", tokenHash, serverHash); //TODO change to serverAlias when we have multiple servers
+        if(!valid){
+            System.err.println("Invalid signature and/or hash. GetToken request corrupted.");
+        }
+        /*----------------------------------------------------------------------------------*/
+
+        byte[] keyHash = Main.getHashFromObject(key);
+        byte[] numberHash = Main.getHashFromObject(number);
+        byte[] hash = ArrayUtils.addAll(userAliasHash, keyHash); //userAlias + key + number + token
+        hash = ArrayUtils.addAll(hash, numberHash);
+        hash = ArrayUtils.addAll(hash, tokenHash);
+        byte[] signature = Main.getSignature(hash, userAlias);
+
+        ReadRequest requestRead = ReadRequest.newBuilder().setNumber(number)
+                .setKey(userAlias).setKeyToRead(key).setSignature(ByteString.copyFrom(signature))
+                .setHash(ByteString.copyFrom(hash)).setToken(token).build();
         ReadResponse responseRead = stub.read(requestRead);
 
-        //TODO:Verify server integrity and authenticity when its implemented in server side
-//        ByteString sigByteString = responseRead.getSignature();
-//        ByteString hashByteString = responseRead.getHash();
-//
-//        String userAlias = responseRead.getResult(0).getKey();
-//        String message = responseRead.getResult(0).getMessage();
-//
-//        byte[] signature = sigByteString.toByteArray();
-//        byte[] hash = hashByteString.toByteArray();
-//        byte[] messageHash = Main.getHashFromObject(message);
-//
-//        Main.validate(signature, userAlias, messageHash, hash);
+        /*---------------------------------SERVER VALIDATION--------------------------------*/
+        ByteString sigServerByteString = responseRead.getSignature();
+        ByteString hashServerByteString = responseRead.getHash();
 
-        System.out.println("READ: " + responseRead);
+        ArrayList<Announcement> result = new ArrayList<Announcement>(responseRead.getResultList());
+
+        byte[] responseSignature = sigServerByteString.toByteArray();
+        byte[] responseHash = hashServerByteString.toByteArray();
+        byte[] resultHash = Main.getHashFromObject(result);
+
+        boolean validResponse = Main.validate(responseSignature, "server1", resultHash, responseHash); //TODO change to serverAlias when we have multiple servers
+        if(!validResponse){
+            System.err.println("Invalid signature and/or hash. Read request corrupted.");
+        }
+
+        System.out.println("READ: " + responseRead.getResultList());
     }
 
     public void readGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
-        ReadGeneralRequest requestReadGeneral = ReadGeneralRequest.newBuilder().setNumber(Integer.parseInt(command[1])).build();
-        ReadGeneralResponse responseReadGeneral = stub.readGeneral(requestReadGeneral);
+
 
         //TODO:Verify server integrity and authenticity when its implemented in server side
 //        ByteString sigByteString = responseReadGeneral.getSignature();
@@ -160,7 +269,57 @@ public class ClientAPI {
 //
 //        byte[] messageHash = Main.getHashFromObject(message);
 //        Main.validate(signature, "server1", messageHash, hash);
+        String userAlias = command[1];
+        int number = Integer.parseInt(command[2]);
+        /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
+        byte[] userAliasHash = Main.getHashFromObject(userAlias);
+        byte[] keySig = Main.getSignature(userAliasHash, userAlias);
 
-        System.out.println("READ: " + responseReadGeneral);
+        GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(userAlias).setSignature(ByteString.copyFrom(keySig))
+                .setHash(ByteString.copyFrom(userAliasHash)).build();
+        GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
+        System.out.println("GET TOKEN: " + responseGetToken);
+
+        ByteString serverSigByteString = responseGetToken.getSignature();
+        ByteString serverHashByteString = responseGetToken.getHash();
+        String token = responseGetToken.getToken();
+
+        byte[] serverSig = serverSigByteString.toByteArray();
+        byte[] serverHash = serverHashByteString.toByteArray();
+        byte[] tokenHash = Main.getHashFromObject(token);
+
+        boolean valid = Main.validate(serverSig, "server1", tokenHash, serverHash); //TODO change to serverAlias when we have multiple servers
+        if(!valid){
+            System.err.println("Invalid signature and/or hash. GetToken request corrupted.");
+        }
+        /*----------------------------------------------------------------------------------*/
+
+        byte[] numberHash = Main.getHashFromObject(number);
+        byte[] hash = ArrayUtils.addAll(userAliasHash, numberHash); //userAlias + number + token
+        hash = ArrayUtils.addAll(hash, tokenHash);
+
+        byte[] signature = Main.getSignature(hash, userAlias);
+
+        ReadGeneralRequest requestReadGeneral = ReadGeneralRequest.newBuilder().setNumber(number)
+                .setKey(userAlias).setSignature(ByteString.copyFrom(signature))
+                .setHash(ByteString.copyFrom(hash)).setToken(token).build();
+        ReadGeneralResponse responseReadGeneral = stub.readGeneral(requestReadGeneral);
+
+        /*---------------------------------SERVER VALIDATION--------------------------------*/
+        ByteString sigServerByteString = responseReadGeneral.getSignature();
+        ByteString hashServerByteString = responseReadGeneral.getHash();
+
+        ArrayList<Announcement> result = new ArrayList<Announcement>(responseReadGeneral.getResultList());
+
+        byte[] responseSignature = sigServerByteString.toByteArray();
+        byte[] responseHash = hashServerByteString.toByteArray();
+        byte[] resultHash = Main.getHashFromObject(result);
+
+        boolean validResponse = Main.validate(responseSignature, "server1", resultHash, responseHash); //TODO change to serverAlias when we have multiple servers
+        if(!validResponse){
+            System.err.println("Invalid signature and/or hash. Read request corrupted.");
+        }
+
+        System.out.println("READ GENERAL: " + responseReadGeneral.getResultList());
     }
 }

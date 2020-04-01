@@ -54,8 +54,8 @@ public class HelloClient {
 		HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub = HelloWorldServiceGrpc.newBlockingStub(channel);
 
 		ClientAPI library = ClientAPI.getInstance();
-
-		String input = "register|user1\nregister|user2\npost|user1|ola isto e um teste\nread|user1|0\npostGeneral|user1|teste do geral|1\nreadGeneral|0";
+		String input = "register|user1\nregister|user2\npost|user1|ola isto e um teste\nread|user2|user1|0\npostGeneral|user1|teste do geral|1\nreadGeneral|user2|0";
+		//read->user that wants to read|user particular board wanted; readGeneral->user that wants to read
 				String[] commands = input.split("\n");
 				for(String command: commands){
 					library.receive(stub, command);
