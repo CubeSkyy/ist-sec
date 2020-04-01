@@ -4,6 +4,8 @@ import com.dpas.HelloWorld;
 import com.dpas.HelloWorldServiceGrpc;
 import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import com.dpas.HelloWorld.Announcement;
@@ -32,7 +34,7 @@ public class ClientAPI {
 
     public void receive(HelloWorldServiceBlockingStub stub, String input) throws Exception {
         try {
-            String[] command = input.split("\\|");
+            String[] command = getCommand(input);
             System.out.println("Command: " + command[0]);
             switch (command[0]) {
                 case "register":
@@ -60,11 +62,14 @@ public class ClientAPI {
         }
     }
 
+    public String[] getCommand(String command){
+        return command.split("\\|");
+    }
     
     /*----------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------COMMANDS--------------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
-    public void register(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public RegisterResponse register(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         String userAlias = command[1];
         /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
         byte[] keyHash = Main.getHashFromObject(userAlias);
@@ -98,6 +103,7 @@ public class ClientAPI {
                 .setHash(ByteString.copyFrom(hash)).setToken(token).build();
         HelloWorld.RegisterResponse responseRegister = stub.register(requestRegister);
         System.out.println("REGISTER: " + responseRegister);
+        return responseRegister;
     }
 
     /*--------------------------------------------------POSTS---------------------------------------------------------*/
@@ -116,7 +122,7 @@ public class ClientAPI {
         return post.build();
     }
 
-    public void post(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public PostResponse post(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         Announcement post = buildAnnouncement(command);
 
         String userAlias = command[1];
@@ -152,9 +158,11 @@ public class ClientAPI {
                 .setHash(ByteString.copyFrom(hash)).setToken(responseGetToken.getToken()).build();
         PostResponse responsePost = stub.post(requestPost);
         System.out.println("POST: " + responsePost);
+
+        return responsePost;
     }
 
-    public void postGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public PostGeneralResponse postGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         Announcement post = buildAnnouncement(command);
 
         String userAlias = command[1];
@@ -191,10 +199,11 @@ public class ClientAPI {
 
         PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
         System.out.println("POST GENERAL: " + responseGeneralPost);
+        return responseGeneralPost;
     }
 
     /*--------------------------------------------------READS---------------------------------------------------------*/
-    public void read(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public ReadResponse read(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         String userAlias = command[1];
         String key = command[2];
         int number = Integer.parseInt(command[3]);
@@ -249,26 +258,11 @@ public class ClientAPI {
         }
 
         System.out.println("READ: " + responseRead.getResultList());
+        return responseRead;
     }
 
-    public void readGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public ReadGeneralResponse readGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
 
-
-        //TODO:Verify server integrity and authenticity when its implemented in server side
-//        ByteString sigByteString = responseReadGeneral.getSignature();
-//        ByteString hashByteString = responseReadGeneral.getHash();
-//
-//
-//        ArrayList<Announcement> message = new ArrayList<Announcement>();
-//        for(int i = 0; i < responseReadGeneral.getResultCount(); i++){
-//            message.add(responseReadGeneral.getResult(i));
-//        }
-//
-//        byte[] signature = sigByteString.toByteArray();
-//        byte[] hash = hashByteString.toByteArray();
-//
-//        byte[] messageHash = Main.getHashFromObject(message);
-//        Main.validate(signature, "server1", messageHash, hash);
         String userAlias = command[1];
         int number = Integer.parseInt(command[2]);
         /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
@@ -321,5 +315,6 @@ public class ClientAPI {
         }
 
         System.out.println("READ GENERAL: " + responseReadGeneral.getResultList());
+        return responseReadGeneral;
     }
 }
