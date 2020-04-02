@@ -247,11 +247,10 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             Timer timer = new Timer(30000, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
-                    if (getUsersMap().get(key).equals(token)) {
 
-                        getUsersMap().replace(key, null);
+                    if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
+                        usersMap.replace(key, null);
                         writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
-
                         System.out.println("User token expired: " + key + ":" + token);
                     }
                 }
@@ -277,7 +276,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
         ByteString hashByteString = request.getHash();
-        String token = request.getToken(); //TODO: Verify tokens
+        String token = request.getToken();
 
         byte[] sig = sigByteString.toByteArray();
         byte[] hash = hashByteString.toByteArray(); //key+token
@@ -297,6 +296,21 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
+
+            getUsersMap().replace(key, null);
+            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
+
+            System.out.println("User token expired: " + key + ":" + token);
+        }
+
+        else {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("Token has already expired.");
+            responseObserver.onError(status.asRuntimeException());
+        }
+
         /*----------------------------------------------------------------------------------*/
         if (!Main.hasCertificate(key)) {
             Status status = Status.INVALID_ARGUMENT;
@@ -328,7 +342,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         Announcement post = request.getPost();
         String key = post.getKey();
         String message = post.getMessage();
-        String token = request.getToken(); //TODO: Verify tokens
+        String token = request.getToken();
 
         if(!post.getRefList().isEmpty() && Collections.max(post.getRefList()) > getPostId()){
             Status status = Status.INVALID_ARGUMENT;
@@ -370,6 +384,20 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             e.printStackTrace();
         }
 
+        if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
+
+            getUsersMap().replace(key, null);
+            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
+
+            System.out.println("User token expired: " + key + ":" + token);
+        }
+
+        else {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("Token has already expired.");
+            responseObserver.onError(status.asRuntimeException());
+        }
+
         /*------------------------------------POST ID---------------------------------------*/
         postId++;
         writeToFile(getPostId(), POSTID_FILE, MSG_POSTID);
@@ -406,7 +434,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         Announcement post = request.getPost();
         String key = post.getKey();
         String message = post.getMessage();
-        String token = request.getToken(); //TODO: Verify tokens
+        String token = request.getToken();
 
 
         if(!post.getRefList().isEmpty() && Collections.max(post.getRefList()) > getPostId()){
@@ -448,6 +476,20 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             e.printStackTrace();
         }
 
+        if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
+
+            getUsersMap().replace(key, null);
+            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
+
+            System.out.println("User token expired: " + key + ":" + token);
+        }
+
+        else {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("Token has already expired.");
+            responseObserver.onError(status.asRuntimeException());
+        }
+
         /*------------------------------------POST ID---------------------------------------*/
         postId++;
         writeToFile(getPostId(), POSTID_FILE, MSG_POSTID);
@@ -478,7 +520,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         String userAlias = request.getKey();
         String key = request.getKeyToRead();
         int number = request.getNumber();
-        String token = request.getToken(); //TODO: Verify tokens
+        String token = request.getToken();
 
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
@@ -505,6 +547,21 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (getUsersMap().get(userAlias) != null && getUsersMap().get(userAlias).equals(token)) {
+
+            getUsersMap().replace(userAlias, null);
+            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
+
+            System.out.println("User token expired: " + userAlias + ":" + token);
+        }
+
+        else {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("Token has already expired.");
+            responseObserver.onError(status.asRuntimeException());
+        }
+
         /*----------------------------------------------------------------------------------*/
         try {
             if (number < 0) {
@@ -580,6 +637,21 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        if (getUsersMap().get(userAlias) != null && getUsersMap().get(userAlias).equals(token)) {
+
+            getUsersMap().replace(userAlias, null);
+            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
+
+            System.out.println("User token expired: " + userAlias + ":" + token);
+        }
+
+        else {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription("Token has already expired.");
+            responseObserver.onError(status.asRuntimeException());
+        }
+
         /*----------------------------------------------------------------------------------*/
 
         if (number < 0) {

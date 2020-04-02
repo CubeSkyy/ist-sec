@@ -11,6 +11,8 @@ import java.util.List;
 import com.dpas.HelloWorld.Announcement;
 import com.dpas.HelloWorld.GetTokenRequest;
 import com.dpas.HelloWorld.GetTokenResponse;
+import com.dpas.HelloWorld.RegisterRequest;
+import com.dpas.HelloWorld.RegisterResponse;
 import com.dpas.HelloWorld.PostRequest;
 import com.dpas.HelloWorld.PostResponse;
 import com.dpas.HelloWorld.PostGeneralRequest;
