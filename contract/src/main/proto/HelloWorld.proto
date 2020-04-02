@@ -26,7 +26,6 @@ message HelloResponse {
 message RegisterRequest {
     string key = 1;
     bytes signature = 2;
-    bytes hash = 3;
 }
 
 message RegisterResponse {
@@ -36,13 +35,11 @@ message RegisterResponse {
 message GetTokenRequest {
     string key = 1;
     bytes signature = 2;
-    bytes hash = 3;
 }
 
 message GetTokenResponse {
     string token = 1;
     bytes signature = 2;
-    bytes hash = 3;
 }
 
 message Announcement {
@@ -55,7 +52,6 @@ message Announcement {
 message PostRequest {
     Announcement post = 1;
     bytes signature = 2;
-    bytes hash = 3;
     string token = 4;
 }
 
@@ -66,7 +62,6 @@ message PostResponse {
 message PostGeneralRequest {
     Announcement post = 1;
     bytes signature = 2;
-    bytes hash = 3;
     string token = 4;
 }
 
@@ -79,28 +74,24 @@ message ReadRequest {
     string keyToRead = 2;
     int32 number = 3;
     bytes signature = 4;
-    bytes hash = 5;
     string token = 6;
 }
 
 message ReadResponse {
     repeated Announcement result = 1;
     bytes signature = 2;
-    bytes hash = 3;
 }
 
 message ReadGeneralRequest {
     string key = 1;
     int32 number = 2;
     bytes signature = 3;
-    bytes hash = 4;
     string token = 5;
 }
 
 message ReadGeneralResponse {
     repeated Announcement result = 1;
     bytes signature = 2;
-    bytes hash = 3;
 }
 
 // Defining a Service, a Service can have multiple RPC operations

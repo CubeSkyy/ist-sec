@@ -91,7 +91,7 @@ public class Main {
     }
 
     /*--------------------------------------------------VALIDATE------------------------------------------------------*/
-    public static boolean validate(byte[] signature, String userAlias, byte[] messageHash, byte[] hash) throws Exception {
+    public static boolean validate(byte[] signature, String userAlias, byte[] messageHash) throws Exception {
         PublicKey publicKey = getPublicKey(userAlias);
 
         Signature sig = Signature.getInstance("SHA256withRSA");
@@ -102,11 +102,6 @@ public class Main {
         System.out.println("Signature is valid: " + verify);
         if (!verify) {
             System.err.println("Invalid signature! Board compromised!");
-            return false;
-        }
-
-        if (!Arrays.equals(messageHash, hash)) {
-            System.err.println("Hash does not correspond! Board compromised!");
             return false;
         }
         System.out.println("Validation complete.");
