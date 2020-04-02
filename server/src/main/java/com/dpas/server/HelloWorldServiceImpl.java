@@ -283,11 +283,20 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         System.out.println("Users: " + getUsersMap());
 
-        HelloWorld.RegisterResponse response = HelloWorld.RegisterResponse.newBuilder()
-                .setResult(true).build();
+        try {
+            byte[] userHash = Main.getHashFromObject(key);
+            byte[] sigGeneral = Main.getSignature(userHash, "server1"); //TODO change to serverAlias when we have multiple servers
 
-        responseObserver.onNext(response);
-        responseObserver.onCompleted();
+            ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
+
+            HelloWorld.RegisterResponse response = HelloWorld.RegisterResponse.newBuilder()
+                    .setResult(key).setSignature(responseSigByteString).build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*--------------------------------------------------POSTS---------------------------------------------------------*/
@@ -356,11 +365,21 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         writeToFile(getParticularMap(), PARTICULAR_FILE, MSG_PARTICULAR);
 
-        PostResponse response = PostResponse.newBuilder()
-                .setResult(true).build();
+        /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
+        try {
+            byte[] userHash = Main.getHashFromObject(key);
+            byte[] sigGeneral = Main.getSignature(userHash, "server1"); //TODO change to serverAlias when we have multiple servers
 
-        responseObserver.onNext(response);
-        responseObserver.onCompleted();
+            ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
+
+            PostResponse response = PostResponse.newBuilder()
+                    .setResult(key).setSignature(responseSigByteString).build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -425,11 +444,20 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         System.out.println("General posts: " + getGeneralMap());
 
-        PostGeneralResponse response = PostGeneralResponse.newBuilder()
-                .setResult(true).build();
-        responseObserver.onNext(response);
-        responseObserver.onCompleted();
+        /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
+        try {
+            byte[] userHash = Main.getHashFromObject(key);
+            byte[] sigGeneral = Main.getSignature(userHash, "server1"); //TODO change to serverAlias when we have multiple servers
 
+            ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
+
+            PostGeneralResponse response = PostGeneralResponse.newBuilder()
+                    .setResult(key).setSignature(responseSigByteString).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*--------------------------------------------------READS---------------------------------------------------------*/

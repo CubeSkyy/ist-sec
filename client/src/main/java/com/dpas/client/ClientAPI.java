@@ -76,12 +76,9 @@ public class ClientAPI {
         return valid;
     }
 
-    private boolean validateServerRead(ByteString signature, ArrayList<Announcement> result) throws Exception {
-
+    private boolean validateServerResponse(ByteString signature, byte[] hash) throws Exception {
         byte[] responseSignature = signature.toByteArray();
-        byte[] resultHash = Main.getHashFromObject(result);
-
-        boolean validResponse = Main.validate(responseSignature, "server1", resultHash); //TODO change to serverAlias when we have multiple servers
+        boolean validResponse = Main.validate(responseSignature, "server1", hash); //TODO change to serverAlias when we have multiple servers
         return validResponse;
     }
 
@@ -96,7 +93,21 @@ public class ClientAPI {
 
         HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey(command[1])
                 .setSignature(ByteString.copyFrom(signature)).build();
+
         HelloWorld.RegisterResponse responseRegister = stub.register(requestRegister);
+
+        /*---------------------------------SERVER VALIDATION--------------------------------*/
+        ByteString sigServerByteString = responseRegister.getSignature();
+        String key = responseRegister.getResult();
+
+        byte[] resultHash = Main.getHashFromObject(key);
+
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
+        if (!validResponse) {
+            System.err.println("Invalid signature and/or hash. Register response corrupted.");
+            return null;
+        }
+
         System.out.println("REGISTER: " + responseRegister);
         return responseRegister;
     }
@@ -140,6 +151,19 @@ public class ClientAPI {
 
         PostRequest requestPost = PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).build();
         PostResponse responsePost = stub.post(requestPost);
+
+        /*---------------------------------SERVER VALIDATION--------------------------------*/
+        ByteString sigServerByteString = responsePost.getSignature();
+        String key = responsePost.getResult();
+
+        byte[] resultHash = Main.getHashFromObject(key);
+
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
+        if (!validResponse) {
+            System.err.println("Invalid signature and/or hash. Post response corrupted.");
+            return null;
+        }
+
         System.out.println("POST: " + responsePost);
 
         return responsePost;
@@ -170,6 +194,18 @@ public class ClientAPI {
                 .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).build();
 
         PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
+        /*---------------------------------SERVER VALIDATION--------------------------------*/
+        ByteString sigServerByteString = responseGeneralPost.getSignature();
+        String key = responseGeneralPost.getResult();
+
+        byte[] resultHash = Main.getHashFromObject(key);
+
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
+        if (!validResponse) {
+            System.err.println("Invalid signature and/or hash. Post General response corrupted.");
+            return null;
+        }
+
         System.out.println("POST GENERAL: " + responseGeneralPost);
         return responseGeneralPost;
     }
@@ -207,10 +243,11 @@ public class ClientAPI {
         /*---------------------------------SERVER VALIDATION--------------------------------*/
         ByteString sigServerByteString = responseRead.getSignature();
         ArrayList<Announcement> result = new ArrayList<Announcement>(responseRead.getResultList());
+        byte[] resultHash = Main.getHashFromObject(result);
 
-        boolean validResponse = validateServerRead(sigServerByteString, result);
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
         if (!validResponse) {
-            System.err.println("Invalid signature and/or hash. Read request corrupted.");
+            System.err.println("Invalid signature and/or hash. Read Response corrupted.");
             return null;
         }
 
@@ -249,10 +286,11 @@ public class ClientAPI {
         /*---------------------------------SERVER VALIDATION--------------------------------*/
         ByteString sigServerByteString = responseReadGeneral.getSignature();
         ArrayList<Announcement> result = new ArrayList<Announcement>(responseReadGeneral.getResultList());
+        byte[] resultHash = Main.getHashFromObject(result);
 
-        boolean validResponse = validateServerRead(sigServerByteString, result);
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
         if (!validResponse) {
-            System.err.println("Invalid signature and/or hash. Read request corrupted.");
+            System.err.println("Invalid signature and/or hash. Read General response corrupted.");
             return null;
         }
 
