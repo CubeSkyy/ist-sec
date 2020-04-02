@@ -73,36 +73,12 @@ public class ClientAPI {
     /*----------------------------------------------------------------------------------------------------------------*/
     public RegisterResponse register(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         String userAlias = command[1];
-        /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
-        byte[] keyHash = Main.getHashFromObject(userAlias);
-        byte[] keySig = Main.getSignature(keyHash, userAlias);
 
-        GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(userAlias).setSignature(ByteString.copyFrom(keySig))
-                .setHash(ByteString.copyFrom(keyHash)).build();
-        GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
-        System.out.println("GET TOKEN: " + responseGetToken);
-
-        ByteString serverSigByteString = responseGetToken.getSignature();
-        ByteString serverHashByteString = responseGetToken.getHash();
-        String token = responseGetToken.getToken();
-
-        byte[] serverSig = serverSigByteString.toByteArray();
-        byte[] serverHash = serverHashByteString.toByteArray();
-        byte[] tokenHash = Main.getHashFromObject(token);
-
-        boolean valid = Main.validate(serverSig, "server1", tokenHash, serverHash); //TODO change to serverAlias when we have multiple servers
-        if(!valid){
-            System.err.println("Invalid signature and/or hash. GetToken request corrupted.");
-        }
-        /*----------------------------------------------------------------------------------*/
-
-        byte[] userAliasHash = Main.getHashFromObject(command[1]);
-
-        byte[] hash = ArrayUtils.addAll(userAliasHash, tokenHash);
+        byte[] hash = Main.getHashFromObject(command[1]);
         byte[] signature = Main.getSignature(hash, command[1]);
 
         HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey(command[1]).setSignature(ByteString.copyFrom(signature))
-                .setHash(ByteString.copyFrom(hash)).setToken(token).build();
+                .setHash(ByteString.copyFrom(hash)).build();
         HelloWorld.RegisterResponse responseRegister = stub.register(requestRegister);
         System.out.println("REGISTER: " + responseRegister);
         return responseRegister;

@@ -223,7 +223,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             responseObserver.onError(status.asRuntimeException());
         }*/
 
-        String token = RandomStringUtils.randomAlphanumeric(10);
+        String token = RandomStringUtils.randomAlphanumeric(32);
 
         getUsersMap().replace(key, token);
         writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
@@ -276,15 +276,12 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
         ByteString hashByteString = request.getHash();
-        String token = request.getToken();
 
         byte[] sig = sigByteString.toByteArray();
-        byte[] hash = hashByteString.toByteArray(); //key+token
+        byte[] hash = hashByteString.toByteArray(); //key
 
         try {
-            byte[] tokenHash = Main.getHashFromObject(token);
-            byte[] keyHash = Main.getHashFromObject(key);
-            byte[] finalHash = ArrayUtils.addAll(keyHash, tokenHash);
+            byte[] finalHash = Main.getHashFromObject(key);
 
             boolean valid = Main.validate(sig, key, finalHash, hash); //key == userAlias
             if(!valid){
@@ -295,20 +292,6 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
-
-            getUsersMap().replace(key, null);
-            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
-
-            System.out.println("User token expired: " + key + ":" + token);
-        }
-
-        else {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("Token has already expired.");
-            responseObserver.onError(status.asRuntimeException());
         }
 
         /*----------------------------------------------------------------------------------*/

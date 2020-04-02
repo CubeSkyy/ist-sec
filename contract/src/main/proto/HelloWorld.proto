@@ -27,7 +27,6 @@ message RegisterRequest {
     string key = 1;
     bytes signature = 2;
     bytes hash = 3;
-    string token = 4;
 }
 
 message RegisterResponse {
