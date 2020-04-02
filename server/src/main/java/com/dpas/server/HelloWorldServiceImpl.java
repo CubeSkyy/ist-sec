@@ -35,9 +35,9 @@ import com.dpas.HelloWorld.ReadGeneralRequest;
 import com.dpas.HelloWorld.ReadGeneralResponse;
 import com.google.protobuf.ByteString;
 import org.apache.commons.lang3.ArrayUtils;
-
 import java.security.*;
 import java.security.cert.CertificateException;
+import static com.dpas.server.ServerDataStore.*;
 
 public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServiceImplBase {
 
@@ -50,14 +50,6 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     private ArrayList<Announcement> generalMap;
     private int postId;
     /*--------------------------------------------------FILES---------------------------------------------------------*/
-    public static final String USERS_FILE = "users.tmp";
-    public static final String PARTICULAR_FILE = "particular.tmp";
-    public static final String GENERAL_FILE = "general.tmp";
-    public static final String POSTID_FILE = "postid.tmp";
-    public static final String MSG_USERS = "Users successfully read/written to file.";
-    public static final String MSG_PARTICULAR = "Particular post successfully read/written to file.";
-    public static final String MSG_GENERAL = "General post successfully read/written to file.";
-    public static final String MSG_POSTID = "Current post ID successfully read/written to file.";
 
 
     public static HelloWorldServiceImpl getInstance() {
@@ -171,6 +163,24 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         return new Object();
     }
 
+    private void sendArgumentError(StreamObserver<?> responseObserver, String errorMessage) {
+        Status status = Status.INVALID_ARGUMENT;
+        status = status.withDescription(errorMessage);
+        System.err.println(errorMessage);
+        responseObserver.onError(status.asRuntimeException());
+        responseObserver.onCompleted();
+    }
+
+    private void sendArgumentError(boolean condition, StreamObserver<?> responseObserver, String errorMessage) {
+        if (condition) {
+            Status status = Status.INVALID_ARGUMENT;
+            status = status.withDescription(errorMessage);
+            System.err.println(errorMessage);
+            responseObserver.onError(status.asRuntimeException());
+            responseObserver.onCompleted();
+        }
+    }
+
     /*-------------------------------------------------GREETING-------------------------------------------------------*/
     @Override
     public void greeting(HelloRequest request, StreamObserver<HelloResponse> responseObserver) {
@@ -200,22 +210,13 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         try {
             byte[] keyHash = Main.getHashFromObject(key);
             boolean valid = Main.validate(tokenSig, key, keyHash, tokenHash); //key == userAlias
-            if(!valid){
-                Status status = Status.INVALID_ARGUMENT;
-                status = status.withDescription("Invalid signature and/or hash. GetToken request denied.");
-                responseObserver.onError(status.asRuntimeException());
-            }
-
+            sendArgumentError(!valid, responseObserver, MSG_ERROR_GETTOKEN_SIG);
         } catch (Exception e) {
             e.printStackTrace();
         }
         /*----------------------------------------------------------------------------------*/
-
-        if (!Main.hasCertificate(key)) { //key == userAlias
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("User is not registered in keystore.");
-            responseObserver.onError(status.asRuntimeException());
-        }
+        boolean valid = Main.hasCertificate(key);
+        sendArgumentError(!valid, responseObserver, MSG_ERROR_CERTIFICATE);
 
         /*if (!getUsersMap().containsKey(key)) {
             Status status = Status.INVALID_ARGUMENT;
@@ -284,27 +285,20 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             byte[] finalHash = Main.getHashFromObject(key);
 
             boolean valid = Main.validate(sig, key, finalHash, hash); //key == userAlias
-            if(!valid){
-                Status status = Status.INVALID_ARGUMENT;
-                status = status.withDescription("Invalid signature and/or hash. Register request denied.");
-                responseObserver.onError(status.asRuntimeException());
-            }
+            sendArgumentError(!valid, responseObserver, MSG_ERROR_REGISTER_SIG);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         /*----------------------------------------------------------------------------------*/
-        if (!Main.hasCertificate(key)) {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("User is not registered in keystore.");
-            responseObserver.onError(status.asRuntimeException());
-        }
+        boolean valid = Main.hasCertificate(key);
+        sendArgumentError(!valid, responseObserver, MSG_ERROR_CERTIFICATE);
 
         if (!getUsersMap().containsKey(key)) {
             getUsersMap().put(key, null);
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
-            System.out.println("New user registered.");
+            System.out.println("New user registered: " + key);
         } else
             System.out.println("User is already registered.");
 
@@ -327,24 +321,14 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         String message = post.getMessage();
         String token = request.getToken();
 
-        if(!post.getRefList().isEmpty() && Collections.max(post.getRefList()) > getPostId()){
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("Invalid reference. There is no post with that reference");
-            responseObserver.onError(status.asRuntimeException());
-        }
+        boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
+        sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
 
-        if (message.length() > 255) {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("Invalid message length. Message needs to be smaller than 255 characters.");
-            responseObserver.onError(status.asRuntimeException());
-        }
+        boolean validLenght = message.length() <= 255;
+        sendArgumentError(!validLenght, responseObserver, MSG_ERROR_POST_MSG_LEN);
 
-        if (!getUsersMap().containsKey(key)) {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("User is not registered");
-            responseObserver.onError(status.asRuntimeException());
-        }
-
+        boolean validRegister = getUsersMap().containsKey(key);
+        sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
 
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
@@ -357,28 +341,21 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             byte[] tokenHash = Main.getHashFromObject(token);
             byte[] postHash = Main.getHashFromObject(post);
             byte[] finalHash = ArrayUtils.addAll(postHash, tokenHash);
+
             boolean valid = Main.validate(signature, key, finalHash, hash); //key == userAlias
-            if(!valid){
-                Status status = Status.INVALID_ARGUMENT;
-                status = status.withDescription("Invalid signature and/or hash. Post request denied.");
-                responseObserver.onError(status.asRuntimeException());
-            }
+            sendArgumentError(!valid, responseObserver, MSG_ERROR_POST_SIG);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
-
             getUsersMap().replace(key, null);
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
             System.out.println("User token expired: " + key + ":" + token);
-        }
-
-        else {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("Token has already expired.");
-            responseObserver.onError(status.asRuntimeException());
+        } else {
+            sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
         }
 
         /*------------------------------------POST ID---------------------------------------*/
@@ -419,24 +396,15 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         String message = post.getMessage();
         String token = request.getToken();
 
+        boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
+        sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
 
-        if(!post.getRefList().isEmpty() && Collections.max(post.getRefList()) > getPostId()){
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("Invalid reference. There is no post with that reference");
-            responseObserver.onError(status.asRuntimeException());
-        }
+        boolean validLenght = message.length() <= 255;
+        sendArgumentError(!validLenght, responseObserver, MSG_ERROR_POST_MSG_LEN);
 
-        if (message.length() > 255) {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("Invalid message length. Message needs to be smaller than 255 characters.");
-            responseObserver.onError(status.asRuntimeException());
-        }
+        boolean validRegister = getUsersMap().containsKey(key);
+        sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
 
-        if (!getUsersMap().containsKey(key)) {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("User is not registered");
-            responseObserver.onError(status.asRuntimeException());
-        }
 
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
@@ -449,12 +417,10 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             byte[] tokenHash = Main.getHashFromObject(token);
             byte[] postHash = Main.getHashFromObject(post);
             byte[] finalHash = ArrayUtils.addAll(postHash, tokenHash);
+
             boolean valid = Main.validate(signature, key, finalHash, hash); //key == userAlias
-            if(!valid){
-                Status status = Status.INVALID_ARGUMENT;
-                status = status.withDescription("Invalid signature and/or hash. Post General request denied.");
-                responseObserver.onError(status.asRuntimeException());
-            }
+            sendArgumentError(!valid, responseObserver, MSG_ERROR_POST_GENERAL_SIG);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -465,12 +431,8 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
             System.out.println("User token expired: " + key + ":" + token);
-        }
-
-        else {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("Token has already expired.");
-            responseObserver.onError(status.asRuntimeException());
+        } else {
+            sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
         }
 
         /*------------------------------------POST ID---------------------------------------*/
@@ -522,41 +484,30 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             finalHash = ArrayUtils.addAll(finalHash, tokenHash);
 
             boolean valid = Main.validate(signature, userAlias, finalHash, hash); //key == userAlias
-            if(!valid){
-                Status status = Status.INVALID_ARGUMENT;
-                status = status.withDescription("Invalid signature and/or hash. Read request denied.");
-                responseObserver.onError(status.asRuntimeException());
-            }
+            sendArgumentError(!valid, responseObserver, MSG_ERROR_READ_SIG);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if (getUsersMap().get(userAlias) != null && getUsersMap().get(userAlias).equals(token)) {
-
             getUsersMap().replace(userAlias, null);
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
             System.out.println("User token expired: " + userAlias + ":" + token);
-        }
-
-        else {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("Token has already expired.");
-            responseObserver.onError(status.asRuntimeException());
+        } else {
+            sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
         }
 
         /*----------------------------------------------------------------------------------*/
         try {
-            if (number < 0) {
-                Status status = Status.INVALID_ARGUMENT;
-                status = status.withDescription("Invalid message number. Number needs to be positive.");
-                responseObserver.onError(status.asRuntimeException());
-            }
+            boolean validNumber = number >= 0;
+            sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
 
-            if (!getParticularMap().containsKey(key)) {
-                Status status = Status.INVALID_ARGUMENT;
-                status = status.withDescription("Invalid key. There is no user with the specified key: " + key);
-                responseObserver.onError(status.asRuntimeException());
+            boolean validKey = getParticularMap().containsKey(key);
+
+            if (!validKey) {
+                sendArgumentError(responseObserver, MSG_ERROR_INVALID_KEY + key);
             } else {
                 ArrayList<Announcement> tmp = getParticularMap().get(key);
                 ArrayList<Announcement> result = new ArrayList<Announcement>();
@@ -612,36 +563,25 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             finalHash = ArrayUtils.addAll(finalHash, tokenHash);
 
             boolean valid = Main.validate(signature, userAlias, finalHash, hash); //key == userAlias
-            if(!valid){
-                Status status = Status.INVALID_ARGUMENT;
-                status = status.withDescription("Invalid signature and/or hash. Read General request denied.");
-                responseObserver.onError(status.asRuntimeException());
-            }
+            sendArgumentError(!valid, responseObserver, MSG_ERROR_READ_GENERAL_SIG);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         if (getUsersMap().get(userAlias) != null && getUsersMap().get(userAlias).equals(token)) {
 
             getUsersMap().replace(userAlias, null);
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
             System.out.println("User token expired: " + userAlias + ":" + token);
-        }
-
-        else {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("Token has already expired.");
-            responseObserver.onError(status.asRuntimeException());
+        } else {
+            sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
         }
 
         /*----------------------------------------------------------------------------------*/
-
-        if (number < 0) {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("Invalid message number. Number needs to be positive.");
-            responseObserver.onError(status.asRuntimeException());
-        }
+        boolean validNumber = number >= 0;
+        sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
 
         ArrayList<HelloWorld.Announcement> general = getGeneralMap();
         ArrayList<HelloWorld.Announcement> result = new ArrayList<HelloWorld.Announcement>();
@@ -658,7 +598,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         }
 
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
-        try{
+        try {
             byte[] hashGeneral = Main.getHashFromObject(result);
             byte[] sigGeneral = Main.getSignature(hashGeneral, "server1"); //TODO change to serverAlias when we have multiple servers
 
