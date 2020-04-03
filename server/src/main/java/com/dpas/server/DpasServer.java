@@ -4,7 +4,7 @@ import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
-public class HelloServer {
+public class DpasServer {
 
 	public static void main(String[] args) throws Exception {
 		// check arguments
@@ -15,7 +15,7 @@ public class HelloServer {
 		}
 
 		final int port = Integer.parseInt(args[0]);
-		final BindableService impl = HelloWorldServiceImpl.getInstance();
+		final BindableService impl = DpasServiceImpl.getInstance();
 
 		// Create a new server to listen on port
 		Server server = ServerBuilder.forPort(port).addService(impl).build();

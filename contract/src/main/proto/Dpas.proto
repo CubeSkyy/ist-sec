@@ -4,25 +4,6 @@
 syntax = "proto3";
 package com.dpas;
 
-// Request payload
-message HelloRequest {
-  // Each message attribute is strongly typed.
-  // You also must assign a "tag" number.
-  // Each tag number is unique within the message.
-  string name = 1;
-
-  // This defines a strongly typed list of String
-  repeated string hobbies = 2;
-
-  // There are many more basics types, like Enum, Map
-  // See https://developers.google.com/protocol-buffers/docs/proto3
-  // for more information.
-}
-
-message HelloResponse {
-  string greeting = 1;
-}
-
 message RegisterRequest {
     string key = 1;
     bytes signature = 2;
@@ -104,9 +85,8 @@ message ResetResponse {
 }
 
 // Defining a Service, a Service can have multiple RPC operations
-service HelloWorldService {
+service DpasService {
   // Define a RPC operation
-  rpc greeting(HelloRequest) returns (HelloResponse);
   rpc register(RegisterRequest) returns (RegisterResponse);
   rpc getToken(GetTokenRequest) returns (GetTokenResponse);
   rpc post(PostRequest) returns (PostResponse);

@@ -1,20 +1,19 @@
 package com.dpas;
 
-import com.dpas.HelloWorld.GetTokenResponse;
+import com.dpas.Dpas.GetTokenRequest;
+import com.dpas.Dpas.GetTokenResponse;
 import com.dpas.client.ClientAPI;
 import com.dpas.crypto.Main;
 import com.dpas.server.ServerDataStore;
 import com.google.protobuf.ByteString;
 import io.grpc.StatusRuntimeException;
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 @RunWith(JUnit4.class)
 public class GetTokenClientTest extends RollbackTestAbstractClass {
@@ -29,7 +28,7 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
     @Test
     public void getTokenNonUserTest() throws Exception {
         final GetTokenResponse[] tokenResponse = new GetTokenResponse[1];
-            Throwable exception = assertThrows(IOException.class, () -> {
+        Throwable exception = assertThrows(IOException.class, () -> {
             tokenResponse[0] = client.getClientToken(blockingStub, ClientDataStore.CLIENT_WRONG_USER);
         });
         assertEquals("Private key from that user is not in keystore.", exception.getMessage());
@@ -70,7 +69,7 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
     @Test
     public void getTokenChangeServerSignatureTest() throws Exception {
 //        ManagedChannel inProcessChannelTest;
-//        HelloWorldServiceGrpc.HelloWorldServiceBlockingStub blockingStubTest;
+//        DpasServiceGrpc.DpasServiceBlockingStub blockingStubTest;
 //        String serverName = InProcessServerBuilder.generateName();
 //
 //        grpcCleanupTest.register(InProcessServerBuilder
@@ -79,7 +78,7 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
 //        inProcessChannelTest = grpcCleanupTest.register(
 //                InProcessChannelBuilder.forName(serverName).directExecutor().build());
 //
-//        blockingStubTest = HelloWorldServiceGrpc.newBlockingStub(inProcessChannelTest);
+//        blockingStubTest = DpasServiceGrpc.newBlockingStub(inProcessChannelTest);
 //
 //
 //        final RegisterResponse[] response = new RegisterResponse[1];
@@ -91,14 +90,13 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
     }
 
 
-
     private class changeUserAPI extends ClientAPI {
         @Override
-        public GetTokenResponse getClientToken(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String userAlias) throws Exception {
+        public GetTokenResponse getClientToken(DpasServiceGrpc.DpasServiceBlockingStub stub, String userAlias) throws Exception {
             byte[] keyHash = Main.getHashFromObject(userAlias);
             byte[] keySig = Main.getSignature(keyHash, userAlias);
 
-            HelloWorld.GetTokenRequest requestGetToken = HelloWorld.GetTokenRequest.newBuilder().setKey(ClientDataStore.CLIENT_TEST_USER2)
+            GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(ClientDataStore.CLIENT_TEST_USER2)
                     .setSignature(ByteString.copyFrom(keySig)).build();
             GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
             System.out.println("GET TOKEN: " + responseGetToken);
@@ -109,11 +107,11 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
 
     private class changeSignatureAPI extends ClientAPI {
         @Override
-        public GetTokenResponse getClientToken(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String userAlias) throws Exception {
+        public GetTokenResponse getClientToken(DpasServiceGrpc.DpasServiceBlockingStub stub, String userAlias) throws Exception {
             byte[] keyHash = Main.getHashFromObject(userAlias);
             byte[] keySig = Main.getSignature(keyHash, ClientDataStore.CLIENT_TEST_USER2);
 
-            HelloWorld.GetTokenRequest requestGetToken = HelloWorld.GetTokenRequest.newBuilder().setKey(userAlias)
+            GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(userAlias)
                     .setSignature(ByteString.copyFrom(keySig)).build();
             GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
             System.out.println("GET TOKEN: " + responseGetToken);
@@ -135,11 +133,11 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
         }
     }
 
-//    private final HelloWorldServiceGrpc.HelloWorldServiceImplBase serviceImplTest =
-//            mock(HelloWorldServiceGrpc.HelloWorldServiceImplBase.class, delegatesTo(
-//                    new HelloWorldServiceGrpc.HelloWorldServiceImplBase() {
+//    private final DpasServiceGrpc.DpasServiceImplBase serviceImplTest =
+//            mock(DpasServiceGrpc.DpasServiceImplBase.class, delegatesTo(
+//                    new DpasServiceGrpc.DpasServiceImplBase() {
 //                        @Override
-//                        public synchronized void getToken(HelloWorld.GetTokenRequest request, StreamObserver<GetTokenResponse> responseObserver) {
+//                        public synchronized void getToken(GetTokenRequest request, StreamObserver<GetTokenResponse> responseObserver) {
 //
 //                            String token = ClientDataStore.WRONG_TOKEN;
 //

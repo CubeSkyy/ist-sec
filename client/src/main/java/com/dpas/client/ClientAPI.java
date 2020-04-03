@@ -1,8 +1,8 @@
 package com.dpas.client;
 
-import com.dpas.HelloWorld;
-import com.dpas.HelloWorld.*;
-import com.dpas.HelloWorldServiceGrpc.HelloWorldServiceBlockingStub;
+import com.dpas.Dpas;
+import com.dpas.Dpas.*;
+import com.dpas.DpasServiceGrpc.DpasServiceBlockingStub;
 import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
 import org.apache.commons.lang3.ArrayUtils;
@@ -20,7 +20,7 @@ public class ClientAPI {
         return instance;
     }
 
-    public void receive(HelloWorldServiceBlockingStub stub, String input) throws Exception {
+    public void receive(DpasServiceBlockingStub stub, String input) throws Exception {
         try {
             String[] command = getCommand(input);
             System.out.println("Command: " + command[0]);
@@ -54,7 +54,7 @@ public class ClientAPI {
         return command.split("\\|");
     }
 
-    public GetTokenResponse getClientToken(HelloWorldServiceBlockingStub stub, String userAlias) throws Exception {
+    public GetTokenResponse getClientToken(DpasServiceBlockingStub stub, String userAlias) throws Exception {
         byte[] keyHash = Main.getHashFromObject(userAlias);
         byte[] keySig = Main.getSignature(keyHash, userAlias);
 
@@ -85,16 +85,16 @@ public class ClientAPI {
     /*----------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------COMMANDS--------------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
-    public RegisterResponse register(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public RegisterResponse register(DpasServiceBlockingStub stub, String[] command) throws Exception {
         String userAlias = command[1];
 
         byte[] hash = Main.getHashFromObject(userAlias);
         byte[] signature = Main.getSignature(hash, userAlias);
 
-        HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey(command[1])
+        RegisterRequest requestRegister = RegisterRequest.newBuilder().setKey(command[1])
                 .setSignature(ByteString.copyFrom(signature)).build();
 
-        HelloWorld.RegisterResponse responseRegister = stub.register(requestRegister);
+        RegisterResponse responseRegister = stub.register(requestRegister);
 
         /*---------------------------------SERVER VALIDATION--------------------------------*/
         ByteString sigServerByteString = responseRegister.getSignature();
@@ -128,7 +128,7 @@ public class ClientAPI {
         return post.build();
     }
 
-    public boolean post(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public boolean post(DpasServiceBlockingStub stub, String[] command) throws Exception {
 
         String userAlias = command[1];
         /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
@@ -170,7 +170,7 @@ public class ClientAPI {
     }
 
 
-    public boolean postGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public boolean postGeneral(DpasServiceBlockingStub stub, String[] command) throws Exception {
         String userAlias = command[1];
         /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
         GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
@@ -211,7 +211,7 @@ public class ClientAPI {
     }
 
     /*--------------------------------------------------READS---------------------------------------------------------*/
-    public ReadResponse read(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public ReadResponse read(DpasServiceBlockingStub stub, String[] command) throws Exception {
         String userAlias = command[1];
         String key = command[2];
         int number = Integer.parseInt(command[3]);
@@ -256,7 +256,7 @@ public class ClientAPI {
     }
 
 
-    public ReadGeneralResponse readGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public ReadGeneralResponse readGeneral(DpasServiceBlockingStub stub, String[] command) throws Exception {
 
         String userAlias = command[1];
         int number = Integer.parseInt(command[2]);

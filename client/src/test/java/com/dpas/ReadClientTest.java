@@ -1,12 +1,8 @@
 package com.dpas;
 
-import com.dpas.HelloWorld.GetTokenResponse;
-import com.dpas.client.ClientAPI;
-import com.dpas.crypto.Main;
+import com.dpas.Dpas.ReadResponse;
 import com.dpas.server.ServerDataStore;
-import com.google.protobuf.ByteString;
 import io.grpc.StatusRuntimeException;
-import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -21,8 +17,8 @@ public class ReadClientTest extends RollbackTestAbstractClass {
     public void readValid() throws Exception {
         client.receive(blockingStub, "register|" + CLIENT_TEST_USER);
         boolean postResponse = client.post(blockingStub, client.getCommand("post|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG));
-        HelloWorld.ReadResponse readResponse = client.read(blockingStub,client.getCommand("read|" + CLIENT_TEST_USER +
-                "|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG_NUMBER) );
+        ReadResponse readResponse = client.read(blockingStub, client.getCommand("read|" + CLIENT_TEST_USER +
+                "|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG_NUMBER));
 
         assertTrue(postResponse);
         assertEquals(CLIENT_TEST_MSG_NUMBER, Integer.toString(readResponse.getResultCount()));
@@ -35,7 +31,7 @@ public class ReadClientTest extends RollbackTestAbstractClass {
     @Test
     public void readNonRegistered() throws Exception {
         Throwable exception = assertThrows(StatusRuntimeException.class, () -> {
-            client.read(blockingStub, client.getCommand("read|" + CLIENT_TEST_USER + "|" +CLIENT_TEST_USER + "|" + 0));
+            client.read(blockingStub, client.getCommand("read|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_USER + "|" + 0));
         });
         assertEquals(ServerDataStore.MSG_ERROR_NOT_REGISTERED, ((StatusRuntimeException) exception).getStatus().getDescription());
 

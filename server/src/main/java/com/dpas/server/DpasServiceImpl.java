@@ -1,8 +1,7 @@
 package com.dpas.server;
 
-import com.dpas.HelloWorld;
-import com.dpas.HelloWorld.*;
-import com.dpas.HelloWorldServiceGrpc;
+import com.dpas.Dpas.*;
+import com.dpas.DpasServiceGrpc;
 import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
 import io.grpc.Status;
@@ -24,12 +23,12 @@ import java.util.ListIterator;
 
 import static com.dpas.server.ServerDataStore.*;
 
-public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServiceImplBase {
+public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
     //TODO: Verify Tokens
     //TODO: Make All Server Responses Signed so client can verify it was server that sent them
 
-    public static HelloWorldServiceImpl instance = null;
+    public static DpasServiceImpl instance = null;
     private HashMap<String, String> usersMap;
     private HashMap<String, ArrayList<Announcement>> particularMap;
     private ArrayList<Announcement> generalMap;
@@ -37,16 +36,16 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     /*--------------------------------------------------FILES---------------------------------------------------------*/
 
 
-    public static HelloWorldServiceImpl getInstance() {
+    public static DpasServiceImpl getInstance() {
         if (instance == null) {
 
-            instance = new HelloWorldServiceImpl();
+            instance = new DpasServiceImpl();
         }
         return instance;
     }
 
 
-    private HelloWorldServiceImpl() {
+    private DpasServiceImpl() {
         initialize();
     }
 
@@ -169,18 +168,6 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         }
     }
 
-    /*-------------------------------------------------GREETING-------------------------------------------------------*/
-    @Override
-    public void greeting(HelloRequest request, StreamObserver<HelloResponse> responseObserver) {
-        System.out.println(request);
-
-        HelloResponse response = HelloResponse.newBuilder()
-                .setGreeting("Hello " + request.getName()).build();
-
-        responseObserver.onNext(response);
-        responseObserver.onCompleted();
-    }
-
     /*---------------------------------------------------TOKENS-------------------------------------------------------*/
     @Override
     public synchronized void getToken(GetTokenRequest request, StreamObserver<GetTokenResponse> responseObserver) {
@@ -254,7 +241,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     /*------------------------------------------------COMMANDS--------------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
     @Override
-    public synchronized void register(HelloWorld.RegisterRequest request, StreamObserver<HelloWorld.RegisterResponse> responseObserver) {
+    public synchronized void register(RegisterRequest request, StreamObserver<RegisterResponse> responseObserver) {
         System.out.println("Register Request Received: " + request);
 
         String key = request.getKey();
@@ -293,7 +280,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-            HelloWorld.RegisterResponse response = HelloWorld.RegisterResponse.newBuilder()
+            RegisterResponse response = RegisterResponse.newBuilder()
                     .setResult(key).setSignature(responseSigByteString).build();
 
             responseObserver.onNext(response);
@@ -497,11 +484,10 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
         boolean validRegister = getUsersMap().containsKey(key);
 
-        if (!validRegister){
+        if (!validRegister) {
             sendArgumentError(responseObserver, MSG_ERROR_NOT_REGISTERED);
 
-        }
-        else if (getUsersMap().get(userAlias).equals(token)) {
+        } else if (getUsersMap().get(userAlias).equals(token)) {
             getUsersMap().replace(userAlias, null);
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
@@ -524,7 +510,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
                 ArrayList<Announcement> result = new ArrayList<Announcement>();
 
                 if (number > 0) {
-                    if(tmp.size() > 0){
+                    if (tmp.size() > 0) {
                         ListIterator<Announcement> listIter = tmp.listIterator(tmp.size());
                         for (int i = 0; i < number; i++) {
                             result.add(listIter.previous());
@@ -592,8 +578,8 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         boolean validNumber = number >= 0;
         sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
 
-        ArrayList<HelloWorld.Announcement> general = getGeneralMap();
-        ArrayList<HelloWorld.Announcement> result = new ArrayList<HelloWorld.Announcement>();
+        ArrayList<Announcement> general = getGeneralMap();
+        ArrayList<Announcement> result = new ArrayList<Announcement>();
 
         if (number > 0) {
             ListIterator<Announcement> listIter = general.listIterator(general.size());

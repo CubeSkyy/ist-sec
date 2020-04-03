@@ -1,6 +1,7 @@
 package com.dpas;
 
-import com.dpas.HelloWorld.RegisterResponse;
+import com.dpas.Dpas.RegisterRequest;
+import com.dpas.Dpas.RegisterResponse;
 import com.dpas.client.ClientAPI;
 import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
@@ -8,7 +9,6 @@ import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import org.junit.Rule;
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -66,7 +66,7 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
 //    public void registerChangeServerSignatureTest() throws Exception {
 //
 //        ManagedChannel inProcessChannelTest;
-//        HelloWorldServiceGrpc.HelloWorldServiceBlockingStub blockingStubTest;
+//        DpasServiceGrpc.DpasServiceBlockingStub blockingStubTest;
 //        String serverName = InProcessServerBuilder.generateName();
 //
 //        grpcCleanupTest.register(InProcessServerBuilder
@@ -75,7 +75,7 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
 //        inProcessChannelTest = grpcCleanupTest.register(
 //                InProcessChannelBuilder.forName(serverName).directExecutor().build());
 //
-//        blockingStubTest = HelloWorldServiceGrpc.newBlockingStub(inProcessChannelTest);
+//        blockingStubTest = DpasServiceGrpc.newBlockingStub(inProcessChannelTest);
 //
 //
 //        final RegisterResponse[] response = new RegisterResponse[1];
@@ -89,16 +89,16 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
 
     private class RegisterTestWrongUserAPI extends ClientAPI {
         @Override
-        public RegisterResponse register(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+        public RegisterResponse register(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
             String userAlias = command[1];
 
             byte[] hash = Main.getHashFromObject(command[1]);
             byte[] signature = Main.getSignature(hash, command[1]);
 
-            HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey(ClientDataStore.CLIENT_TEST_USER2)
+            RegisterRequest requestRegister = RegisterRequest.newBuilder().setKey(ClientDataStore.CLIENT_TEST_USER2)
                     .setSignature(ByteString.copyFrom(signature)).build();
 
-            HelloWorld.RegisterResponse responseRegister = stub.register(requestRegister);
+            RegisterResponse responseRegister = stub.register(requestRegister);
 
             /*---------------------------------SERVER VALIDATION--------------------------------*/
             ByteString sigServerByteString = responseRegister.getSignature();
@@ -120,16 +120,16 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
 
     private class RegisterTestWrongSigAPI extends ClientAPI {
         @Override
-        public RegisterResponse register(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+        public RegisterResponse register(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
             String userAlias = command[1];
 
             byte[] hash = Main.getHashFromObject(userAlias);
             byte[] signature = Main.getSignature(hash, ClientDataStore.CLIENT_TEST_USER2);
 
-            HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey(userAlias)
+            RegisterRequest requestRegister = RegisterRequest.newBuilder().setKey(userAlias)
                     .setSignature(ByteString.copyFrom(signature)).build();
 
-            HelloWorld.RegisterResponse responseRegister = stub.register(requestRegister);
+            RegisterResponse responseRegister = stub.register(requestRegister);
 
             /*---------------------------------SERVER VALIDATION--------------------------------*/
             ByteString sigServerByteString = responseRegister.getSignature();
@@ -149,12 +149,12 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
     }
 
 
-    private final HelloWorldServiceGrpc.HelloWorldServiceImplBase serviceImplTest =
-            mock(HelloWorldServiceGrpc.HelloWorldServiceImplBase.class, delegatesTo(
-                    new HelloWorldServiceGrpc.HelloWorldServiceImplBase() {
+    private final DpasServiceGrpc.DpasServiceImplBase serviceImplTest =
+            mock(DpasServiceGrpc.DpasServiceImplBase.class, delegatesTo(
+                    new DpasServiceGrpc.DpasServiceImplBase() {
 
                         @Override
-                        public synchronized void register(HelloWorld.RegisterRequest request, StreamObserver<HelloWorld.RegisterResponse> responseObserver) {
+                        public synchronized void register(RegisterRequest request, StreamObserver<RegisterResponse> responseObserver) {
                             System.out.println("Register Request Received: " + request);
                             String key = request.getKey();
                             /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
@@ -165,7 +165,7 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
 
                                 ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-                                HelloWorld.RegisterResponse response = HelloWorld.RegisterResponse.newBuilder()
+                                RegisterResponse response = RegisterResponse.newBuilder()
                                         .setResult(key).setSignature(responseSigByteString).build();
 
                                 responseObserver.onNext(response);

@@ -1,6 +1,6 @@
 package com.dpas;
 
-import com.dpas.HelloWorld.GetTokenResponse;
+import com.dpas.Dpas.*;
 import com.dpas.client.ClientAPI;
 import com.dpas.crypto.Main;
 import com.dpas.server.ServerDataStore;
@@ -8,7 +8,6 @@ import com.google.protobuf.ByteString;
 import io.grpc.StatusRuntimeException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -22,8 +21,8 @@ public class PostClientTest extends RollbackTestAbstractClass {
     public void postValid() throws Exception {
         client.receive(blockingStub, "register|" + CLIENT_TEST_USER);
         boolean postResponse = client.post(blockingStub, client.getCommand("post|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG));
-        HelloWorld.ReadResponse readResponse = client.read(blockingStub,client.getCommand("read|" + CLIENT_TEST_USER +
-                "|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG_NUMBER) );
+        ReadResponse readResponse = client.read(blockingStub, client.getCommand("read|" + CLIENT_TEST_USER +
+                "|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG_NUMBER));
 
         assertTrue(postResponse);
         assertEquals(CLIENT_TEST_MSG_NUMBER, Integer.toString(readResponse.getResultCount()));
@@ -55,8 +54,8 @@ public class PostClientTest extends RollbackTestAbstractClass {
     public void post255ValidMsgLen() throws Exception {
         client.receive(blockingStub, "register|" + CLIENT_TEST_USER);
         boolean postResponse = client.post(blockingStub, client.getCommand("post|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_255_MSG));
-        HelloWorld.ReadResponse readResponse = client.read(blockingStub,client.getCommand("read|" + CLIENT_TEST_USER +
-                "|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG_NUMBER) );
+        ReadResponse readResponse = client.read(blockingStub, client.getCommand("read|" + CLIENT_TEST_USER +
+                "|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG_NUMBER));
 
 
         assertTrue(postResponse);
@@ -131,7 +130,7 @@ public class PostClientTest extends RollbackTestAbstractClass {
     @Test
     public void postChangeServerSignatureTest() throws Exception {
 //        ManagedChannel inProcessChannelTest;
-//        HelloWorldServiceGrpc.HelloWorldServiceBlockingStub blockingStubTest;
+//        DpasServiceGrpc.DpasServiceBlockingStub blockingStubTest;
 //        String serverName = InProcessServerBuilder.generateName();
 //
 //        grpcCleanupTest.register(InProcessServerBuilder
@@ -140,7 +139,7 @@ public class PostClientTest extends RollbackTestAbstractClass {
 //        inProcessChannelTest = grpcCleanupTest.register(
 //                InProcessChannelBuilder.forName(serverName).directExecutor().build());
 //
-//        blockingStubTest = HelloWorldServiceGrpc.newBlockingStub(inProcessChannelTest);
+//        blockingStubTest = DpasServiceGrpc.newBlockingStub(inProcessChannelTest);
 //
 //
 //        final RegisterResponse[] response = new RegisterResponse[1];
@@ -154,7 +153,7 @@ public class PostClientTest extends RollbackTestAbstractClass {
 
     private class changeMessageAPI extends ClientAPI {
         @Override
-        public boolean post(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+        public boolean post(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
 
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
@@ -168,19 +167,19 @@ public class PostClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            HelloWorld.Announcement post = buildAnnouncement(command);
+            Announcement post = buildAnnouncement(command);
 
             byte[] postHash = Main.getHashFromObject(post);
             byte[] tokenHash = Main.getHashFromObject(token);
             byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
             byte[] signature = Main.getSignature(hash, command[1]);
 
-            HelloWorld.Announcement.Builder postBuilder = post.toBuilder();
+            Announcement.Builder postBuilder = post.toBuilder();
             postBuilder.setMessage(CLIENT_TEST_MSG2);
             post = postBuilder.build();
 
-            HelloWorld.PostRequest requestPost = HelloWorld.PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).build();
-            HelloWorld.PostResponse responsePost = stub.post(requestPost);
+            PostRequest requestPost = PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).build();
+            PostResponse responsePost = stub.post(requestPost);
 
             /*---------------------------------SERVER VALIDATION--------------------------------*/
             ByteString sigServerByteString = responsePost.getSignature();
@@ -202,7 +201,7 @@ public class PostClientTest extends RollbackTestAbstractClass {
 
     private class changeTokenAPI extends ClientAPI {
         @Override
-        public boolean post(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+        public boolean post(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
 
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
@@ -216,16 +215,16 @@ public class PostClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            HelloWorld.Announcement post = buildAnnouncement(command);
+            Announcement post = buildAnnouncement(command);
 
             byte[] postHash = Main.getHashFromObject(post);
             byte[] tokenHash = Main.getHashFromObject(token);
             byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
             byte[] signature = Main.getSignature(hash, command[1]);
 
-            HelloWorld.PostRequest requestPost = HelloWorld.PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature))
+            PostRequest requestPost = PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature))
                     .setToken(CLIENT_WRONG_TOKEN).build();
-            HelloWorld.PostResponse responsePost = stub.post(requestPost);
+            PostResponse responsePost = stub.post(requestPost);
 
             /*---------------------------------SERVER VALIDATION--------------------------------*/
             ByteString sigServerByteString = responsePost.getSignature();
@@ -248,7 +247,7 @@ public class PostClientTest extends RollbackTestAbstractClass {
 
     private class ReplayAPI extends ClientAPI {
         @Override
-        public boolean post(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+        public boolean post(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
 
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
@@ -262,16 +261,16 @@ public class PostClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            HelloWorld.Announcement post = buildAnnouncement(command);
+            Announcement post = buildAnnouncement(command);
 
             byte[] postHash = Main.getHashFromObject(post);
             byte[] tokenHash = Main.getHashFromObject(token);
             byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
             byte[] signature = Main.getSignature(hash, command[1]);
 
-            HelloWorld.PostRequest requestPost = HelloWorld.PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature))
+            PostRequest requestPost = PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature))
                     .setToken(token).build();
-            HelloWorld.PostResponse responsePost = stub.post(requestPost);
+            PostResponse responsePost = stub.post(requestPost);
 
             stub.post(requestPost);
 
@@ -296,7 +295,7 @@ public class PostClientTest extends RollbackTestAbstractClass {
 
     private class ChangeSignatureAPI extends ClientAPI {
         @Override
-        public boolean post(HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+        public boolean post(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
 
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
@@ -310,16 +309,16 @@ public class PostClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            HelloWorld.Announcement post = buildAnnouncement(command);
+            Announcement post = buildAnnouncement(command);
 
             byte[] postHash = Main.getHashFromObject(post);
             byte[] tokenHash = Main.getHashFromObject(token);
             byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
             byte[] signature = Main.getSignature(hash, CLIENT_TEST_USER2);
 
-            HelloWorld.PostRequest requestPost = HelloWorld.PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature))
+            PostRequest requestPost = PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature))
                     .setToken(token).build();
-            HelloWorld.PostResponse responsePost = stub.post(requestPost);
+            PostResponse responsePost = stub.post(requestPost);
 
             responsePost = stub.post(requestPost);
 
@@ -356,14 +355,14 @@ public class PostClientTest extends RollbackTestAbstractClass {
         }
     }
 
-//    private final HelloWorldServiceGrpc.HelloWorldServiceImplBase serviceImplTest =
-//            mock(HelloWorldServiceGrpc.HelloWorldServiceImplBase.class, delegatesTo(
-//                    new HelloWorldServiceGrpc.HelloWorldServiceImplBase() {
+//    private final DpasServiceGrpc.DpasServiceImplBase serviceImplTest =
+//            mock(DpasServiceGrpc.DpasServiceImplBase.class, delegatesTo(
+//                    new DpasServiceGrpc.DpasServiceImplBase() {
 //                        @Override
-//                        public synchronized void post(HelloWorld.PostRequest request, StreamObserver<HelloWorld.PostResponse> responseObserver) {
+//                        public synchronized void post(PostRequest request, StreamObserver<PostResponse> responseObserver) {
 //                            System.out.println("Post Request Received: " + request);
 //
-//                            HelloWorld.Announcement post = request.getPost();
+//                            Announcement post = request.getPost();
 //                            String key = post.getKey();
 //
 //                            /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
@@ -373,7 +372,7 @@ public class PostClientTest extends RollbackTestAbstractClass {
 //
 //                                ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 //
-//                                HelloWorld.PostResponse response = HelloWorld.PostResponse .newBuilder()
+//                                PostResponse response = PostResponse .newBuilder()
 //                                        .setResult(key).setSignature(responseSigByteString).build();
 //
 //                                responseObserver.onNext(response);

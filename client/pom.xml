@@ -95,7 +95,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>com.dpas.client.HelloClient</mainClass>
+					<mainClass>com.dpas.client.DpasClient</mainClass>
 					<arguments>
 						<argument>${server.host}</argument>
 						<argument>${server.port}</argument>

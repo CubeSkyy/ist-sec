@@ -1,7 +1,8 @@
 package com.dpas;
 
+import com.dpas.Dpas.ResetRequest;
 import com.dpas.client.ClientAPI;
-import com.dpas.server.HelloWorldServiceImpl;
+import com.dpas.server.DpasServiceImpl;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
@@ -14,7 +15,7 @@ import static com.dpas.server.ServerDataStore.*;
 
 
 public abstract class RollbackTestAbstractClass {
-    public HelloWorldServiceGrpc.HelloWorldServiceBlockingStub blockingStub;
+    public DpasServiceGrpc.DpasServiceBlockingStub blockingStub;
     @Rule
     public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
     public ManagedChannel inProcessChannel;
@@ -28,12 +29,12 @@ public abstract class RollbackTestAbstractClass {
 
         // Create a server, add service, start, and register for automatic graceful shutdown.
         grpcCleanup.register(InProcessServerBuilder
-                .forName(serverName).directExecutor().addService(HelloWorldServiceImpl.getInstance()).build().start());
+                .forName(serverName).directExecutor().addService(DpasServiceImpl.getInstance()).build().start());
 
 
         inProcessChannel = grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
-        blockingStub = HelloWorldServiceGrpc.newBlockingStub(inProcessChannel);
+        blockingStub = DpasServiceGrpc.newBlockingStub(inProcessChannel);
 
         client = ClientAPI.getInstance();
 
@@ -41,7 +42,7 @@ public abstract class RollbackTestAbstractClass {
 
     @AfterClass
     @BeforeClass
-    public static void  start() {
+    public static void start() {
         new File(USERS_FILE).delete();
         new File(PARTICULAR_FILE).delete();
         new File(GENERAL_FILE).delete();
@@ -54,7 +55,7 @@ public abstract class RollbackTestAbstractClass {
         new File(PARTICULAR_FILE).delete();
         new File(GENERAL_FILE).delete();
         new File(POSTID_FILE).delete();
-        blockingStub.reset(HelloWorld.ResetRequest.newBuilder().build());
+        blockingStub.reset(ResetRequest.newBuilder().build());
     }
 
 }
