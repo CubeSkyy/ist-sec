@@ -118,7 +118,7 @@ demo2
 #### Demo 3:
 
 ```
-demo2
+demo3
 ```
 * register | user1
 * post | user1 | Test
