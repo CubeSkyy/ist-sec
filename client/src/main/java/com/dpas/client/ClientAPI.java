@@ -5,9 +5,10 @@ import com.dpas.DpasServiceGrpc.DpasServiceBlockingStub;
 import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
 import org.apache.commons.lang3.ArrayUtils;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.dpas.client.DpasClient.*;
 
 public class ClientAPI {
     public static ClientAPI instance = null;
@@ -58,6 +59,14 @@ public class ClientAPI {
                         break;
                     }
                     readGeneral(stub, command);
+                    break;
+                case "demo1":
+                    //DEMO1 = "register|user1\npost|user1|Test\nread|user1|user1|0";
+                    stub.reset(ResetRequest.newBuilder().build());
+                    String[] commands = DEMO1.split("\n");
+                    for (String com : commands) {
+                        receive(stub, com);
+                    }
                     break;
                 default:
                     System.err.println("Invalid input.");

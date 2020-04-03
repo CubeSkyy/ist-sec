@@ -20,6 +20,8 @@ public class DpasClient {
     }
 
     private static BufferedReader reader;
+    public static String DEMO1;
+
 
     public static void main(String[] args) throws Exception {
 
@@ -53,6 +55,9 @@ public class DpasClient {
                 }
             }
         });
+
+        DEMO1 = "register|user1\npost|user1|Test\nread|user1|user1|0";
+
         System.out.print("Insert commands:\n");
         while (true) {
             try {
