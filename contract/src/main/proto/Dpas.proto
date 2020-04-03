@@ -86,12 +86,12 @@ message ResetResponse {
 
 // Defining a Service, a Service can have multiple RPC operations
 service DpasService {
-  // Define a RPC operation
-  rpc register(RegisterRequest) returns (RegisterResponse);
-  rpc getToken(GetTokenRequest) returns (GetTokenResponse);
-  rpc post(PostRequest) returns (PostResponse);
-  rpc postGeneral(PostGeneralRequest) returns (PostGeneralResponse);
-  rpc read(ReadRequest) returns (ReadResponse);
-  rpc readGeneral(ReadGeneralRequest) returns (ReadGeneralResponse);
-  rpc reset(ResetRequest) returns (ResetResponse);
+    // Define a RPC operation
+    rpc register (RegisterRequest) returns (RegisterResponse);
+    rpc getToken (GetTokenRequest) returns (GetTokenResponse);
+    rpc post (PostRequest) returns (PostResponse);
+    rpc postGeneral (PostGeneralRequest) returns (PostGeneralResponse);
+    rpc read (ReadRequest) returns (ReadResponse);
+    rpc readGeneral (ReadGeneralRequest) returns (ReadGeneralResponse);
+    rpc reset (ResetRequest) returns (ResetResponse);
 }

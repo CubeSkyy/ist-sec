@@ -1,6 +1,5 @@
 package com.dpas.client;
 
-import com.dpas.Dpas;
 import com.dpas.Dpas.*;
 import com.dpas.DpasServiceGrpc.DpasServiceBlockingStub;
 import com.dpas.crypto.Main;
@@ -72,13 +71,13 @@ public class ClientAPI {
         byte[] serverSig = serverSigByteString.toByteArray();
         byte[] tokenHash = Main.getHashFromObject(token);
 
-        boolean valid = Main.validate(serverSig, "server1", tokenHash); //TODO change to serverAlias when we have multiple servers
+        boolean valid = Main.validate(serverSig, "server1", tokenHash);
         return valid;
     }
 
     public boolean validateServerResponse(ByteString signature, byte[] hash) throws Exception {
         byte[] responseSignature = signature.toByteArray();
-        boolean validResponse = Main.validate(responseSignature, "server1", hash); //TODO change to serverAlias when we have multiple servers
+        boolean validResponse = Main.validate(responseSignature, "server1", hash);
         return validResponse;
     }
 
@@ -161,7 +160,7 @@ public class ClientAPI {
         boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post response corrupted.");
-        }else{
+        } else {
             System.out.println("POST: " + responsePost);
         }
 
@@ -203,7 +202,7 @@ public class ClientAPI {
         boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post General response corrupted.");
-        }else {
+        } else {
             System.out.println("POST GENERAL: " + responseGeneralPost);
         }
 

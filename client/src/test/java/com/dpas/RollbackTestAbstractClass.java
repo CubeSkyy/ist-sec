@@ -15,12 +15,21 @@ import static com.dpas.server.ServerDataStore.*;
 
 
 public abstract class RollbackTestAbstractClass {
-    public DpasServiceGrpc.DpasServiceBlockingStub blockingStub;
     @Rule
     public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
+    public DpasServiceGrpc.DpasServiceBlockingStub blockingStub;
     public ManagedChannel inProcessChannel;
 
     public ClientAPI client;
+
+    @AfterClass
+    @BeforeClass
+    public static void start() {
+        new File(USERS_FILE).delete();
+        new File(PARTICULAR_FILE).delete();
+        new File(GENERAL_FILE).delete();
+        new File(POSTID_FILE).delete();
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -38,15 +47,6 @@ public abstract class RollbackTestAbstractClass {
 
         client = ClientAPI.getInstance();
 
-    }
-
-    @AfterClass
-    @BeforeClass
-    public static void start() {
-        new File(USERS_FILE).delete();
-        new File(PARTICULAR_FILE).delete();
-        new File(GENERAL_FILE).delete();
-        new File(POSTID_FILE).delete();
     }
 
     @After

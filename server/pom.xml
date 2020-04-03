@@ -1,51 +1,51 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<!-- http://maven.apache.org/pom.html#Quick_Overview -->
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!-- http://maven.apache.org/pom.html#Quick_Overview -->
 
-	<artifactId>dpas-server</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<packaging>jar</packaging>
+    <artifactId>dpas-server</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-	<name>${project.artifactId}</name>
+    <name>${project.artifactId}</name>
 
-	<parent>
-		<groupId>com.dpas</groupId>
-		<artifactId>dpas</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
-	<properties>
-		<!-- compiler properties -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <parent>
+        <groupId>com.dpas</groupId>
+        <artifactId>dpas</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <properties>
+        <!-- compiler properties -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<mainclass>com.dpas.server.DpasServer</mainclass>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <mainclass>com.dpas.server.DpasServer</mainclass>
 
 
-		<server.port>8080</server.port>
-	</properties>
+        <server.port>8080</server.port>
+    </properties>
 
-	<dependencies>
-		<!-- contract brings gRPC dependencies with it -->
-		<dependency>
-			<groupId>com.dpas</groupId>
-			<artifactId>dpas-contract</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.dpas</groupId>
-			<artifactId>dpas-crypto</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<!-- JUnit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13</version>
-			<scope>test</scope>
-		</dependency>
+    <dependencies>
+        <!-- contract brings gRPC dependencies with it -->
+        <dependency>
+            <groupId>com.dpas</groupId>
+            <artifactId>dpas-contract</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.dpas</groupId>
+            <artifactId>dpas-crypto</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <!-- JUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-testing</artifactId>
@@ -59,39 +59,41 @@
         </dependency>
     </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
 
-					<compilerArgs>
-						<arg>-Xlint:unchecked</arg>
-					</compilerArgs>
+                    <compilerArgs>
+                        <arg>-Xlint:unchecked</arg>
+                    </compilerArgs>
 
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.6.0</version>
-				<executions>
-					<execution>
-						<goals><goal>java</goal></goals>
-					</execution>
-				</executions>
-				<configuration>
-					<mainClass>com.dpas.server.DpasServer</mainClass>
-					<arguments>
-						<argument>${server.port}</argument>
-					</arguments>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>com.dpas.server.DpasServer</mainClass>
+                    <arguments>
+                        <argument>${server.port}</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

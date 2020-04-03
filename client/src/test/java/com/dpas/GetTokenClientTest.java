@@ -20,9 +20,20 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
 
     @Test
     public void getTokenValid() throws Exception {
+        Dpas.RegisterResponse registerResponse = client.register(blockingStub, client.getCommand("register|" + ClientDataStore.CLIENT_TEST_USER));
         GetTokenResponse tokenResponse = client.getClientToken(blockingStub, ClientDataStore.CLIENT_TEST_USER);
 
+        assertNotNull(registerResponse.getResult());
         assertTrue(client.validateToken(tokenResponse));
+    }
+
+    @Test
+    public void getTokenNonRegistedValid() throws Exception {
+        final GetTokenResponse[] tokenResponse = new GetTokenResponse[1];
+        Throwable exception = assertThrows(io.grpc.StatusRuntimeException.class, () -> {
+            tokenResponse[0] = client.getClientToken(blockingStub, ClientDataStore.CLIENT_TEST_USER);
+        });
+        assertEquals(ServerDataStore.MSG_ERROR_NOT_REGISTERED, ((StatusRuntimeException) exception).getStatus().getDescription());
     }
 
     @Test
@@ -60,8 +71,11 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
     @Test
     public void getTokenChangeResponseTokenTest() throws Exception {
         changeResponseTokenTestAPI client = new changeResponseTokenTestAPI();
+
+        Dpas.RegisterResponse registerResponse = client.register(blockingStub, client.getCommand("register|" + ClientDataStore.CLIENT_TEST_USER));
         GetTokenResponse tokenResponse = client.getClientToken(blockingStub, ClientDataStore.CLIENT_TEST_USER);
 
+        assertNotNull(registerResponse.getResult());
         assertFalse(client.validateToken(tokenResponse));
     }
 
@@ -143,7 +157,7 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
 //
 //                            try {
 //                                byte[] hashServer = Main.getHashFromObject(token);
-//                                byte[] sigServer = Main.getSignature(hashServer, "test1"); //TODO change to serverAlias when we have multiple servers
+//                                byte[] sigServer = Main.getSignature(hashServer, "test1");
 //
 //                                ByteString sigServerByteString = ByteString.copyFrom(sigServer);
 //

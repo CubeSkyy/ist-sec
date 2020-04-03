@@ -25,9 +25,6 @@ import static com.dpas.server.ServerDataStore.*;
 
 public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
-    //TODO: Verify Tokens
-    //TODO: Make All Server Responses Signed so client can verify it was server that sent them
-
     public static DpasServiceImpl instance = null;
     private HashMap<String, String> usersMap;
     private HashMap<String, ArrayList<Announcement>> particularMap;
@@ -36,17 +33,16 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     /*--------------------------------------------------FILES---------------------------------------------------------*/
 
 
+    private DpasServiceImpl() {
+        initialize();
+    }
+
     public static DpasServiceImpl getInstance() {
         if (instance == null) {
 
             instance = new DpasServiceImpl();
         }
         return instance;
-    }
-
-
-    private DpasServiceImpl() {
-        initialize();
     }
 
     private void initialize() {
@@ -191,11 +187,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         boolean valid = Main.hasCertificate(key);
         sendArgumentError(!valid, responseObserver, MSG_ERROR_CERTIFICATE);
 
-        /*if (!getUsersMap().containsKey(key)) {
-            Status status = Status.INVALID_ARGUMENT;
-            status = status.withDescription("User is not registered");
-            responseObserver.onError(status.asRuntimeException());
-        }*/
+        boolean validRegister = getUsersMap().containsKey(key);
+        sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
 
         String token = RandomStringUtils.randomAlphanumeric(32);
 
@@ -208,7 +201,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         try {
             byte[] hashServer = Main.getHashFromObject(token);
-            byte[] sigServer = Main.getSignature(hashServer, "server1"); //TODO change to serverAlias when we have multiple servers
+            byte[] sigServer = Main.getSignature(hashServer, "server1");
 
             ByteString sigServerByteString = ByteString.copyFrom(sigServer);
 
@@ -276,7 +269,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         try {
             byte[] userHash = Main.getHashFromObject(key);
-            byte[] sigGeneral = Main.getSignature(userHash, "server1"); //TODO change to serverAlias when we have multiple servers
+            byte[] sigGeneral = Main.getSignature(userHash, "server1");
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
@@ -359,7 +352,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
         try {
             byte[] userHash = Main.getHashFromObject(key);
-            byte[] sigGeneral = Main.getSignature(userHash, "server1"); //TODO change to serverAlias when we have multiple servers
+            byte[] sigGeneral = Main.getSignature(userHash, "server1");
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
@@ -438,7 +431,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
         try {
             byte[] userHash = Main.getHashFromObject(key);
-            byte[] sigGeneral = Main.getSignature(userHash, "server1"); //TODO change to serverAlias when we have multiple servers
+            byte[] sigGeneral = Main.getSignature(userHash, "server1");
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
@@ -524,7 +517,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
                 /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
 
                 byte[] hashGeneral = Main.getHashFromObject(result);
-                byte[] sigGeneral = Main.getSignature(hashGeneral, "server1"); //TODO change to serverAlias when we have multiple servers
+                byte[] sigGeneral = Main.getSignature(hashGeneral, "server1");
 
                 ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
@@ -543,7 +536,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         String userAlias = request.getKey();
         int number = request.getNumber();
-        String token = request.getToken(); //TODO: Verify tokens
+        String token = request.getToken();
 
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
@@ -595,7 +588,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
         try {
             byte[] hashGeneral = Main.getHashFromObject(result);
-            byte[] sigGeneral = Main.getSignature(hashGeneral, "server1"); //TODO change to serverAlias when we have multiple servers
+            byte[] sigGeneral = Main.getSignature(hashGeneral, "server1");
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 

@@ -357,7 +357,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
 //                            /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
 //                            try {
 //                                byte[] userHash = Main.getHashFromObject(key);
-//                                byte[] sigGeneral = Main.getSignature(userHash, "test1"); //TODO change to serverAlias when we have multiple servers
+//                                byte[] sigGeneral = Main.getSignature(userHash, "test1");
 //
 //                                ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 //
