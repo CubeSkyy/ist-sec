@@ -22,21 +22,41 @@ public class ClientAPI {
     public void receive(DpasServiceBlockingStub stub, String input) throws Exception {
         try {
             String[] command = getCommand(input);
-            System.out.println("Command: " + command[0]);
+            System.out.println("\nCommand: " + command[0]+"\n");
             switch (command[0]) {
                 case "register":
+                    if (command.length != 2){
+                        System.err.println("Usage: register|<userAlias>");
+                        break;
+                    }
                     register(stub, command);
                     break;
                 case "post":
+                    if (command.length < 3){
+                        System.err.println("Usage: post|<userAlias>|<Message>|<Reference List>\nReference List can be empty.");
+                        break;
+                    }
                     post(stub, command);
                     break;
                 case "postGeneral":
+                    if (command.length < 3){
+                        System.err.println("Usage: postGeneral|<userAlias>|<Message>|<Reference List>\nReference List can be empty.");
+                        break;
+                    }
                     postGeneral(stub, command);
                     break;
                 case "read":
+                    if (command.length != 4){
+                        System.err.println("Usage: read|<userAlias>|<userToRead>|<NumberOfPosts>.");
+                        break;
+                    }
                     read(stub, command);
                     break;
                 case "readGeneral":
+                    if (command.length != 3){
+                        System.err.println("Usage: readGeneral|<userAlias>|<NumberOfPosts>.");
+                        break;
+                    }
                     readGeneral(stub, command);
                     break;
                 default:
@@ -60,7 +80,7 @@ public class ClientAPI {
         GetTokenRequest requestGetToken = GetTokenRequest.newBuilder().setKey(userAlias)
                 .setSignature(ByteString.copyFrom(keySig)).build();
         GetTokenResponse responseGetToken = stub.getToken(requestGetToken);
-        System.out.println("GET TOKEN: " + responseGetToken);
+        System.out.println("GET TOKEN: " + responseGetToken.getToken());
         return responseGetToken;
     }
 
@@ -107,7 +127,7 @@ public class ClientAPI {
             return null;
         }
 
-        System.out.println("REGISTER: " + responseRegister);
+        System.out.println("REGISTER: " + responseRegister.getResult());
         return responseRegister;
     }
 
@@ -161,7 +181,7 @@ public class ClientAPI {
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post response corrupted.");
         } else {
-            System.out.println("POST: " + responsePost);
+            System.out.println("POST: " + responsePost.getResult());
         }
 
 
@@ -203,7 +223,7 @@ public class ClientAPI {
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post General response corrupted.");
         } else {
-            System.out.println("POST GENERAL: " + responseGeneralPost);
+            System.out.println("POST GENERAL: " + responseGeneralPost.getResult());
         }
 
         return validResponse;

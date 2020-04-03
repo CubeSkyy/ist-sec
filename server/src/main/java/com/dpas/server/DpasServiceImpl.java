@@ -497,33 +497,33 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             boolean validKey = getParticularMap().containsKey(key);
 
             if (!validKey) {
-                sendArgumentError(responseObserver, MSG_ERROR_INVALID_KEY + key);
-            } else {
-                ArrayList<Announcement> tmp = getParticularMap().get(key);
-                ArrayList<Announcement> result = new ArrayList<Announcement>();
-
-                if (number > 0) {
-                    if (tmp.size() > 0) {
-                        ListIterator<Announcement> listIter = tmp.listIterator(tmp.size());
-                        for (int i = 0; i < number; i++) {
-                            result.add(listIter.previous());
-                        }
-                    }
-                } else {
-                    Collections.reverse(tmp);
-                    result.addAll(tmp);
-                }
-
-                /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
-
-                byte[] hashGeneral = Main.getHashFromObject(result);
-                byte[] sigGeneral = Main.getSignature(hashGeneral, "server1");
-
-                ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
-
-                ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).build();
-                responseObserver.onNext(response);
+                getParticularMap().put(key, new ArrayList<Announcement>());
             }
+            ArrayList<Announcement> tmp = getParticularMap().get(key);
+            ArrayList<Announcement> result = new ArrayList<Announcement>();
+
+            if (number > 0) {
+                if (tmp.size() > 0) {
+                    ListIterator<Announcement> listIter = tmp.listIterator(tmp.size());
+                    for (int i = 0; i < number; i++) {
+                        result.add(listIter.previous());
+                    }
+                }
+            } else {
+                Collections.reverse(tmp);
+                result.addAll(tmp);
+            }
+
+            /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
+
+            byte[] hashGeneral = Main.getHashFromObject(result);
+            byte[] sigGeneral = Main.getSignature(hashGeneral, "server1");
+
+            ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
+
+            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).build();
+            responseObserver.onNext(response);
+
 
             responseObserver.onCompleted();
         } catch (Exception e) {

@@ -101,6 +101,8 @@
                     <arguments>
                         <argument>${server.host}</argument>
                         <argument>${server.port}</argument>
+                        <argument>--add-opens</argument>
+                        <argument>java.base/java.lang=ALL-UNNAMED</argument>
                     </arguments>
                 </configuration>
             </plugin>

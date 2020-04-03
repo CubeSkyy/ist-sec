@@ -7,6 +7,8 @@ import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 public class DpasClient {
@@ -16,6 +18,8 @@ public class DpasClient {
     public DpasClient(Channel channel) {
         blockingStub = DpasServiceGrpc.newBlockingStub(channel);
     }
+
+    private static BufferedReader reader;
 
     public static void main(String[] args) throws Exception {
 
@@ -35,13 +39,37 @@ public class DpasClient {
         DpasServiceGrpc.DpasServiceBlockingStub stub = DpasServiceGrpc.newBlockingStub(channel);
 
         ClientAPI library = ClientAPI.getInstance();
-        String input = "register|user1\nregister|user2\npost|user1|ola isto e um teste\nread|user2|user1|0\npostGeneral|user1|teste do geral|1\nreadGeneral|user2|0";
-        //read->user that wants to read|user particular board wanted; readGeneral->user that wants to read
-        String[] commands = input.split("\n");
-        for (String command : commands) {
-            library.receive(stub, command);
+//        String testInput = "register|user1\nregister|user2\npost|user1|ola isto e um teste\nread|user2|user1|0\npostGeneral|user1|teste do geral|1\nreadGeneral|user2|0";
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(200);
+                    System.out.println("Shutting down client...");
+                    channel.shutdownNow();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        System.out.print("Insert commands:\n");
+        while (true) {
+            try {
+                System.out.println("");
+                reader = new BufferedReader(new InputStreamReader(System.in));
+                String input = reader.readLine();
+
+                String[] commands = input.split("\n");
+                for (String command : commands) {
+                    library.receive(stub, command);
+                }
+            } catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
         }
-        channel.shutdownNow();
+
+
     }
 
 }

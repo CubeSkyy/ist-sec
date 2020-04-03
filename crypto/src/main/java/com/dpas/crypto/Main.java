@@ -94,7 +94,6 @@ public class Main {
             System.err.println("Invalid signature! Board compromised!");
             return false;
         }
-        System.out.println("Validation complete.");
         return true;
     }
 
