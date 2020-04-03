@@ -6,13 +6,11 @@ import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.testing.GrpcCleanupRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.*;
 
 import java.io.File;
 
-import static com.dpas.server.HelloWorldServiceImpl.*;
+import static com.dpas.server.ServerDataStore.*;
 
 
 public abstract class RollbackTestAbstractClass {
@@ -22,6 +20,7 @@ public abstract class RollbackTestAbstractClass {
     public ManagedChannel inProcessChannel;
 
     public ClientAPI client;
+
     @Before
     public void setUp() throws Exception {
         // Generate a unique in-process server name.
@@ -40,6 +39,14 @@ public abstract class RollbackTestAbstractClass {
 
     }
 
+    @AfterClass
+    @BeforeClass
+    public static void  start() {
+        new File(USERS_FILE).delete();
+        new File(PARTICULAR_FILE).delete();
+        new File(GENERAL_FILE).delete();
+        new File(POSTID_FILE).delete();
+    }
 
     @After
     public void tearDown() {
@@ -47,6 +54,7 @@ public abstract class RollbackTestAbstractClass {
         new File(PARTICULAR_FILE).delete();
         new File(GENERAL_FILE).delete();
         new File(POSTID_FILE).delete();
+        blockingStub.reset(HelloWorld.ResetRequest.newBuilder().build());
     }
 
 }

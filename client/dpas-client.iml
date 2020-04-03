@@ -38,6 +38,6 @@
     <orderEntry type="library" name="Maven: io.opencensus:opencensus-api:0.18.0" level="project" />
     <orderEntry type="library" name="Maven: io.opencensus:opencensus-contrib-grpc-metrics:0.18.0" level="project" />
     <orderEntry type="module" module-name="dpas-server" scope="TEST" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.1" level="project" />
   </component>
 </module>

@@ -1,25 +1,9 @@
 package com.dpas.crypto;
 
-import java.security.Key;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.security.MessageDigest;
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-
-import static javax.xml.bind.DatatypeConverter.printHexBinary;
-
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
 import java.io.*;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.util.Arrays;
 
 
 public class Main {
@@ -62,7 +46,13 @@ public class Main {
     private static PrivateKey getPrivateKey(String userAlias)
             throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
         KeyPair keys = getKeys(userAlias);
-        return keys.getPrivate();
+        PrivateKey pKey;
+        try {
+            pKey = keys.getPrivate();
+        } catch (NullPointerException e) {
+            throw new IOException("Private key from that user is not in keystore.");
+        }
+        return pKey;
     }
 
     public static PublicKey getPublicKey(String userAlias)
@@ -91,7 +81,7 @@ public class Main {
     }
 
     /*--------------------------------------------------VALIDATE------------------------------------------------------*/
-    public static void validate(byte[] signature, String userAlias, byte[] messageHash, byte[] hash) throws Exception {
+    public static boolean validate(byte[] signature, String userAlias, byte[] messageHash) throws Exception {
         PublicKey publicKey = getPublicKey(userAlias);
 
         Signature sig = Signature.getInstance("SHA256withRSA");
@@ -101,12 +91,11 @@ public class Main {
 
         System.out.println("Signature is valid: " + verify);
         if (!verify) {
-            throw new Exception("Invalid signature! Board compromised!");
+            System.err.println("Invalid signature! Board compromised!");
+            return false;
         }
-
-        if (!Arrays.equals(messageHash, hash)) {
-            throw new Exception("Hash does not correspond! Board compromised!");
-        }
+        System.out.println("Validation complete.");
+        return true;
     }
 
 
@@ -117,7 +106,9 @@ public class Main {
             KeyStore keyStore = KeyStore.getInstance("JCEKS");
             char[] pwd = "password".toCharArray();
             keyStore.load(fis, pwd);
-            return keyStore.containsAlias(userAlias);
+            boolean contains = keyStore.containsAlias(userAlias);
+            System.out.println("Has Certificate: " + contains);
+            return contains;
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
 
