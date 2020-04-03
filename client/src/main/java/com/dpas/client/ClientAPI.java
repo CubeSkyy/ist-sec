@@ -23,6 +23,7 @@ public class ClientAPI {
     public void receive(DpasServiceBlockingStub stub, String input) throws Exception {
         try {
             String[] command = getCommand(input);
+            String[] commands;
             System.out.println("\nCommand: " + command[0]+"\n");
             switch (command[0]) {
                 case "register":
@@ -63,7 +64,23 @@ public class ClientAPI {
                 case "demo1":
                     //DEMO1 = "register|user1\npost|user1|Test\nread|user1|user1|0";
                     stub.reset(ResetRequest.newBuilder().build());
-                    String[] commands = DEMO1.split("\n");
+                    commands = DEMO1.split("\n");
+                    for (String com : commands) {
+                        receive(stub, com);
+                    }
+                    break;
+                case "demo2":
+                    //DEMO2 = "register|user1\nregister|user2\npostGeneral|user1|Test\npostGeneral|user2|Test2|1\nreadGeneral|user1|0";
+                    stub.reset(ResetRequest.newBuilder().build());
+                    commands = DEMO2.split("\n");
+                    for (String com : commands) {
+                        receive(stub, com);
+                    }
+                    break;
+                case "demo3":
+                    //DEMO3 = "register|user1\npost|user1|Test\npost|user1|Test2\npost|user1|Test3\nread|user1|user1|2";
+                    stub.reset(ResetRequest.newBuilder().build());
+                    commands = DEMO3.split("\n");
                     for (String com : commands) {
                         receive(stub, com);
                     }
