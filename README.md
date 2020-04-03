@@ -33,7 +33,7 @@ mvn exec:java
 
 ### Client Command Usage
 
-####Register:
+#### Register:
 
 Registers a user in the server.
 ```
@@ -41,7 +41,7 @@ register|<userAlias>
 ```
 * userAlias - Alias of the user to be registered
 
-####Post:
+#### Post:
 
 Posts a message in the user's personal board.
 ```
@@ -55,7 +55,7 @@ post|<userAlias>|<Message>|<Ref1>|<Ref2>|...
 * Message - Message of post
 * RefN- Post Ids that refer to other existing posts
 
-####PostGeneral:
+#### PostGeneral:
 
 Posts a message in the general board.
 ```
@@ -69,7 +69,7 @@ postGeneral|<userAlias>|<Message>|<Ref1>|<Ref2>|...
 * Message - Message of post
 * RefN- Post Ids that refer to other existing posts
 
-####Read:
+#### Read:
 
 Reads from some user's personal board.
 ```
@@ -79,7 +79,7 @@ read|<userAlias>|<userToRead>|<NumberOfPosts>
 * userToRead - Owner of the board we want to read
 * NumberOfPosts- Number of posts to read. (0 reads all)
 
-####ReadGeneral:
+#### ReadGeneral:
 
 Reads from the General board.
 
@@ -89,13 +89,13 @@ readGeneral|<userAlias>|<NumberOfPosts>
 * userAlias - Alias of the user that is posting
 * NumberOfPosts- Number of posts to read. (0 reads all)
 
-##Running demos:
+### Running demos:
 
 Start the server.
 Start the client.
 Execute like other commands:
 
-####Demo 1:
+#### Demo 1:
 
 ```
 demo1
@@ -104,7 +104,7 @@ demo1
 * post | user1 | Test
 * read | user1 | user1 | 0
 
-####Demo 2:
+#### Demo 2:
 
 ```
 demo2
@@ -115,7 +115,7 @@ demo2
 * postGeneral | user2 | Test2 | 1
 * readGeneral | user1 | 0
 
-####Demo 3:
+#### Demo 3:
 
 ```
 demo2
