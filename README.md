@@ -124,7 +124,7 @@ demo3
 * post | user1 | Test
 * post | user1 | Test2
 * post | user1 | Test3
-* read | user1 | user1|2
+* read | user1 | user1 | 2
 
 ## Authors
 
