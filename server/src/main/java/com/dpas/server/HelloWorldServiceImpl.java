@@ -495,7 +495,13 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
             e.printStackTrace();
         }
 
-        if (getUsersMap().get(userAlias) != null && getUsersMap().get(userAlias).equals(token)) {
+        boolean validRegister = getUsersMap().containsKey(key);
+
+        if (!validRegister){
+            sendArgumentError(responseObserver, MSG_ERROR_NOT_REGISTERED);
+
+        }
+        else if (getUsersMap().get(userAlias).equals(token)) {
             getUsersMap().replace(userAlias, null);
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
