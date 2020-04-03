@@ -54,7 +54,7 @@ public class ClientAPI {
         return command.split("\\|");
     }
 
-    private GetTokenResponse getClientToken(HelloWorldServiceBlockingStub stub, String userAlias) throws Exception {
+    public GetTokenResponse getClientToken(HelloWorldServiceBlockingStub stub, String userAlias) throws Exception {
         byte[] keyHash = Main.getHashFromObject(userAlias);
         byte[] keySig = Main.getSignature(keyHash, userAlias);
 
@@ -65,7 +65,7 @@ public class ClientAPI {
         return responseGetToken;
     }
 
-    private boolean validateToken(GetTokenResponse responseGetToken) throws Exception {
+    public boolean validateToken(GetTokenResponse responseGetToken) throws Exception {
         ByteString serverSigByteString = responseGetToken.getSignature();
         String token = responseGetToken.getToken();
 
@@ -76,7 +76,7 @@ public class ClientAPI {
         return valid;
     }
 
-    private boolean validateServerResponse(ByteString signature, byte[] hash) throws Exception {
+    public boolean validateServerResponse(ByteString signature, byte[] hash) throws Exception {
         byte[] responseSignature = signature.toByteArray();
         boolean validResponse = Main.validate(responseSignature, "server1", hash); //TODO change to serverAlias when we have multiple servers
         return validResponse;
@@ -88,8 +88,8 @@ public class ClientAPI {
     public RegisterResponse register(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         String userAlias = command[1];
 
-        byte[] hash = Main.getHashFromObject(command[1]);
-        byte[] signature = Main.getSignature(hash, command[1]);
+        byte[] hash = Main.getHashFromObject(userAlias);
+        byte[] signature = Main.getSignature(hash, userAlias);
 
         HelloWorld.RegisterRequest requestRegister = HelloWorld.RegisterRequest.newBuilder().setKey(command[1])
                 .setSignature(ByteString.copyFrom(signature)).build();
@@ -128,7 +128,7 @@ public class ClientAPI {
         return post.build();
     }
 
-    public PostResponse post(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public boolean post(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
 
         String userAlias = command[1];
         /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
@@ -138,7 +138,7 @@ public class ClientAPI {
 
         if (!tokenVerify) {
             System.err.println("Invalid signature and/or hash. GetToken request corrupted.");
-            return null;
+            return false;
         }
         /*----------------------------------------------------------------------------------*/
         String token = responseGetToken.getToken();
@@ -147,7 +147,7 @@ public class ClientAPI {
         byte[] postHash = Main.getHashFromObject(post);
         byte[] tokenHash = Main.getHashFromObject(token);
         byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
-        byte[] signature = Main.getSignature(hash, command[1]);
+        byte[] signature = Main.getSignature(hash, userAlias);
 
         PostRequest requestPost = PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).build();
         PostResponse responsePost = stub.post(requestPost);
@@ -161,16 +161,16 @@ public class ClientAPI {
         boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post response corrupted.");
-            return null;
+        }else{
+            System.out.println("POST: " + responsePost);
         }
 
-        System.out.println("POST: " + responsePost);
 
-        return responsePost;
+        return validResponse;
     }
 
 
-    public PostGeneralResponse postGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
+    public boolean postGeneral(HelloWorldServiceBlockingStub stub, String[] command) throws Exception {
         String userAlias = command[1];
         /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
         GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
@@ -179,7 +179,7 @@ public class ClientAPI {
 
         if (!tokenVerify) {
             System.err.println("Invalid signature and/or hash. GetToken request corrupted.");
-            return null;
+            return false;
         }
         /*----------------------------------------------------------------------------------*/
         String token = responseGetToken.getToken();
@@ -203,11 +203,11 @@ public class ClientAPI {
         boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post General response corrupted.");
-            return null;
+        }else {
+            System.out.println("POST GENERAL: " + responseGeneralPost);
         }
 
-        System.out.println("POST GENERAL: " + responseGeneralPost);
-        return responseGeneralPost;
+        return validResponse;
     }
 
     /*--------------------------------------------------READS---------------------------------------------------------*/

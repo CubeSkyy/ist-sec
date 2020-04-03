@@ -97,6 +97,12 @@ message ReadGeneralResponse {
     bytes signature = 2;
 }
 
+message ResetRequest {
+}
+
+message ResetResponse {
+}
+
 // Defining a Service, a Service can have multiple RPC operations
 service HelloWorldService {
   // Define a RPC operation
@@ -107,4 +113,5 @@ service HelloWorldService {
   rpc postGeneral(PostGeneralRequest) returns (PostGeneralResponse);
   rpc read(ReadRequest) returns (ReadResponse);
   rpc readGeneral(ReadGeneralRequest) returns (ReadGeneralResponse);
+  rpc reset(ResetRequest) returns (ResetResponse);
 }

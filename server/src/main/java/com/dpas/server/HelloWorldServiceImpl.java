@@ -47,6 +47,10 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
 
 
     private HelloWorldServiceImpl() {
+        initialize();
+    }
+
+    private void initialize() {
         checkFile(USERS_FILE);
         usersMap = (HashMap<String, String>) readFromFile(USERS_FILE, MSG_USERS);
 
@@ -60,7 +64,6 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         checkFile(POSTID_FILE);
         postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
     }
-
 
     private HashMap<String, String> getUsersMap() {
         return usersMap;
@@ -277,6 +280,7 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         if (!getUsersMap().containsKey(key)) {
             getUsersMap().put(key, null);
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
+            getParticularMap().put(key, new ArrayList<>());
             System.out.println("New user registered: " + key);
         } else
             System.out.println("User is already registered.");
@@ -514,9 +518,11 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
                 ArrayList<Announcement> result = new ArrayList<Announcement>();
 
                 if (number > 0) {
-                    ListIterator<Announcement> listIter = tmp.listIterator(tmp.size());
-                    for (int i = 0; i < number; i++) {
-                        result.add(listIter.previous());
+                    if(tmp.size() > 0){
+                        ListIterator<Announcement> listIter = tmp.listIterator(tmp.size());
+                        for (int i = 0; i < number; i++) {
+                            result.add(listIter.previous());
+                        }
                     }
                 } else {
                     Collections.reverse(tmp);
@@ -608,6 +614,17 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public synchronized void reset(ResetRequest request, StreamObserver<ResetResponse> responseObserver) {
+        new File(USERS_FILE).delete();
+        new File(PARTICULAR_FILE).delete();
+        new File(GENERAL_FILE).delete();
+        new File(POSTID_FILE).delete();
+        initialize();
+        ResetResponse response = ResetResponse.newBuilder().build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 
 }

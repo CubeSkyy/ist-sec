@@ -1,25 +1,9 @@
 package com.dpas.crypto;
 
-import java.security.Key;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.security.MessageDigest;
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-
-import static javax.xml.bind.DatatypeConverter.printHexBinary;
-
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
 import java.io.*;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.util.Arrays;
 
 
 public class Main {
@@ -62,7 +46,13 @@ public class Main {
     private static PrivateKey getPrivateKey(String userAlias)
             throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
         KeyPair keys = getKeys(userAlias);
-        return keys.getPrivate();
+        PrivateKey pKey;
+        try {
+            pKey = keys.getPrivate();
+        } catch (NullPointerException e) {
+            throw new IOException("Private key from that user is not in keystore.");
+        }
+        return pKey;
     }
 
     public static PublicKey getPublicKey(String userAlias)
