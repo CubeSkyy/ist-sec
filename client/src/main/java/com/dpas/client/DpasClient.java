@@ -11,6 +11,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class DpasClient {
     private static final Logger logger = Logger.getLogger(DpasClient.class.getName());
     private final DpasServiceGrpc.DpasServiceBlockingStub blockingStub;
@@ -27,20 +30,27 @@ public class DpasClient {
 
     public static void main(String[] args) throws Exception {
 
-        if (args.length < 2) {
+        if (args.length < 3) {
             System.err.println("Argument(s) missing!");
-            System.err.printf("Usage: java %s host port%n", DpasClient.class.getName());
+            System.err.printf("Usage: java %s host port numOfServers%n", DpasClient.class.getName());
             return;
         }
 
         final String host = args[0];
-        final int port = Integer.parseInt(args[1]);
-        final String target = host + ":" + port;
+        final int initialPort = Integer.parseInt(args[1]);
+        final int numOfServers = Integer.parseInt(args[2]);
+        int port;
+        String target;
+        ArrayList<ManagedChannel> channels = new ArrayList<ManagedChannel>();
+        ArrayList<DpasServiceGrpc.DpasServiceBlockingStub> stubs = new ArrayList<DpasServiceGrpc.DpasServiceBlockingStub>();
 
-
-        final ManagedChannel channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
-
-        DpasServiceGrpc.DpasServiceBlockingStub stub = DpasServiceGrpc.newBlockingStub(channel);
+        for (int i = 0; i < numOfServers; i++) {
+            port = initialPort + i;
+            target = host + ":" + port;
+            System.out.println("Connected to " + target);
+            channels.add(ManagedChannelBuilder.forTarget(target).usePlaintext().build());
+            stubs.add(DpasServiceGrpc.newBlockingStub(channels.get(channels.size()-1)));
+        }
 
         ClientAPI library = ClientAPI.getInstance();
 //        String testInput = "register|user1\nregister|user2\npost|user1|ola isto e um teste\nread|user2|user1|0\npostGeneral|user1|teste do geral|1\nreadGeneral|user2|0";
@@ -50,7 +60,9 @@ public class DpasClient {
                 try {
                     Thread.sleep(200);
                     System.out.println("Shutting down client...");
-                    channel.shutdownNow();
+                    for (ManagedChannel channel : channels) {
+                        channel.shutdownNow();
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     Thread.currentThread().interrupt();
@@ -64,6 +76,7 @@ public class DpasClient {
 
         System.out.print("Insert commands:\n");
         while (true) {
+
             try {
                 System.out.println("");
                 reader = new BufferedReader(new InputStreamReader(System.in));
@@ -71,7 +84,7 @@ public class DpasClient {
 
                 String[] commands = input.split("\n");
                 for (String command : commands) {
-                    library.receive(stub, command);
+                    library.receive(stubs, command);
                 }
             } catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());

@@ -20,7 +20,7 @@ public class ClientAPI {
         return instance;
     }
 
-    public void receive(DpasServiceBlockingStub stub, String input) throws Exception {
+    public void receive(ArrayList<DpasServiceBlockingStub> stubs, String input) throws Exception {
         try {
             String[] command = getCommand(input);
             String[] commands;
@@ -31,58 +31,74 @@ public class ClientAPI {
                         System.err.println("Usage: register|<userAlias>");
                         break;
                     }
-                    register(stub, command);
+                    for (DpasServiceBlockingStub stub : stubs) {
+                        register(stub, command);
+                    }
                     break;
                 case "post":
                     if (command.length < 3){
                         System.err.println("Usage: post|<userAlias>|<Message>|<Reference List>\nReference List can be empty.");
                         break;
                     }
-                    post(stub, command);
+                    for (DpasServiceBlockingStub stub : stubs) {
+                        post(stub, command);
+                    }
                     break;
                 case "postGeneral":
                     if (command.length < 3){
                         System.err.println("Usage: postGeneral|<userAlias>|<Message>|<Reference List>\nReference List can be empty.");
                         break;
                     }
-                    postGeneral(stub, command);
+                    for (DpasServiceBlockingStub stub : stubs) {
+                        postGeneral(stub, command);
+                    }
                     break;
                 case "read":
                     if (command.length != 4){
                         System.err.println("Usage: read|<userAlias>|<userToRead>|<NumberOfPosts>.");
                         break;
                     }
-                    read(stub, command);
+                    for (DpasServiceBlockingStub stub : stubs) {
+                        read(stub, command);
+                    }
                     break;
                 case "readGeneral":
                     if (command.length != 3){
                         System.err.println("Usage: readGeneral|<userAlias>|<NumberOfPosts>.");
                         break;
                     }
-                    readGeneral(stub, command);
+                    for (DpasServiceBlockingStub stub : stubs) {
+                        readGeneral(stub, command);
+                    }
                     break;
                 case "demo1":
                     //DEMO1 = "register|user1\npost|user1|Test\nread|user1|user1|0";
-                    stub.reset(ResetRequest.newBuilder().build());
+                    for (DpasServiceBlockingStub stub : stubs) {
+                        stub.reset(ResetRequest.newBuilder().build());
+                    }
                     commands = DEMO1.split("\n");
                     for (String com : commands) {
-                        receive(stub, com);
+                        receive(stubs, com);
                     }
                     break;
                 case "demo2":
                     //DEMO2 = "register|user1\nregister|user2\npostGeneral|user1|Test\npostGeneral|user2|Test2|1\nreadGeneral|user1|0";
-                    stub.reset(ResetRequest.newBuilder().build());
+                    for (DpasServiceBlockingStub stub : stubs) {
+                        stub.reset(ResetRequest.newBuilder().build());
+                    }
                     commands = DEMO2.split("\n");
                     for (String com : commands) {
-                        receive(stub, com);
+                        receive(stubs, com);
                     }
                     break;
                 case "demo3":
                     //DEMO3 = "register|user1\npost|user1|Test\npost|user1|Test2\npost|user1|Test3\nread|user1|user1|2";
-                    stub.reset(ResetRequest.newBuilder().build());
+                    for (DpasServiceBlockingStub stub : stubs) {
+                        stub.reset(ResetRequest.newBuilder().build());
+                    }
                     commands = DEMO3.split("\n");
                     for (String com : commands) {
-                        receive(stub, com);
+                        receive(stubs, com);
                     }
                     break;
                 default:

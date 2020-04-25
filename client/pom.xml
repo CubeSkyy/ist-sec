@@ -27,6 +27,7 @@
 
         <server.host>localhost</server.host>
         <server.port>8080</server.port>
+        <server.num>1</server.num>
     </properties>
 
     <dependencies>
@@ -101,6 +102,7 @@
                     <arguments>
                         <argument>${server.host}</argument>
                         <argument>${server.port}</argument>
+                        <argument>${server.num}</argument>
                         <argument>--add-opens</argument>
                         <argument>java.base/java.lang=ALL-UNNAMED</argument>
                     </arguments>
