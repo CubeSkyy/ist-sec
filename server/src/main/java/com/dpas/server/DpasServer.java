@@ -16,7 +16,7 @@ public class DpasServer {
 
 
         final int port = Integer.parseInt(args[0]);
-        final BindableService impl = DpasServiceImpl.getInstance();
+        final BindableService impl = DpasServiceImpl.getInstance(port);
 
         // Create a new server to listen on port
         Server server = ServerBuilder.forPort(port).addService(impl).build();

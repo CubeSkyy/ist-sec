@@ -1,10 +1,10 @@
 package com.dpas.server;
 
 public class ServerDataStore {
-    public static final String USERS_FILE = "users.tmp";
-    public static final String PARTICULAR_FILE = "particular.tmp";
-    public static final String GENERAL_FILE = "general.tmp";
-    public static final String POSTID_FILE = "postid.tmp";
+    public static final String COMMON_USERS_FILE = "data/users.tmp";
+    public static final String COMMON_PARTICULAR_FILE = "data/particular.tmp";
+    public static final String COMMON_GENERAL_FILE = "data/general.tmp";
+    public static final String COMMON_POSTID_FILE = "data/postid.tmp";
     public static final String MSG_USERS = "Users successfully read/written to file.";
     public static final String MSG_PARTICULAR = "Particular post successfully read/written to file.";
     public static final String MSG_GENERAL = "General post successfully read/written to file.";

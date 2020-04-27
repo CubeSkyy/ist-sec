@@ -30,17 +30,29 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     private HashMap<String, ArrayList<Announcement>> particularMap;
     private ArrayList<Announcement> generalMap;
     private int postId;
+    private int port;
+    private final String USERS_FILE;
+    private final String PARTICULAR_FILE;
+    private final String GENERAL_FILE;
+    private final String POSTID_FILE;
+
+
     /*--------------------------------------------------FILES---------------------------------------------------------*/
 
 
-    private DpasServiceImpl() {
+    private DpasServiceImpl(int p) {
+        port = p;
+        USERS_FILE = COMMON_USERS_FILE + port;
+        PARTICULAR_FILE = COMMON_PARTICULAR_FILE + port;
+        GENERAL_FILE = COMMON_GENERAL_FILE + port;
+        POSTID_FILE = COMMON_POSTID_FILE + port;
         initialize();
     }
 
-    public static DpasServiceImpl getInstance() {
+    public static DpasServiceImpl getInstance(int port) {
         if (instance == null) {
 
-            instance = new DpasServiceImpl();
+            instance = new DpasServiceImpl(port);
         }
         return instance;
     }
@@ -54,7 +66,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         checkFile(GENERAL_FILE);
         generalMap = (ArrayList<Announcement>) readFromFile(GENERAL_FILE, MSG_GENERAL);
-
 
         checkFile(POSTID_FILE);
         postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
@@ -85,29 +96,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         if (!f.isFile()) {
             try {
                 f.createNewFile();
-                switch (filename) {
-                    case USERS_FILE:
-                        writeToFile(new HashMap<String, String>(), USERS_FILE, MSG_USERS);
-                        break;
 
-                    case PARTICULAR_FILE:
-                        writeToFile(new HashMap<String, ArrayList<Announcement>>(), PARTICULAR_FILE, MSG_PARTICULAR);
-                        break;
-
-                    case GENERAL_FILE:
-                        writeToFile(new ArrayList<Announcement>(), GENERAL_FILE, MSG_GENERAL);
-                        break;
-
-                    case POSTID_FILE:
-                        writeToFile(0, POSTID_FILE, MSG_POSTID);
-                        break;
-
-                    default:
-                        System.err.println("Invalid filename. Could not write to file.");
-                        break;
-                }
-
-                System.out.println("" + filename + " file not found. New instance has been created.");
+                if(filename.equals(USERS_FILE)) writeToFile(new HashMap<String, String>(), USERS_FILE, MSG_USERS);
+                else if(filename.equals(PARTICULAR_FILE)) writeToFile(new HashMap<String, ArrayList<Announcement>>(), PARTICULAR_FILE, MSG_PARTICULAR);
+                else if(filename.equals(GENERAL_FILE)) writeToFile(new ArrayList<Announcement>(), GENERAL_FILE, MSG_GENERAL);
+                else if(filename.equals(POSTID_FILE)) writeToFile(0, POSTID_FILE, MSG_POSTID);
+                else System.err.println("Invalid filename. Could not write to file.");
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -491,8 +485,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         /*----------------------------------------------------------------------------------*/
         try {
-            boolean validNumber = number >= 0;
-            sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
 
             boolean validKey = getParticularMap().containsKey(key);
 
@@ -500,19 +492,18 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
                 getParticularMap().put(key, new ArrayList<Announcement>());
             }
             ArrayList<Announcement> tmp = getParticularMap().get(key);
-            ArrayList<Announcement> result = new ArrayList<Announcement>();
+            Collections.reverse(tmp);
 
-            if (number > 0) {
-                if (tmp.size() > 0) {
-                    ListIterator<Announcement> listIter = tmp.listIterator(tmp.size());
-                    for (int i = 0; i < number; i++) {
-                        result.add(listIter.previous());
-                    }
-                }
-            } else {
-                Collections.reverse(tmp);
-                result.addAll(tmp);
+            boolean validNumber = number >= 0;
+            sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
+            Announcement result;
+            if(number > tmp.size() - 1){
+                result = Announcement.newBuilder().setPostId(-1).build();
+            }else{
+                result = tmp.get(number);
             }
+
+
 
             /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
 
@@ -521,7 +512,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).build();
+            ReadResponse response = ReadResponse.newBuilder().setResult(result).setSignature(responseSigByteString).setRid(request.getRid()).build();
             responseObserver.onNext(response);
 
 
@@ -568,21 +559,16 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         }
 
         /*----------------------------------------------------------------------------------*/
-        boolean validNumber = number >= 0;
-        sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
 
         ArrayList<Announcement> general = getGeneralMap();
-        ArrayList<Announcement> result = new ArrayList<Announcement>();
+        boolean validNumber = number >= 0;
+        sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
+        Announcement result;
 
-        if (number > 0) {
-            ListIterator<Announcement> listIter = general.listIterator(general.size());
-            for (int i = 0; i < number; i++) {
-                result.add(listIter.previous());
-            }
-
-        } else {
-            Collections.reverse(general);
-            result.addAll(general);
+        if(number > general.size() - 1){
+            result = Announcement.newBuilder().setPostId(-1).build();
+        }else{
+            result = general.get(number);
         }
 
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
@@ -592,7 +578,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-            ReadGeneralResponse response = ReadGeneralResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).build();
+            ReadGeneralResponse response = ReadGeneralResponse.newBuilder().setResult(result).setSignature(responseSigByteString).setRid(request.getRid()).build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();

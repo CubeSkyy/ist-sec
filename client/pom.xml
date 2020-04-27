@@ -27,7 +27,7 @@
 
         <server.host>localhost</server.host>
         <server.port>8080</server.port>
-        <server.num>1</server.num>
+        <server.num>2</server.num>
     </properties>
 
     <dependencies>
