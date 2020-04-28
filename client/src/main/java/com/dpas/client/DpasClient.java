@@ -32,13 +32,14 @@ public class DpasClient {
 
         if (args.length < 3) {
             System.err.println("Argument(s) missing!");
-            System.err.printf("Usage: java %s host port numOfServers%n", DpasClient.class.getName());
+            System.err.printf("Usage: java %s host port numOfFaults%n", DpasClient.class.getName());
             return;
         }
 
         final String host = args[0];
         final int initialPort = Integer.parseInt(args[1]);
-        final int numOfServers = Integer.parseInt(args[2]);
+        final int numOfFaults = Integer.parseInt(args[2]);
+        final int numOfServers = 3 * numOfFaults + 1;
         int port;
         String target;
         ArrayList<ManagedChannel> channels = new ArrayList<ManagedChannel>();
@@ -53,6 +54,7 @@ public class DpasClient {
         }
 
         ClientAPI library = ClientAPI.getInstance();
+        library.majority = (int) Math.ceil((numOfServers + numOfFaults) / 2.0);
 //        String testInput = "register|user1\nregister|user2\npost|user1|ola isto e um teste\nread|user2|user1|0\npostGeneral|user1|teste do geral|1\nreadGeneral|user2|0";
 
         Runtime.getRuntime().addShutdownHook(new Thread() {

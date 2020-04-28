@@ -26,7 +26,7 @@ interface API {
 
 public class ClientAPI {
     int wts = 0;
-    int majority = 1;
+    int majority;
 
     public static ClientAPI instance = null;
 
