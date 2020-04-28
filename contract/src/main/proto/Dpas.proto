@@ -28,14 +28,17 @@ message Announcement {
     string key = 1;
     string message = 2;
     int32 postId = 3;
-    int32 wts = 4;
     repeated int32 ref = 5;
+    string token = 6;
+    bytes signature = 7;
+    int32 wts = 8;
 }
 
 message PostRequest {
     Announcement post = 1;
     bytes signature = 2;
     string token = 4;
+    int32 wts = 5;
 }
 
 message PostResponse {
@@ -47,6 +50,7 @@ message PostGeneralRequest {
     Announcement post = 1;
     bytes signature = 2;
     string token = 4;
+    int32 wts = 5;
 }
 
 message PostGeneralResponse {
@@ -60,13 +64,12 @@ message ReadRequest {
     int32 number = 3;
     bytes signature = 4;
     string token = 6;
-    int32 rid = 7;
 }
 
 message ReadResponse {
-    Announcement result = 1;
+    repeated Announcement result = 1;
     bytes signature = 2;
-    int32 rid = 3;
+    int32 ts = 4;
 }
 
 message ReadGeneralRequest {
@@ -74,13 +77,12 @@ message ReadGeneralRequest {
     int32 number = 2;
     bytes signature = 3;
     string token = 5;
-    int32 rid = 6;
 }
 
 message ReadGeneralResponse {
-    Announcement result = 1;
+    repeated Announcement result = 1;
     bytes signature = 2;
-    int32 rid = 3;
+    int32 ts = 4;
 }
 
 message ResetRequest {

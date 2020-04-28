@@ -81,7 +81,9 @@ public class DpasClient {
                 System.out.println("");
                 reader = new BufferedReader(new InputStreamReader(System.in));
                 String input = reader.readLine();
-
+                if(input.equals("exit")){
+                 return;
+                }
                 String[] commands = input.split("\n");
                 for (String command : commands) {
                     library.receive(stubs, command);

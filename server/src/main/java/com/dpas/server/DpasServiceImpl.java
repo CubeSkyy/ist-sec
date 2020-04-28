@@ -6,6 +6,7 @@ import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -31,6 +32,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     private ArrayList<Announcement> generalMap;
     private int postId;
     private int port;
+    private int timestamp;
     private final String USERS_FILE;
     private final String PARTICULAR_FILE;
     private final String GENERAL_FILE;
@@ -47,6 +49,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         GENERAL_FILE = COMMON_GENERAL_FILE + port;
         POSTID_FILE = COMMON_POSTID_FILE + port;
         initialize();
+        timestamp = -1;
     }
 
     public static DpasServiceImpl getInstance(int port) {
@@ -97,10 +100,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             try {
                 f.createNewFile();
 
-                if(filename.equals(USERS_FILE)) writeToFile(new HashMap<String, String>(), USERS_FILE, MSG_USERS);
-                else if(filename.equals(PARTICULAR_FILE)) writeToFile(new HashMap<String, ArrayList<Announcement>>(), PARTICULAR_FILE, MSG_PARTICULAR);
-                else if(filename.equals(GENERAL_FILE)) writeToFile(new ArrayList<Announcement>(), GENERAL_FILE, MSG_GENERAL);
-                else if(filename.equals(POSTID_FILE)) writeToFile(0, POSTID_FILE, MSG_POSTID);
+                if (filename.equals(USERS_FILE)) writeToFile(new HashMap<String, String>(), USERS_FILE, MSG_USERS);
+                else if (filename.equals(PARTICULAR_FILE))
+                    writeToFile(new HashMap<String, ArrayList<Announcement>>(), PARTICULAR_FILE, MSG_PARTICULAR);
+                else if (filename.equals(GENERAL_FILE))
+                    writeToFile(new ArrayList<Announcement>(), GENERAL_FILE, MSG_GENERAL);
+                else if (filename.equals(POSTID_FILE)) writeToFile(0, POSTID_FILE, MSG_POSTID);
                 else System.err.println("Invalid filename. Could not write to file.");
 
             } catch (IOException e) {
@@ -148,6 +153,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         responseObserver.onCompleted();
     }
 
+
     private void sendArgumentError(boolean condition, StreamObserver<?> responseObserver, String errorMessage) {
         if (condition) {
             Status status = Status.INVALID_ARGUMENT;
@@ -157,6 +163,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             responseObserver.onCompleted();
         }
     }
+
 
     /*---------------------------------------------------TOKENS-------------------------------------------------------*/
     @Override
@@ -286,6 +293,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         String key = post.getKey();
         String message = post.getMessage();
         String token = request.getToken();
+        int wts = request.getWts();
 
         boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
         sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
@@ -296,6 +304,13 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         boolean validRegister = getUsersMap().containsKey(key);
         sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
 
+        boolean validTimestamp = wts > timestamp;
+        if(!validTimestamp){
+            sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);
+        }else{
+            timestamp = wts;
+        }
+
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
 
@@ -303,8 +318,11 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         try {
             byte[] tokenHash = Main.getHashFromObject(token);
-            byte[] postHash = Main.getHashFromObject(post);
+            byte[] postHash = Main.getHashFromObject(post.getKey());
+            postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
+            byte[] wtsHash = Main.getHashFromObject(wts);
             byte[] finalHash = ArrayUtils.addAll(postHash, tokenHash);
+            finalHash = ArrayUtils.addAll(finalHash, wtsHash);
 
             boolean valid = Main.validate(signature, key, finalHash); //key == userAlias
             sendArgumentError(!valid, responseObserver, MSG_ERROR_POST_SIG);
@@ -312,6 +330,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
         if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
             getUsersMap().replace(key, null);
@@ -329,6 +348,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         /*----------------------BUILD ANNOUNCEMENTS OF THE POST-----------------------------*/
         Announcement.Builder postBuilder = post.toBuilder();
         postBuilder.setPostId(getPostId());
+        postBuilder.setToken(token);
+        postBuilder.setSignature(sigByteString);
         post = postBuilder.build();
 
         if (!getParticularMap().containsKey(key)) {
@@ -369,6 +390,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         String key = post.getKey();
         String message = post.getMessage();
         String token = request.getToken();
+        int wts = request.getWts();
 
         boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
         sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
@@ -384,11 +406,13 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         ByteString sigByteString = request.getSignature();
 
         byte[] signature = sigByteString.toByteArray();
-
         try {
+            byte[] postHash = Main.getHashFromObject(post.getKey());
+            postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
             byte[] tokenHash = Main.getHashFromObject(token);
-            byte[] postHash = Main.getHashFromObject(post);
+            byte[] wtsHash = Main.getHashFromObject(wts);
             byte[] finalHash = ArrayUtils.addAll(postHash, tokenHash);
+            finalHash = ArrayUtils.addAll(finalHash, wtsHash);
 
             boolean valid = Main.validate(signature, key, finalHash); //key == userAlias
             sendArgumentError(!valid, responseObserver, MSG_ERROR_POST_GENERAL_SIG);
@@ -414,6 +438,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         /*----------------------BUILD ANNOUNCEMENTS OF THE POST-----------------------------*/
         Announcement.Builder postBuilder = post.toBuilder();
         postBuilder.setPostId(getPostId());
+        postBuilder.setToken(token);
+        postBuilder.setSignature(sigByteString);
         post = postBuilder.build();
 
         getGeneralMap().add(post);
@@ -448,6 +474,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         int number = request.getNumber();
         String token = request.getToken();
 
+
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
 
@@ -459,6 +486,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             byte[] keyHash = Main.getHashFromObject(key);
             byte[] numberHash = Main.getHashFromObject(number);
             byte[] finalHash = ArrayUtils.addAll(userAliasHash, keyHash);
+
             finalHash = ArrayUtils.addAll(finalHash, numberHash);
             finalHash = ArrayUtils.addAll(finalHash, tokenHash);
 
@@ -485,6 +513,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         /*----------------------------------------------------------------------------------*/
         try {
+            boolean validNumber = number >= 0;
+            sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
 
             boolean validKey = getParticularMap().containsKey(key);
 
@@ -492,17 +522,19 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
                 getParticularMap().put(key, new ArrayList<Announcement>());
             }
             ArrayList<Announcement> tmp = getParticularMap().get(key);
-            Collections.reverse(tmp);
+            ArrayList<Announcement> result = new ArrayList<Announcement>();
 
-            boolean validNumber = number >= 0;
-            sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
-            Announcement result;
-            if(number > tmp.size() - 1){
-                result = Announcement.newBuilder().setPostId(-1).build();
-            }else{
-                result = tmp.get(number);
+            if (number > 0) {
+                if (tmp.size() > 0) {
+                    ListIterator<Announcement> listIter = tmp.listIterator(tmp.size());
+                    for (int i = 0; i < number; i++) {
+                        result.add(listIter.previous());
+                    }
+                }
+            } else {
+                Collections.reverse(tmp);
+                result.addAll(tmp);
             }
-
 
 
             /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
@@ -512,7 +544,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-            ReadResponse response = ReadResponse.newBuilder().setResult(result).setSignature(responseSigByteString).setRid(request.getRid()).build();
+            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).build();
             responseObserver.onNext(response);
 
 
@@ -528,7 +560,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         String userAlias = request.getKey();
         int number = request.getNumber();
         String token = request.getToken();
-
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
 
@@ -539,6 +570,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             byte[] userAliasHash = Main.getHashFromObject(userAlias);
             byte[] numberHash = Main.getHashFromObject(number);
             byte[] finalHash = ArrayUtils.addAll(userAliasHash, numberHash);
+
             finalHash = ArrayUtils.addAll(finalHash, tokenHash);
 
             boolean valid = Main.validate(signature, userAlias, finalHash); //key == userAlias
@@ -559,17 +591,24 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         }
 
         /*----------------------------------------------------------------------------------*/
-
-        ArrayList<Announcement> general = getGeneralMap();
+        /*----------------------------------------------------------------------------------*/
         boolean validNumber = number >= 0;
         sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
-        Announcement result;
 
-        if(number > general.size() - 1){
-            result = Announcement.newBuilder().setPostId(-1).build();
-        }else{
-            result = general.get(number);
+        ArrayList<Announcement> general = getGeneralMap();
+        ArrayList<Announcement> result = new ArrayList<Announcement>();
+
+        if (number > 0) {
+            ListIterator<Announcement> listIter = general.listIterator(general.size());
+            for (int i = 0; i < number; i++) {
+                result.add(listIter.previous());
+            }
+
+        } else {
+            Collections.reverse(general);
+            result.addAll(general);
         }
+
 
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
         try {
@@ -578,7 +617,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-            ReadGeneralResponse response = ReadGeneralResponse.newBuilder().setResult(result).setSignature(responseSigByteString).setRid(request.getRid()).build();
+            ReadGeneralResponse response = ReadGeneralResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -593,6 +632,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         new File(GENERAL_FILE).delete();
         new File(POSTID_FILE).delete();
         initialize();
+        timestamp = -1;
         ResetResponse response = ResetResponse.newBuilder().build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();

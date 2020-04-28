@@ -88,8 +88,6 @@ public class Main {
         sig.initVerify(publicKey);
         sig.update(messageHash);
         boolean verify = sig.verify(signature);
-
-        System.out.println("Signature is valid: " + verify);
         if (!verify) {
             System.err.println("Invalid signature! Board compromised!");
             return false;
