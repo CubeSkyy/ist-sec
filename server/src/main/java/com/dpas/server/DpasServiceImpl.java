@@ -40,8 +40,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
 
     /*--------------------------------------------------FILES---------------------------------------------------------*/
-
-
     private DpasServiceImpl(int p) {
         port = p;
         USERS_FILE = COMMON_USERS_FILE + port;
@@ -401,6 +399,13 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         boolean validRegister = getUsersMap().containsKey(key);
         sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
 
+        boolean validTimestamp = wts > timestamp;
+        if(!validTimestamp){
+            sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);
+        }else{
+            timestamp = wts;
+        }
+
 
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
@@ -544,7 +549,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).build();
+            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).setTs(timestamp).build();
             responseObserver.onNext(response);
 
 
@@ -617,7 +622,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-            ReadGeneralResponse response = ReadGeneralResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).build();
+            ReadGeneralResponse response = ReadGeneralResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).setTs(timestamp).build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();

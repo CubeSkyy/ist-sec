@@ -57,6 +57,24 @@ public class ClientAPI {
         }
     }
 
+    private ArrayList<GeneratedMessageV3> sendAsyncNN(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api){
+        List<GeneratedMessageV3> responses;
+        String[] readCommand = {"readGeneral", command[1], "0"};
+        responses = readAsync(stubs, readCommand, this::readGeneral, true);
+        ReadGeneralResponse message = null;
+        int maxTs = -2;
+        for (GeneratedMessageV3 m : responses) {
+            message = (ReadGeneralResponse) m;
+            if (maxTs < message.getTs()) {
+                maxTs = message.getTs();
+            }
+        }
+        wts = maxTs;
+        wts++;
+        return sendAsync(stubs, command, this::postGeneral);
+
+    }
+
     private ArrayList<GeneratedMessageV3> sendAsync(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api) {
         AtomicInteger counter = new AtomicInteger(0);
         ArrayList<GeneratedMessageV3> result = new ArrayList<>();
@@ -94,32 +112,6 @@ public class ClientAPI {
         return result;
     }
 
-
-    private boolean verifyWriteSig(GeneratedMessageV3 readResponse, boolean general) {
-        ArrayList<Announcement> resList;
-        if (general) resList = new ArrayList<Announcement>(((ReadGeneralResponse) readResponse).getResultList());
-        else resList = new ArrayList<Announcement>(((ReadResponse) readResponse).getResultList());
-        if (resList.size() == 0) {
-            return true;
-        }
-        for (Announcement a : resList) {
-            try {
-                byte[] postHash = Main.getHashFromObject(a.getKey());
-                postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(a.getMessage()));
-                byte[] tokenHash = Main.getHashFromObject(a.getToken());
-                byte[] wtsHash = Main.getHashFromObject(a.getWts());
-                byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
-                hash = ArrayUtils.addAll(hash, wtsHash);
-                return Main.validate(a.getSignature().toByteArray(), a.getKey(), hash);
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-                return false;
-            }
-        }
-        return false;
-    }
-
-
     private ArrayList<GeneratedMessageV3> readAsync(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api, boolean general) {
         AtomicInteger counter = new AtomicInteger(0);
         ArrayList<GeneratedMessageV3> result = new ArrayList<>();
@@ -155,6 +147,29 @@ public class ClientAPI {
         return result;
     }
 
+    private boolean verifyWriteSig(GeneratedMessageV3 readResponse, boolean general) {
+        ArrayList<Announcement> resList;
+        if (general) resList = new ArrayList<Announcement>(((ReadGeneralResponse) readResponse).getResultList());
+        else resList = new ArrayList<Announcement>(((ReadResponse) readResponse).getResultList());
+        if (resList.size() == 0) {
+            return true;
+        }
+        for (Announcement a : resList) {
+            try {
+                byte[] postHash = Main.getHashFromObject(a.getKey());
+                postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(a.getMessage()));
+                byte[] tokenHash = Main.getHashFromObject(a.getToken());
+                byte[] wtsHash = Main.getHashFromObject(a.getWts());
+                byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
+                hash = ArrayUtils.addAll(hash, wtsHash);
+                return Main.validate(a.getSignature().toByteArray(), a.getKey(), hash);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+                return false;
+            }
+        }
+        return false;
+    }
 
     public void receive(ArrayList<DpasServiceBlockingStub> stubs, String input) throws Exception {
         try {
@@ -192,8 +207,8 @@ public class ClientAPI {
                         System.err.println("Usage: postGeneral|<userAlias>|<Message>|<Reference List>\nReference List can be empty.");
                         break;
                     }
-                    wts++;
-                    responses = sendAsync(stubs, command, this::postGeneral);
+
+                    responses = sendAsyncNN(stubs, command, this::postGeneral);
                     if (responses != null) {
                         PostGeneralResponse response = (PostGeneralResponse) responses.get(0);
                         System.out.println("POST GENERAL DONE: " + response.getResult());
@@ -202,7 +217,7 @@ public class ClientAPI {
                     break;
                 case "read":
                     if (command.length != 4) {
-                        System.err.println("Usage: read|<NumberOfPosts>|<userAlias>|<userToRead>.");
+                        System.err.println("Usage: read|<userAlias>|<userToRead>|<NumberOfPosts>.");
                         break;
                     }
                     responses = readAsync(stubs, command, this::read, false);
@@ -221,7 +236,7 @@ public class ClientAPI {
                     break;
                 case "readGeneral":
                     if (command.length != 3) {
-                        System.err.println("Usage: readGeneral|<NumberOfPosts>|<userAlias>.");
+                        System.err.println("Usage: readGeneral|<userAlias>|<NumberOfPosts>.");
                         break;
                     }
                     responses = readAsync(stubs, command, this::readGeneral, true);
