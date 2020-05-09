@@ -7,6 +7,7 @@ package com.dpas;
 message RegisterRequest {
     string key = 1;
     bytes signature = 2;
+    repeated BroadcastResponse signatures = 3;
 }
 
 message RegisterResponse {
@@ -17,6 +18,7 @@ message RegisterResponse {
 message GetTokenRequest {
     string key = 1;
     bytes signature = 2;
+    repeated BroadcastResponse signatures = 3;
 }
 
 message GetTokenResponse {
@@ -86,9 +88,21 @@ message ReadGeneralResponse {
 }
 
 message ResetRequest {
+    repeated BroadcastResponse signatures = 1;
 }
 
 message ResetResponse {
+}
+
+message BroadcastRequest {
+    int32 bcb = 1;
+    string message = 2;
+}
+
+message BroadcastResponse {
+    int32 bcb = 1;
+    string message = 2;
+    bytes signature = 3;
 }
 
 // Defining a Service, a Service can have multiple RPC operations
@@ -101,4 +115,5 @@ service DpasService {
     rpc read (ReadRequest) returns (ReadResponse);
     rpc readGeneral (ReadGeneralRequest) returns (ReadGeneralResponse);
     rpc reset (ResetRequest) returns (ResetResponse);
+    rpc broadcast (BroadcastRequest) returns (BroadcastResponse);
 }

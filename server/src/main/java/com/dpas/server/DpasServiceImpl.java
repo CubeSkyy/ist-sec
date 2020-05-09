@@ -168,6 +168,20 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     public synchronized void getToken(GetTokenRequest request, StreamObserver<GetTokenResponse> responseObserver) {
         System.out.println("Get Token Request Received: " + request);
 
+        ArrayList<BroadcastResponse> signatures = new ArrayList<BroadcastResponse>(request.getSignaturesList());
+        try{
+            byte[] bcbHash = Main.getHashFromObject(signatures.get(0).getBcb());
+            byte[] msgHash = Main.getHashFromObject(signatures.get(0).getMessage());
+            byte[] finalHash = ArrayUtils.addAll(bcbHash, msgHash);
+            for(BroadcastResponse res: signatures){
+                boolean valid = Main.validate(res.getSignature().toByteArray(), "server1", finalHash);
+                sendArgumentError(!valid, responseObserver, MSG_ERROR_BCB);
+
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
         String key = request.getKey();
 
         /*--------------------------SIGNATURE AND HASH FROM USER----------------------------*/
@@ -236,7 +250,22 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     public synchronized void register(RegisterRequest request, StreamObserver<RegisterResponse> responseObserver) {
         System.out.println("Register Request Received: " + request);
 
+        ArrayList<BroadcastResponse> signatures = new ArrayList<BroadcastResponse>(request.getSignaturesList());
+        try{
+            byte[] bcbHash = Main.getHashFromObject(signatures.get(0).getBcb());
+            byte[] msgHash = Main.getHashFromObject(signatures.get(0).getMessage());
+            byte[] finalHash = ArrayUtils.addAll(bcbHash, msgHash);
+            for(BroadcastResponse res: signatures){
+                boolean valid = Main.validate(res.getSignature().toByteArray(), "server1", finalHash);
+                sendArgumentError(!valid, responseObserver, MSG_ERROR_BCB);
+
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
         String key = request.getKey();
+
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
 
@@ -552,7 +581,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).setTs(timestamp).build();
             responseObserver.onNext(response);
 
-
             responseObserver.onCompleted();
         } catch (Exception e) {
             e.printStackTrace();
@@ -632,6 +660,20 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     }
 
     public synchronized void reset(ResetRequest request, StreamObserver<ResetResponse> responseObserver) {
+        ArrayList<BroadcastResponse> signatures = new ArrayList<BroadcastResponse>(request.getSignaturesList());
+        try{
+            byte[] bcbHash = Main.getHashFromObject(signatures.get(0).getBcb());
+            byte[] msgHash = Main.getHashFromObject(signatures.get(0).getMessage());
+            byte[] finalHash = ArrayUtils.addAll(bcbHash, msgHash);
+            for(BroadcastResponse res: signatures){
+                boolean valid = Main.validate(res.getSignature().toByteArray(), "server1", finalHash);
+                sendArgumentError(!valid, responseObserver, MSG_ERROR_BCB);
+
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
         new File(USERS_FILE).delete();
         new File(PARTICULAR_FILE).delete();
         new File(GENERAL_FILE).delete();
@@ -641,6 +683,28 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         ResetResponse response = ResetResponse.newBuilder().build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+    }
+
+    public synchronized void broadcast(BroadcastRequest request, StreamObserver<BroadcastResponse> responseObserver) {
+        System.out.println("Broadcast Request Received: " + request);
+        Integer bcb = request.getBcb();
+        String message = request.getMessage();
+
+        try{
+            byte[] bcbHash = Main.getHashFromObject(bcb);
+            byte[] msgHash = Main.getHashFromObject(message);
+            byte[] finalHash = ArrayUtils.addAll(bcbHash, msgHash);
+
+            byte[] sigBytes = Main.getSignature(finalHash, "server1");
+
+            ByteString signature = ByteString.copyFrom(sigBytes);
+
+            BroadcastResponse response = BroadcastResponse.newBuilder().setBcb(bcb).setMessage(message).setSignature(signature).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
