@@ -6,12 +6,9 @@ import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,7 +25,7 @@ public class ClientAPI {
     public int wts = 0;
     public int majority;
 
-    public ClientAPI (int numOfServers, int numOfFaults){
+    public ClientAPI(int numOfServers, int numOfFaults) {
         majority = (int) Math.ceil((numOfServers + numOfFaults) / 2.0);
     }
 
@@ -135,12 +132,12 @@ public class ClientAPI {
                         })
                         .thenAccept((s) -> {
                             result.add(s);
-                            if (s != null) counter.getAndIncrement();
+                            counter.getAndIncrement();
                         }).exceptionally((e) -> {
-                            System.err.println("Error: " + e.getMessage());
+                            System.err.println("Server Error: " + e.getMessage());
+                            counter.getAndIncrement();
                             return null;
                         }))
-                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
 
@@ -201,18 +198,22 @@ public class ClientAPI {
                         break;
                     }
                     responses = readAsync(stubs, command, this::read, false);
-                    ReadResponse message = null;
-                    ReadResponse result = null;
-                    int maxTs = -2;
-                    for (GeneratedMessageV3 m : responses) {
-                        message = (ReadResponse) m;
-                        if (maxTs < message.getTs()) {
-                            maxTs = message.getTs();
-                            result = message;
-                        }
-                    }
                     System.out.println("READ:");
-                    printRead(result.getResultList());
+                    if (responses == null || responses.size() == 0) {
+                        System.out.println("READ FAILED");
+                    } else {
+                        ReadResponse message = null;
+                        ReadResponse result = null;
+                        int maxTs = -2;
+                        for (GeneratedMessageV3 m : responses) {
+                            message = (ReadResponse) m;
+                            if (maxTs < message.getTs()) {
+                                maxTs = message.getTs();
+                                result = message;
+                            }
+                        }
+                        printRead(result.getResultList());
+                    }
                     break;
                 case "readGeneral":
                     if (command.length != 3) {
@@ -235,7 +236,7 @@ public class ClientAPI {
                     break;
                 case "reset":
                     wts = 0;
-                    for(DpasServiceBlockingStub stub : stubs){
+                    for (DpasServiceBlockingStub stub : stubs) {
                         reset(stub, command);
                     }
                     System.out.println("RESET DONE.");
