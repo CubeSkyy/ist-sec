@@ -25,16 +25,11 @@ interface API {
 }
 
 public class ClientAPI {
-    int wts = 0;
-    int majority;
+    public int wts = 0;
+    public int majority;
 
-    public static ClientAPI instance = null;
-
-    public static ClientAPI getInstance() {
-        if (instance == null) {
-            instance = new ClientAPI();
-        }
-        return instance;
+    public ClientAPI (int numOfServers, int numOfFaults){
+        majority = (int) Math.ceil((numOfServers + numOfFaults) / 2.0);
     }
 
     //TODO: Add rid to normal signature
@@ -156,11 +151,11 @@ public class ClientAPI {
     }
 
 
-    public void receive(ArrayList<DpasServiceBlockingStub> stubs, String input) throws Exception {
+    public ArrayList<GeneratedMessageV3> receive(ArrayList<DpasServiceBlockingStub> stubs, String input) throws Exception {
         try {
             String[] command = getCommand(input);
             String[] commands;
-            List<GeneratedMessageV3> responses;
+            ArrayList<GeneratedMessageV3> responses;
             System.out.println("\nCommand: " + command[0] + "\n");
             switch (command[0]) {
                 case "register":
@@ -169,11 +164,11 @@ public class ClientAPI {
                         break;
                     }
                     responses = sendAsync(stubs, command, this::register);
-                    if (responses != null) {
+                    if (responses != null && responses.size() > 0) {
                         RegisterResponse response = (RegisterResponse) responses.get(0);
                         System.out.println("REGISTER COMPLETE: " + response.getResult());
                     }
-                    break;
+                    return responses;
                 case "post":
                     if (command.length < 3) {
                         System.err.println("Usage: post|<userAlias>|<Message>|<Reference List>\nReference List can be empty.");
@@ -240,10 +235,11 @@ public class ClientAPI {
                     break;
                 case "reset":
                     wts = 0;
-                    responses = sendAsync(stubs, command, this::reset);
-                    if (responses != null) {
-                        System.out.println("RESET DONE.");
+                    for(DpasServiceBlockingStub stub : stubs){
+                        reset(stub, command);
                     }
+                    System.out.println("RESET DONE.");
+
                     break;
                 case "demo1":
                     //DEMO1 = "register|user1\npost|user1|Test\nread|user1|user1|0";
@@ -277,6 +273,7 @@ public class ClientAPI {
         } catch (io.grpc.StatusRuntimeException e) {
             System.err.println(e.getMessage());
         }
+        return null;
     }
 
 

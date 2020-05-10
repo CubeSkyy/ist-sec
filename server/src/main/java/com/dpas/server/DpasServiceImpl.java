@@ -6,7 +6,6 @@ import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
-import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -26,7 +25,6 @@ import static com.dpas.server.ServerDataStore.*;
 
 public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
-    public static DpasServiceImpl instance = null;
     private HashMap<String, String> usersMap;
     private HashMap<String, ArrayList<Announcement>> particularMap;
     private ArrayList<Announcement> generalMap;
@@ -42,7 +40,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     /*--------------------------------------------------FILES---------------------------------------------------------*/
 
 
-    private DpasServiceImpl(int p) {
+    public DpasServiceImpl(int p) {
         port = p;
         USERS_FILE = COMMON_USERS_FILE + port;
         PARTICULAR_FILE = COMMON_PARTICULAR_FILE + port;
@@ -52,13 +50,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         timestamp = -1;
     }
 
-    public static DpasServiceImpl getInstance(int port) {
-        if (instance == null) {
-
-            instance = new DpasServiceImpl(port);
-        }
-        return instance;
-    }
 
     private void initialize() {
         checkFile(USERS_FILE);
