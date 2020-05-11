@@ -7,7 +7,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
-import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -175,16 +174,20 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     }
 
     public void validateBCB(StreamObserver<?> responseObserver, Announcement post, List<BroadcastResponse> bcb) {
+        int counter = 0;
         if(bcb.size() < majority) sendArgumentError(true, responseObserver, MSG_ERROR_BCB);
         else try {
-            boolean valid;
             for (BroadcastResponse res : bcb) {
                 byte[] hash = Main.getHashFromObject(post);
-                valid = Main.validate(res.getSignature().toByteArray(), "server1", hash);
-                sendArgumentError(!valid, responseObserver, MSG_ERROR_BCB);
+                if(Main.validate(res.getSignature().toByteArray(), "server1", hash)){
+                    counter++;
+                }
             }
         } catch (Exception e){
             System.err.println(e.getMessage());
+        }
+        if(counter < majority){
+            sendArgumentError(responseObserver, MSG_ERROR_BCB);
         }
     }
 
