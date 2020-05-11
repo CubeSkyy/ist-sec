@@ -12,9 +12,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.dpas.client.DpasClient.*;
@@ -53,14 +50,14 @@ public class ClientAPI {
 
     private ArrayList<GeneratedMessageV3> sendAsync(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api, ArrayList<BroadcastResponse> bcb) {
         List<CompletableFuture<?>> completableFutures =
-                stubs.stream().map(stub -> CompletableFuture.supplyAsync( () -> {
+                stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
                     try {
                         GeneratedMessageV3 tmp = api.grpcOperation(stub, command, bcb);
                         return tmp;
                     } catch (Exception ex) {
                         throw new CompletionException(ex);
                     }
-                }).exceptionally( ex -> {
+                }).exceptionally(ex -> {
                     System.err.println(ex.getMessage());
                     return null;
                 }))
@@ -76,7 +73,7 @@ public class ClientAPI {
         return result;
     }
 
-    private ArrayList<GeneratedMessageV3> sendAsyncNN(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api){
+    private ArrayList<GeneratedMessageV3> sendAsyncNN(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api) {
         List<GeneratedMessageV3> responses;
         String[] readCommand = {"readGeneral", command[1], "0"};
         responses = readAsync(stubs, readCommand, this::readGeneral, true, null);
@@ -126,11 +123,11 @@ public class ClientAPI {
         return false;
     }
 
-    private void waitForMajority(List<CompletableFuture<?>> completableFutures){
-        while(true){
+    private void waitForMajority(List<CompletableFuture<?>> completableFutures) {
+        while (true) {
             int counter = 0;
-            for(CompletableFuture<?> future : completableFutures){
-                if(future.isDone()) counter++;
+            for (CompletableFuture<?> future : completableFutures) {
+                if (future.isDone()) counter++;
             }
             if (counter >= majority) break;
         }
@@ -141,7 +138,7 @@ public class ClientAPI {
     private ArrayList<BroadcastResponse> sendBCB(ArrayList<DpasServiceBlockingStub> stubs, Announcement message) {
 
         List<CompletableFuture<?>> completableFutures =
-                stubs.stream().map(stub -> CompletableFuture.supplyAsync( () -> {
+                stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
                     try {
                         BroadcastResponse res = broadcast(stub, message);
                         byte[] msgHash = Main.getHashFromObject(message);
@@ -154,7 +151,7 @@ public class ClientAPI {
                         throw new CompletionException(ex);
                     }
 
-                }).exceptionally( ex -> {
+                }).exceptionally(ex -> {
                     System.err.println(ex.getMessage());
                     return null;
                 }))
@@ -172,7 +169,7 @@ public class ClientAPI {
 
     private ArrayList<GeneratedMessageV3> readAsync(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api, boolean general, ArrayList<BroadcastResponse> bcb) {
         List<CompletableFuture<?>> completableFutures =
-                stubs.stream().map(stub -> CompletableFuture.supplyAsync( () -> {
+                stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
                     try {
                         GeneratedMessageV3 res = api.grpcOperation(stub, command, bcb);
                         if (verifyWriteSig(res, general)) return res;
@@ -183,7 +180,7 @@ public class ClientAPI {
                     } catch (Exception ex) {
                         throw new CompletionException(ex);
                     }
-                }).exceptionally( ex -> {
+                }).exceptionally(ex -> {
                     System.err.println(ex.getMessage());
                     return null;
                 }))
@@ -211,7 +208,8 @@ public class ClientAPI {
                         System.err.println("Usage: register|<userAlias>");
                         break;
                     }
-                    responses = sendAsync(stubs, command, this::register, null);                    if (responses != null && responses.size() > 0) {
+                    responses = sendAsync(stubs, command, this::register, null);
+                    if (responses != null && responses.size() > 0) {
                         RegisterResponse response = (RegisterResponse) responses.get(0);
                         System.out.println("REGISTER COMPLETE: " + response.getResult());
                     }
@@ -258,10 +256,10 @@ public class ClientAPI {
                     ReadResponse message;
                     ReadResponse result = null;
                     int maxTs = -2;
-                    String maxId =  ((ReadResponse) responses.get(0)).getResult(0).getKey();
+                    String maxId = ((ReadResponse) responses.get(0)).getResult(0).getKey();
                     for (GeneratedMessageV3 m : responses) {
                         message = (ReadResponse) m;
-                        if (maxTs < message.getTs() || (maxTs == message.getTs() && message.getTsId().compareTo(maxId) > 0 )) {
+                        if (maxTs < message.getTs() || (maxTs == message.getTs() && message.getTsId().compareTo(maxId) > 0)) {
                             maxTs = message.getTs();
                             maxId = message.getTsId();
                             result = message;
@@ -280,10 +278,10 @@ public class ClientAPI {
                     ReadGeneralResponse messageGeneral;
                     ReadGeneralResponse resultGeneral = null;
                     int maxTsGeneral = -2;
-                    String maxIdGeneral =  ((ReadGeneralResponse) responses.get(0)).getResult(0).getKey();
+                    String maxIdGeneral = ((ReadGeneralResponse) responses.get(0)).getResult(0).getKey();
                     for (GeneratedMessageV3 m : responses) {
                         messageGeneral = (ReadGeneralResponse) m;
-                        if (maxTsGeneral < messageGeneral.getTs() || (maxTsGeneral == messageGeneral.getTs() && messageGeneral.getTsId().compareTo(maxIdGeneral) > 0 )) {
+                        if (maxTsGeneral < messageGeneral.getTs() || (maxTsGeneral == messageGeneral.getTs() && messageGeneral.getTsId().compareTo(maxIdGeneral) > 0)) {
                             maxTsGeneral = messageGeneral.getTs();
                             maxIdGeneral = messageGeneral.getTsId();
                             resultGeneral = messageGeneral;

@@ -4,25 +4,19 @@ import com.dpas.Dpas.*;
 import com.dpas.DpasServiceGrpc;
 import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.GeneratedMessageV3;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.ListIterator;
-import java.util.Comparator;
+import java.util.*;
 
 import static com.dpas.server.ServerDataStore.*;
 
@@ -170,14 +164,14 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         try {
             for (BroadcastResponse res : bcb) {
                 byte[] hash = Main.getHashFromObject(post);
-                if(Main.validate(res.getSignature().toByteArray(), "server1", hash)){
+                if (Main.validate(res.getSignature().toByteArray(), "server1", hash)) {
                     counter++;
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        if(counter < majority){
+        if (counter < majority) {
             sendArgumentError(responseObserver, MSG_ERROR_BCB);
         }
     }
@@ -313,8 +307,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         String token = request.getToken();
         int wts = request.getWts();
 
-        System.out.println("\nPost Request Received:\n User: " + key+ "\nMessage: "
-                + message +"\nTimestamp: "+ wts + "\nToken: " + request.getToken());
+        System.out.println("\nPost Request Received:\n User: " + key + "\nMessage: "
+                + message + "\nTimestamp: " + wts + "\nToken: " + request.getToken());
 
         boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
         sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
@@ -325,7 +319,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         boolean validRegister = getUsersMap().containsKey(key);
         sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
 
-        if(wts < timestamp || (wts == timestamp && key.compareTo(timestampId) >= 0)){
+        if (wts < timestamp || (wts == timestamp && key.compareTo(timestampId) >= 0)) {
             sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);
         }
 
@@ -412,8 +406,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         String message = post.getMessage();
         String token = request.getToken();
         int wts = request.getWts();
-        System.out.println("\nPost General Request Received:\n User: " + key+ "\nMessage: "
-                + message +"\nTimestamp: "+ wts + "\nToken: " + request.getToken());
+        System.out.println("\nPost General Request Received:\n User: " + key + "\nMessage: "
+                + message + "\nTimestamp: " + wts + "\nToken: " + request.getToken());
 
         boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
         sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
@@ -424,7 +418,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         boolean validRegister = getUsersMap().containsKey(key);
         sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
 
-        if(wts < timestamp || (wts == timestamp && key.compareTo(timestampId) >= 0)){
+        if (wts < timestamp || (wts == timestamp && key.compareTo(timestampId) >= 0)) {
             sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);
         }
 
@@ -675,6 +669,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         new File(POSTID_FILE).delete();
         initialize();
         timestamp = -1;
+        timestampId = "Z";
         ResetResponse response = ResetResponse.newBuilder().build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -685,7 +680,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         Announcement request = bcbRequest.getPost();
 
-        try{
+        try {
             byte[] hash = Main.getHashFromObject(request);
             byte[] sigBytes = Main.getSignature(hash, "server1");
 
