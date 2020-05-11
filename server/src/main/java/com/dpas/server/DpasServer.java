@@ -14,7 +14,6 @@ public class DpasServer {
             return;
         }
 
-
         final int port = Integer.parseInt(args[0]);
         final int numOfFaults = 1;
 

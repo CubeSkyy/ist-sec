@@ -35,6 +35,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     private int postId;
     private int port;
     private int timestamp;
+    private String timestampId;
     private final String USERS_FILE;
     private final String PARTICULAR_FILE;
     private final String GENERAL_FILE;
@@ -103,7 +104,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     public void checkFile(String filename) {
 
         File f = new File(filename);
-        System.out.println("File " + filename + " exists: " + f.isFile());
 
         if (!f.isFile()) {
             try {
@@ -129,7 +129,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             FileOutputStream fos = new FileOutputStream(type + "Backup");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(users);
-            System.out.println(msg);
             oos.close();
             Files.move(Paths.get(type + "Backup"), Paths.get(type), StandardCopyOption.ATOMIC_MOVE);
 
@@ -144,7 +143,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             FileInputStream fis = new FileInputStream(type);
             ObjectInputStream ois = new ObjectInputStream(fis);
             Object users = ois.readObject();
-            System.out.println(msg);
             ois.close();
             return users;
 
@@ -175,8 +173,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
     public void validateBCB(StreamObserver<?> responseObserver, Announcement post, List<BroadcastResponse> bcb) {
         int counter = 0;
-        if(bcb.size() < majority) sendArgumentError(true, responseObserver, MSG_ERROR_BCB);
-        else try {
+        try {
             for (BroadcastResponse res : bcb) {
                 byte[] hash = Main.getHashFromObject(post);
                 if(Main.validate(res.getSignature().toByteArray(), "server1", hash)){
@@ -194,7 +191,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     /*---------------------------------------------------TOKENS-------------------------------------------------------*/
     @Override
     public synchronized void getToken(GetTokenRequest request, StreamObserver<GetTokenResponse> responseObserver) {
-        System.out.println("Get Token Request Received: " + request);
+        System.out.println("\nGet Token Request Received:\nUser:" + request.getKey());
 
         String key = request.getKey();
 
@@ -221,8 +218,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         getUsersMap().replace(key, token);
         writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
+        System.out.println("\nToken atributed to user:" + token);
 
-        System.out.println("Users: " + usersMap);
 
         /*---------------------------SIGNATURE AND HASH FROM SERVER-------------------------*/
 
@@ -243,7 +240,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
                     if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
                         usersMap.replace(key, null);
                         writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
-                        System.out.println("User token expired: " + key + ":" + token);
+                        System.out.println("\nUser token expired: " + key + ":" + token);
                     }
                 }
             });
@@ -262,7 +259,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     /*----------------------------------------------------------------------------------------------------------------*/
     @Override
     public synchronized void register(RegisterRequest request, StreamObserver<RegisterResponse> responseObserver) {
-        System.out.println("Register Request Received: " + request);
+        System.out.println("\nRegister Request Received:\n User: " + request.getKey());
 
         String key = request.getKey();
 
@@ -289,11 +286,10 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             getUsersMap().put(key, null);
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
             getParticularMap().put(key, new ArrayList<>());
-            System.out.println("New user registered: " + key);
+            System.out.println("\nNew user registered: " + key);
         } else
-            System.out.println("User is already registered.");
+            System.out.println("\nUser is already registered.");
 
-        System.out.println("Users: " + getUsersMap());
 
         try {
             byte[] userHash = Main.getHashFromObject(key);
@@ -314,7 +310,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     /*--------------------------------------------------POSTS---------------------------------------------------------*/
     @Override
     public synchronized void post(PostRequest request, StreamObserver<PostResponse> responseObserver) {
-        System.out.println("Post Request Received: " + request);
 
         validateBCB(responseObserver, request.getPost(), request.getBcbList());
 
@@ -323,6 +318,9 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         String message = post.getMessage();
         String token = request.getToken();
         int wts = request.getWts();
+
+        System.out.println("\nPost Request Received:\n User: " + key+ "\nMessage: "
+                + message +"\nTimestamp: "+ wts + "\nToken: " + request.getToken());
 
         boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
         sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
@@ -333,13 +331,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         boolean validRegister = getUsersMap().containsKey(key);
         sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
 
-        boolean validTimestamp = wts > timestamp;
-        if(!validTimestamp){
+        if(wts < timestamp || (wts == timestamp && key.compareTo(timestampId) >= 0)){
             sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);
-        }else{
-            timestamp = wts;
         }
 
+        timestamp++;
+        timestampId = key;
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
 
@@ -365,7 +362,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             getUsersMap().replace(key, null);
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
-            System.out.println("User token expired: " + key + ":" + token);
+            System.out.println("\nUser token expired: " + key + ":" + token);
         } else {
             sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
         }
@@ -413,7 +410,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
     @Override
     public synchronized void postGeneral(PostGeneralRequest request, StreamObserver<PostGeneralResponse> responseObserver) {
-        System.out.println("Post General Request Received: " + request);
 
         validateBCB(responseObserver, request.getPost(), request.getBcbList());
 
@@ -422,6 +418,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         String message = post.getMessage();
         String token = request.getToken();
         int wts = request.getWts();
+        System.out.println("\nPost General Request Received:\n User: " + key+ "\nMessage: "
+                + message +"\nTimestamp: "+ wts + "\nToken: " + request.getToken());
 
         boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
         sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
@@ -432,13 +430,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         boolean validRegister = getUsersMap().containsKey(key);
         sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
 
-        boolean validTimestamp = wts > timestamp;
-        if(!validTimestamp){
+        if(wts < timestamp || (wts == timestamp && key.compareTo(timestampId) >= 0)){
             sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);
-        }else{
-            timestamp = wts;
         }
 
+        timestamp++;
+        timestampId = key;
 
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
@@ -464,7 +461,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             getUsersMap().replace(key, null);
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
-            System.out.println("User token expired: " + key + ":" + token);
+            System.out.println("\nUser token expired: " + key + ":" + token);
         } else {
             sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
         }
@@ -484,7 +481,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         writeToFile(getGeneralMap(), GENERAL_FILE, MSG_GENERAL);
 
-        System.out.println("General posts: " + getGeneralMap());
 
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
         try {
@@ -505,7 +501,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     /*--------------------------------------------------READS---------------------------------------------------------*/
     @Override
     public synchronized void read(ReadRequest request, StreamObserver<ReadResponse> responseObserver) {
-        System.out.println("Read Request Received: " + request);
+        System.out.println("\nRead Request Received:\n User: " + request.getKey() + "\nNumber: "
+                + request.getNumber() + "\nToken: " + request.getToken());
 
         String userAlias = request.getKey();
         String key = request.getKeyToRead();
@@ -544,12 +541,13 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             getUsersMap().replace(userAlias, null);
             writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
 
-            System.out.println("User token expired: " + userAlias + ":" + token);
+            System.out.println("\nUser token expired: " + userAlias + ":" + token);
         } else {
             sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
         }
 
         /*----------------------------------------------------------------------------------*/
+
         try {
             boolean validNumber = number >= 0;
             sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
@@ -578,11 +576,16 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
 
             byte[] hashGeneral = Main.getHashFromObject(result);
+            byte[] hashTsId = Main.getHashFromObject(timestampId);
+            byte[] hashTs = Main.getHashFromObject(timestamp);
+
+            hashGeneral = ArrayUtils.addAll(hashGeneral, hashTsId);
+            hashGeneral = ArrayUtils.addAll(hashGeneral, hashTs);
             byte[] sigGeneral = Main.getSignature(hashGeneral, "server1");
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).setTs(timestamp).build();
+            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).setTs(timestamp).setTsId(timestampId).build();
             responseObserver.onNext(response);
 
             responseObserver.onCompleted();
@@ -592,7 +595,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     }
 
     public synchronized void readGeneral(ReadGeneralRequest request, StreamObserver<ReadGeneralResponse> responseObserver) {
-        System.out.println("Read General Request Received: " + request);
+        System.out.println("\nRead General Request Received:\n User: " + request.getKey() + "\nNumber: "
+                + request.getNumber() + "\nToken: " + request.getToken());
 
         String userAlias = request.getKey();
         int number = request.getNumber();
@@ -635,20 +639,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         ArrayList<Announcement> general = getGeneralMap();
         ArrayList<Announcement> result = new ArrayList<Announcement>();
 
-        Collections.sort(general, new Comparator(){
-            public int compare(Object o1, Object o2){
-                Integer wts1 = ((Announcement) o1).getWts();
-                Integer wts2 = ((Announcement) o2).getWts();
-                Integer comp = wts1.compareTo(wts2);
-                if(comp != 0){
-                    return comp;
-                }
-
-                Integer postID1 = ((Announcement) o1).getPostId();
-                Integer postID2 = ((Announcement) o2).getPostId();
-                return postID1.compareTo(postID2);
-            }
-        });
 
         if (number > 0) {
             ListIterator<Announcement> listIter = general.listIterator(general.size());
@@ -665,11 +655,17 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
         try {
             byte[] hashGeneral = Main.getHashFromObject(result);
+            byte[] hashTsId = Main.getHashFromObject(timestampId);
+            byte[] hashTs = Main.getHashFromObject(timestamp);
+
+            hashGeneral = ArrayUtils.addAll(hashGeneral, hashTsId);
+            hashGeneral = ArrayUtils.addAll(hashGeneral, hashTs);
             byte[] sigGeneral = Main.getSignature(hashGeneral, "server1");
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-            ReadGeneralResponse response = ReadGeneralResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).setTs(timestamp).build();
+            ReadGeneralResponse response = ReadGeneralResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString)
+                    .setTs(timestamp).setTsId(timestampId).build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -691,7 +687,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     }
 
     public synchronized void broadcast(BroadcastRequest bcbRequest, StreamObserver<BroadcastResponse> responseObserver) {
-        System.out.println("Broadcast Request Received: " + bcbRequest);
+        System.out.println("\nBroadcast Request Received: " + bcbRequest);
 
         Announcement request = bcbRequest.getPost();
 
