@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.ListIterator;
+import java.util.Comparator;
 
 import static com.dpas.server.ServerDataStore.*;
 
@@ -630,6 +631,21 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         ArrayList<Announcement> general = getGeneralMap();
         ArrayList<Announcement> result = new ArrayList<Announcement>();
+
+        Collections.sort(general, new Comparator(){
+            public int compare(Object o1, Object o2){
+                Integer wts1 = ((Announcement) o1).getWts();
+                Integer wts2 = ((Announcement) o2).getWts();
+                Integer comp = wts1.compareTo(wts2);
+                if(comp != 0){
+                    return comp;
+                }
+
+                Integer postID1 = ((Announcement) o1).getPostId();
+                Integer postID2 = ((Announcement) o2).getPostId();
+                return postID1.compareTo(postID2);
+            }
+        });
 
         if (number > 0) {
             ListIterator<Announcement> listIter = general.listIterator(general.size());
