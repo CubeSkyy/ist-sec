@@ -53,8 +53,9 @@ public class DpasClient {
             stubs.add(DpasServiceGrpc.newBlockingStub(channels.get(channels.size()-1)));
         }
 
-        ClientAPI library = ClientAPI.getInstance();
-        library.majority = (int) Math.ceil((numOfServers + numOfFaults) / 2.0);
+        ClientAPI library = new ClientAPI(numOfServers, numOfFaults);
+
+//        String testInput = "register|user1\nregister|user2\npost|user1|ola isto e um teste\nread|user2|user1|0\npostGeneral|user1|teste do geral|1\nreadGeneral|user2|0";
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {

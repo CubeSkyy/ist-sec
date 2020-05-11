@@ -28,7 +28,6 @@ import static com.dpas.server.ServerDataStore.*;
 
 public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
-    public static DpasServiceImpl instance = null;
     private HashMap<String, String> usersMap;
     private HashMap<String, ArrayList<Announcement>> particularMap;
     private ArrayList<Announcement> generalMap;
@@ -48,7 +47,9 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
 
     /*--------------------------------------------------FILES---------------------------------------------------------*/
-    private DpasServiceImpl(int p, int nrFaults) {
+
+
+    public DpasServiceImpl(int p, int nrFaults) {
         port = p;
         USERS_FILE = COMMON_USERS_FILE + port;
         PARTICULAR_FILE = COMMON_PARTICULAR_FILE + port;
@@ -61,13 +62,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         majority = (int) Math.ceil((numOfServers + numOfFaults) / 2.0);
     }
 
-    public static DpasServiceImpl getInstance(int port, int nrFaults) {
-        if (instance == null) {
-
-            instance = new DpasServiceImpl(port, nrFaults);
-        }
-        return instance;
-    }
 
     private void initialize() {
         checkFile(USERS_FILE);

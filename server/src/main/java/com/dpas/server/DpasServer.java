@@ -14,10 +14,10 @@ public class DpasServer {
             return;
         }
 
-        final int port = Integer.parseInt(args[0]);
-        final int numOfFaults = 1;
 
-        final BindableService impl = DpasServiceImpl.getInstance(port, numOfFaults);
+        final int port = Integer.parseInt(args[0]);
+        final int numOfFaults = Integer.parseInt(args[1]);;
+        final BindableService impl = new DpasServiceImpl(port, numOfFaults);
 
         // Create a new server to listen on port
         Server server = ServerBuilder.forPort(port).addService(impl).build();
