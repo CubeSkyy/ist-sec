@@ -581,7 +581,7 @@ public class ClientAPI {
 
         ReadGeneralRequest requestReadGeneral = ReadGeneralRequest.newBuilder().setNumber(number)
                 .setKey(userAlias).setSignature(ByteString.copyFrom(signature)).setToken(token).build();
-        
+
         ReadGeneralResponse responseReadGeneral = stub.readGeneral(requestReadGeneral);
 
         /*---------------------------------SERVER VALIDATION--------------------------------*/

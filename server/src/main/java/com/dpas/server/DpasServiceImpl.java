@@ -41,8 +41,13 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     private final String POSTID_FILE;
 
 
+    int majority;
+    int numOfFaults;
+    int numOfServers;
+
+
     /*--------------------------------------------------FILES---------------------------------------------------------*/
-    private DpasServiceImpl(int p) {
+    private DpasServiceImpl(int p, int nrFaults) {
         port = p;
         USERS_FILE = COMMON_USERS_FILE + port;
         PARTICULAR_FILE = COMMON_PARTICULAR_FILE + port;
@@ -50,12 +55,15 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         POSTID_FILE = COMMON_POSTID_FILE + port;
         initialize();
         timestamp = -1;
+        numOfFaults = nrFaults;
+        numOfServers = 3 * numOfFaults + 1;
+        majority = (int) Math.ceil((numOfServers + numOfFaults) / 2.0);
     }
 
-    public static DpasServiceImpl getInstance(int port) {
+    public static DpasServiceImpl getInstance(int port, int nrFaults) {
         if (instance == null) {
 
-            instance = new DpasServiceImpl(port);
+            instance = new DpasServiceImpl(port, nrFaults);
         }
         return instance;
     }
@@ -72,6 +80,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         checkFile(POSTID_FILE);
         postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
+
     }
 
     private HashMap<String, String> getUsersMap() {
@@ -165,7 +174,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     }
 
     public void validateBCB(StreamObserver<?> responseObserver, Announcement post, List<BroadcastResponse> bcb) {
-        try {
+        if(bcb.size() < majority) sendArgumentError(true, responseObserver, MSG_ERROR_BCB);
+        else try {
             boolean valid;
             for (BroadcastResponse res : bcb) {
                 byte[] hash = Main.getHashFromObject(post);
