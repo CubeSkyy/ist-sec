@@ -321,6 +321,9 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         boolean validRegister = getUsersMap().containsKey(key);
         sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
 
+        boolean validGeneral = post.getGeneral();
+        sendArgumentError(validGeneral, responseObserver, MSG_ERROR_INVALID_GENERAL);
+
         if (wts < timestamp || (wts == timestamp && key.compareTo(timestampId) >= 0)) {
             sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);
         }
@@ -419,6 +422,9 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         boolean validRegister = getUsersMap().containsKey(key);
         sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
+
+        boolean validGeneral = post.getGeneral();
+        sendArgumentError(!validGeneral, responseObserver, MSG_ERROR_INVALID_GENERAL);
 
         if (wts < timestamp || (wts == timestamp && key.compareTo(timestampId) >= 0)) {
             sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);

@@ -32,6 +32,7 @@ message Announcement {
     string token = 6;
     bytes signature = 7;
     int32 wts = 8;
+    bool general = 9;
 }
 
 message PostRequest {

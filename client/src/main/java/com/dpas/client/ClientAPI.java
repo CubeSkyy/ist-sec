@@ -43,6 +43,7 @@ public class ClientAPI {
                 System.out.println("     Message: " + a.getMessage());
                 System.out.println("     PostId: " + a.getPostId());
                 System.out.println("     References: " + a.getRefList());
+                System.out.println("     General: " + a.getGeneral());
                 System.out.println(" }");
             }
         }
@@ -88,7 +89,7 @@ public class ClientAPI {
         wts = maxTs;
         wts++;
 
-        Announcement requestPost = buildAnnouncement(command);
+        Announcement requestPost = buildAnnouncement(command, true);
         ArrayList<BroadcastResponse> bcb = sendBCB(stubs, requestPost, command[1]);
         if (bcb == null) {
             System.err.println("BCB failed. Command not executed.");
@@ -220,7 +221,7 @@ public class ClientAPI {
                         break;
                     }
                     wts++;
-                    Announcement requestPost = buildAnnouncement(command);
+                    Announcement requestPost = buildAnnouncement(command, false);
                     ArrayList<BroadcastResponse> bcb = sendBCB(stubs, requestPost, command[1]);
                     if (bcb == null) {
                         System.err.println("BCB failed. Command not executed.");
@@ -405,7 +406,7 @@ public class ClientAPI {
     }
 
     /*--------------------------------------------------POSTS---------------------------------------------------------*/
-    public Announcement buildAnnouncement(String[] command) {
+    public Announcement buildAnnouncement(String[] command, boolean general) {
         String userAlias = command[1];
         List<Integer> referral = new ArrayList<Integer>();
         if (command.length > 2) {
@@ -415,7 +416,7 @@ public class ClientAPI {
                 i += 1;
             }
         }
-        Announcement.Builder post = Announcement.newBuilder().setKey(command[1]).setMessage(command[2]).setWts(wts);
+        Announcement.Builder post = Announcement.newBuilder().setKey(command[1]).setMessage(command[2]).setWts(wts).setGeneral(general);
         post.addAllRef(referral);
         return post.build();
     }

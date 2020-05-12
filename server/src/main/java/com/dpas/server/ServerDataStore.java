@@ -14,7 +14,8 @@ public class ServerDataStore {
     public static final String MSG_ERROR_REGISTER_SIG = "Invalid signature and/or hash. Register request denied.";
     public static final String MSG_ERROR_INVALID_REF = "Invalid reference. There is no post with that reference";
     public static final String MSG_ERROR_POST_MSG_LEN = "Invalid message length. Message needs to be smaller than 255 characters.";
-    public static final String MSG_ERROR_NOT_REGISTERED = "User is not registered";
+    public static final String MSG_ERROR_NOT_REGISTERED = "User is not registered.";
+    public static final String MSG_ERROR_INVALID_GENERAL = "Invalid post generality. Post is being put on the wrong board.";
     public static final String MSG_ERROR_POST_SIG = "Invalid signature and/or hash. Post request denied.";
     public static final String MSG_ERROR_TOKEN_EXPIRED = "Token has already expired.";
     public static final String MSG_ERROR_POST_GENERAL_SIG = "Invalid signature and/or hash. Post General request denied.";
