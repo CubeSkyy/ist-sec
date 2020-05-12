@@ -170,6 +170,30 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         }
     }
 
+    private void printRead(Announcement a) {
+
+        System.out.println(" {");
+        System.out.println("     Key: " + a.getKey());
+        System.out.println("     Message: " + a.getMessage());
+        System.out.println("     PostId: " + a.getPostId());
+        System.out.println("     References: " + a.getRefList());
+        System.out.println("     General: " + a.getGeneral());
+        System.out.println(" }");
+
+    }
+
+    private int getIndexOfFirst(List<Announcement> tail, ArrayList<Announcement> result) {
+        int currId = -1;
+
+        for (int i = 0; i < result.size(); i++) {
+            currId = tail.get(i).getPostId();
+            if (currId >= result.get(result.size()-1).getPostId())
+                return i;
+        }
+
+        return -1;
+    }
+
     public void validateBCB(StreamObserver<?> responseObserver, Announcement post, List<BroadcastResponse> bcb) {
         int counter = 0;
         try {
@@ -644,7 +668,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         boolean validNumber = number >= 0;
         sendArgumentError(!validNumber, responseObserver, MSG_ERROR_READ_NUMBER);
 
-        ArrayList<Announcement> general = getGeneralMap();
+        ArrayList<Announcement> general = new ArrayList<Announcement>(getGeneralMap());
         ArrayList<Announcement> result = new ArrayList<Announcement>();
 
 
@@ -736,6 +760,60 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         System.out.println("--- WRITING BACK ---");
         System.out.println("TIMESTAMP STORED IN THIS SERVER: " + getTimestamp());
+
+        ArrayList<Announcement> tmp = getParticularMap().get(userAlias);
+        List<Announcement> tail = tmp.subList(tmp.size() - result.size(), tmp.size());
+
+        if (posts.getTs() > getTimestamp()) {
+            timestamp = posts.getTs();
+            writeToFile(getTimestamp(), TIMESTAMP_FILE, MSG_TIMESTAMP);
+            timestampId = posts.getTsId();
+        }
+
+        int index = getIndexOfFirst(tail, result);
+        ArrayList<Announcement> temp = null;
+        int firstId = result.get(result.size()-1).getPostId();
+
+        System.out.println("INDEX: " + index);
+
+        if (!getParticularMap().containsKey(userAlias)) {
+            temp = new ArrayList<Announcement>();
+            for (Announcement a: result) {
+                temp.add(a);
+            }
+            getParticularMap().put(userAlias, temp);
+        }
+
+        else {
+            if (index < 0)
+                temp = getParticularMap().get(userAlias);
+
+            else {
+
+                temp = new ArrayList<Announcement>();
+
+                for (Announcement a: tmp) {
+                    if (a.getPostId() < firstId) {
+                        temp.add(a);
+                    }
+                }
+
+            }
+
+            Collections.reverse(result);
+
+            for (Announcement a: result) {
+                temp.add(a);
+            }
+
+            getParticularMap().replace(userAlias, temp);
+        }
+
+        writeToFile(getParticularMap(), PARTICULAR_FILE, MSG_PARTICULAR);
+
+        // TEST
+        for (Announcement a: getParticularMap().get(userAlias))
+            printRead(a);
 
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
         try {
