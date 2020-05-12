@@ -89,7 +89,7 @@ public class ClientAPI {
         wts++;
 
         Announcement requestPost = buildAnnouncement(command);
-        ArrayList<BroadcastResponse> bcb = sendBCB(stubs, requestPost);
+        ArrayList<BroadcastResponse> bcb = sendBCB(stubs, requestPost, command[1]);
         if (bcb == null) {
             System.err.println("BCB failed. Command not executed.");
             return null;
@@ -135,12 +135,12 @@ public class ClientAPI {
     }
 
 
-    private ArrayList<BroadcastResponse> sendBCB(ArrayList<DpasServiceBlockingStub> stubs, Announcement message) {
+    private ArrayList<BroadcastResponse> sendBCB(ArrayList<DpasServiceBlockingStub> stubs, Announcement message, String userAlias) {
 
         List<CompletableFuture<?>> completableFutures =
                 stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
                     try {
-                        BroadcastResponse res = broadcast(stub, message);
+                        BroadcastResponse res = broadcast(stub, message, userAlias);
                         byte[] msgHash = Main.getHashFromObject(message);
                         if (validateServerResponse(res.getSignature(), msgHash)) return res;
                         else {
@@ -221,7 +221,7 @@ public class ClientAPI {
                     }
                     wts++;
                     Announcement requestPost = buildAnnouncement(command);
-                    ArrayList<BroadcastResponse> bcb = sendBCB(stubs, requestPost);
+                    ArrayList<BroadcastResponse> bcb = sendBCB(stubs, requestPost, command[1]);
                     if (bcb == null) {
                         System.err.println("BCB failed. Command not executed.");
                         break;
@@ -614,8 +614,16 @@ public class ClientAPI {
         return resetResponse;
     }
 
-    public BroadcastResponse broadcast(DpasServiceBlockingStub stub, Announcement message) throws Exception {
-        BroadcastRequest broadcastRequest = BroadcastRequest.newBuilder().setPost(message).build();
+    public BroadcastResponse broadcast(DpasServiceBlockingStub stub, Announcement message, String userAlias) throws Exception {
+
+        byte[] messageHash = Main.getHashFromObject(message);
+        byte[] keyHash = Main.getHashFromObject(userAlias);
+        byte[] finalHash = ArrayUtils.addAll(messageHash, keyHash);
+
+        byte[] signature = Main.getSignature(finalHash, userAlias);
+
+
+        BroadcastRequest broadcastRequest = BroadcastRequest.newBuilder().setPost(message).setKey(userAlias).setSignature(ByteString.copyFrom(signature)).build();
         BroadcastResponse broadcastResponse = stub.broadcast(broadcastRequest);
         return broadcastResponse;
     }

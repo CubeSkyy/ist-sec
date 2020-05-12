@@ -679,7 +679,28 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     public synchronized void broadcast(BroadcastRequest bcbRequest, StreamObserver<BroadcastResponse> responseObserver) {
         System.out.println("\nBroadcast Request Received: " + bcbRequest);
 
+        String userAlias = bcbRequest.getKey();
         Announcement request = bcbRequest.getPost();
+
+        /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
+        ByteString sigByteString = bcbRequest.getSignature();
+        byte[] requestSignature = sigByteString.toByteArray();
+
+        try {
+
+            byte[] messageHash = Main.getHashFromObject(request);
+            byte[] keyHash = Main.getHashFromObject(userAlias);
+
+            byte[] finalHash = ArrayUtils.addAll(messageHash, keyHash);
+
+            boolean valid = Main.validate(requestSignature, userAlias, finalHash); //key == userAlias
+            sendArgumentError(!valid, responseObserver, MSG_ERROR_READ_GENERAL_SIG);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /*----------------------------------------------------------------------------------*/
 
         try {
             byte[] hash = Main.getHashFromObject(request);

@@ -99,6 +99,8 @@ message ResetResponse {
 
 message BroadcastRequest {
     Announcement post = 1;
+    string key = 2;
+    bytes signature = 3;
 
 }
 

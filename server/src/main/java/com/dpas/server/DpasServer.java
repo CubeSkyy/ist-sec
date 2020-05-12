@@ -16,7 +16,7 @@ public class DpasServer {
 
 
         final int port = Integer.parseInt(args[0]);
-        final int numOfFaults = Integer.parseInt(args[1]);;
+        final int numOfFaults = Integer.parseInt(args[1]);
         final BindableService impl = new DpasServiceImpl(port, numOfFaults);
 
         // Create a new server to listen on port
