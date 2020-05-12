@@ -727,6 +727,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         ReadResponse posts = request.getPosts();
         String userAlias = request.getKey();
         String token = request.getToken();
+        String serverKey = posts.getKey();
 
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
@@ -771,9 +772,11 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             resultHash = ArrayUtils.addAll(resultHash, hashTsId);
             resultHash = ArrayUtils.addAll(resultHash, hashTs);
 
-            // TODO change this, it is only temporarily until we broadcast the requests themselves
-            //boolean validResponse = Main.validate(postsSigByteString.toByteArray(), serverAlias, resultHash);
-            //sendArgumentError(!validResponse, responseObserver, MSG_ERROR_WB_SIG);
+            if (!serverKey.equals("server1") && !serverKey.equals("server2") && !serverKey.equals("server3") && !serverKey.equals("server4"))
+                sendArgumentError(responseObserver, MSG_ERROR_INVALID_SERVER_KEY);
+
+            boolean validResponse = Main.validate(postsSigByteString.toByteArray(), serverKey, resultHash);
+            sendArgumentError(!validResponse, responseObserver, MSG_ERROR_WB_SIG);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -24,6 +24,7 @@ public class ServerDataStore {
     public static final String MSG_ERROR_READ_SIG = "Invalid signature and/or hash. Read request denied.";
     public static final String MSG_ERROR_READ_NUMBER = "Invalid message number. Number needs to be positive.";
     public static final String MSG_ERROR_INVALID_KEY = "Invalid key. There is no user with the specified key: ";
+    public static final String MSG_ERROR_INVALID_SERVER_KEY = "Invalid server key. Read Response was not signed by a server.";
     public static final String MSG_ERROR_READ_GENERAL_SIG = "Invalid signature and/or hash. Read General request denied.";
     public static final String MSG_ERROR_INVALID_TIMESTAMP = "Previous timestamp received. Ignored write.";
     public static final String MSG_ERROR_WB_SIG = "Invalid signature and/or hash. Write Back request denied.";

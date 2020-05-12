@@ -436,7 +436,7 @@ public class ClientAPI {
         byte[] responseSignature = signature.toByteArray();
 
         if (!serverAlias.equals("server1") && !serverAlias.equals("server2") && !serverAlias.equals("server3") && !serverAlias.equals("server4")) {
-            System.err.println("Token was not signed by a server.");
+            System.err.println("Response not signed by a server.");
             return false;
         }
 
