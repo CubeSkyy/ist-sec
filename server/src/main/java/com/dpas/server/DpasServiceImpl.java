@@ -54,6 +54,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         numOfFaults = nrFaults;
         numOfServers = 3 * numOfFaults + 1;
         majority = (int) Math.ceil((numOfServers + numOfFaults) / 2.0);
+        timestampId = "ZZ";
+        postId = 0;
     }
 
 
@@ -663,13 +665,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     }
 
     public synchronized void reset(ResetRequest request, StreamObserver<ResetResponse> responseObserver) {
-        new File(USERS_FILE).delete();
-        new File(PARTICULAR_FILE).delete();
-        new File(GENERAL_FILE).delete();
-        new File(POSTID_FILE).delete();
-        initialize();
+        usersMap = new HashMap<String, String>();
+        particularMap = new HashMap<String, ArrayList<Announcement>>();
+        generalMap = new ArrayList<Announcement>();
         timestamp = -1;
-        timestampId = "Z";
+        timestampId = "ZZ";
+        postId = 0;
         ResetResponse response = ResetResponse.newBuilder().build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();

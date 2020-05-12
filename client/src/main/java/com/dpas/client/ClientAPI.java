@@ -228,12 +228,11 @@ public class ClientAPI {
                     }
 
                     responses = sendAsync(stubs, command, this::post, bcb);
-                    if (responses != null) {
+                    if (responses != null && responses.size() > 0) {
                         PostResponse response = (PostResponse) responses.get(0);
                         System.out.println("POST DONE: " + response.getResult());
                     }
-
-                    break;
+                    return responses;
                 case "postGeneral":
                     if (command.length < 3) {
                         System.err.println("Usage: postGeneral|<userAlias>|<Message>|<Reference List>\nReference List can be empty.");
@@ -241,56 +240,68 @@ public class ClientAPI {
                     }
 
                     responses = sendAsyncNN(stubs, command, this::postGeneral);
-                    if (responses != null) {
+                    if (responses != null && responses.size() > 0) {
                         PostGeneralResponse response = (PostGeneralResponse) responses.get(0);
                         System.out.println("POST GENERAL DONE: " + response.getResult());
                     }
 
-                    break;
+                    return responses;
                 case "read":
                     if (command.length != 4) {
                         System.err.println("Usage: read|<userAlias>|<userToRead>|<NumberOfPosts>.");
                         break;
                     }
                     responses = readAsync(stubs, command, this::read, false, null);
-                    ReadResponse message;
-                    ReadResponse result = null;
-                    int maxTs = -2;
-                    String maxId = ((ReadResponse) responses.get(0)).getResult(0).getKey();
-                    for (GeneratedMessageV3 m : responses) {
-                        message = (ReadResponse) m;
-                        if (maxTs < message.getTs() || (maxTs == message.getTs() && message.getTsId().compareTo(maxId) > 0)) {
-                            maxTs = message.getTs();
-                            maxId = message.getTsId();
-                            result = message;
+                    if (responses != null && responses.size() > 0) {
+
+                        ReadResponse message;
+                        ReadResponse result = null;
+                        int maxTs = -2;
+                        String maxId = ((ReadResponse) responses.get(0)).getResult(0).getKey();
+                        for (GeneratedMessageV3 m : responses) {
+                            message = (ReadResponse) m;
+                            if (maxTs < message.getTs() || (maxTs == message.getTs() && message.getTsId().compareTo(maxId) > 0)) {
+                                maxTs = message.getTs();
+                                maxId = message.getTsId();
+                                result = message;
+                            }
                         }
+                        System.out.println("READ:");
+                        assert result != null;
+                        printRead(result.getResultList());
+                        ArrayList<GeneratedMessageV3> tmp = new ArrayList<>();
+                        tmp.add(result);
+                        return tmp;
                     }
-                    System.out.println("READ:");
-                    assert result != null;
-                    printRead(result.getResultList());
-                    break;
+                    return null;
                 case "readGeneral":
                     if (command.length != 3) {
                         System.err.println("Usage: readGeneral|<userAlias>|<NumberOfPosts>.");
                         break;
                     }
                     responses = readAsync(stubs, command, this::readGeneral, true, null);
-                    ReadGeneralResponse messageGeneral;
-                    ReadGeneralResponse resultGeneral = null;
-                    int maxTsGeneral = -2;
-                    String maxIdGeneral = ((ReadGeneralResponse) responses.get(0)).getResult(0).getKey();
-                    for (GeneratedMessageV3 m : responses) {
-                        messageGeneral = (ReadGeneralResponse) m;
-                        if (maxTsGeneral < messageGeneral.getTs() || (maxTsGeneral == messageGeneral.getTs() && messageGeneral.getTsId().compareTo(maxIdGeneral) > 0)) {
-                            maxTsGeneral = messageGeneral.getTs();
-                            maxIdGeneral = messageGeneral.getTsId();
-                            resultGeneral = messageGeneral;
+                    if (responses != null && responses.size() > 0) {
+
+                        ReadGeneralResponse messageGeneral;
+                        ReadGeneralResponse resultGeneral = null;
+                        int maxTsGeneral = -2;
+                        String maxIdGeneral = ((ReadGeneralResponse) responses.get(0)).getResult(0).getKey();
+                        for (GeneratedMessageV3 m : responses) {
+                            messageGeneral = (ReadGeneralResponse) m;
+                            if (maxTsGeneral < messageGeneral.getTs() || (maxTsGeneral == messageGeneral.getTs() && messageGeneral.getTsId().compareTo(maxIdGeneral) > 0)) {
+                                maxTsGeneral = messageGeneral.getTs();
+                                maxIdGeneral = messageGeneral.getTsId();
+                                resultGeneral = messageGeneral;
+                            }
                         }
+                        System.out.println("READ GENERAL:");
+                        assert resultGeneral != null;
+                        printRead(resultGeneral.getResultList());
+                        ArrayList<GeneratedMessageV3> tmpGeneral = new ArrayList<>();
+                        tmpGeneral.add(resultGeneral);
+                        return tmpGeneral;
                     }
-                    System.out.println("READ GENERAL:");
-                    assert resultGeneral != null;
-                    printRead(resultGeneral.getResultList());
-                    break;
+                    return null;
                 case "reset":
                     for (DpasServiceBlockingStub stub : stubs) {
                         reset(stub, command, null);
@@ -423,7 +434,8 @@ public class ClientAPI {
         }
         /*----------------------------------------------------------------------------------*/
         String token = responseGetToken.getToken();
-        Announcement post = bcb.get(0).getPost(); /*buildAnnouncement(command);*/
+
+        Announcement post = bcb.get(0).getPost();
 
 
         byte[] postHash = Main.getHashFromObject(post.getKey());
@@ -469,7 +481,7 @@ public class ClientAPI {
         }
         /*----------------------------------------------------------------------------------*/
         String token = responseGetToken.getToken();
-        Announcement post = bcb.get(0).getPost(); /*buildAnnouncement(command);*/
+        Announcement post = bcb.get(0).getPost();
 
         byte[] postHash = Main.getHashFromObject(post.getKey());
         postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
