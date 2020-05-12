@@ -73,6 +73,33 @@ public class ClientAPI {
         }
     }
 
+    private ArrayList<GeneratedMessageV3> sendAsyncRegister(ArrayList<DpasServiceBlockingStub> stubs, String[] command, ArrayList<BroadcastRegisterResponse> bcb) {
+        List<CompletableFuture<?>> completableFutures =
+                stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
+                    try {
+                        GeneratedMessageV3 tmp = register(stub, command, bcb);
+                        return tmp;
+                    } catch (Exception ex) {
+                        throw new CompletionException(ex);
+                    }
+                }).exceptionally(ex -> {
+                    System.err.println(ex.getMessage());
+                    return null;
+                }))
+                        .collect(Collectors.toList());
+
+        waitForMajority(completableFutures);
+
+        ArrayList<GeneratedMessageV3> result = (ArrayList<GeneratedMessageV3>) completableFutures.stream()
+                .map(completableFuture -> completableFuture.join())
+                .filter(Objects::nonNull).collect(Collectors.toList());
+
+
+        return result;
+    }
+
+
+
     private ArrayList<GeneratedMessageV3> sendAsync(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api, ArrayList<BroadcastResponse> bcb) {
         List<CompletableFuture<?>> completableFutures =
                 stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
@@ -186,6 +213,38 @@ public class ClientAPI {
     }
 
 
+    private ArrayList<BroadcastRegisterResponse> sendBCBRegister(ArrayList<DpasServiceBlockingStub> stubs, String userAlias) {
+
+        List<CompletableFuture<?>> completableFutures =
+                stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
+                    try {
+                        BroadcastRegisterResponse res = broadcastRegister(stub, userAlias);
+                        byte[] msgHash = Main.getHashFromObject(userAlias);
+                        if (validateServerResponse(res.getSignature(), msgHash, res.getKey())) return res;
+                        else {
+                            String errorMsg = "Invalid signature. BCB was corrupted.";
+                            throw new Exception(errorMsg);
+                        }
+                    } catch (Exception ex) {
+                        throw new CompletionException(ex);
+                    }
+
+                }).exceptionally(ex -> {
+                    System.err.println(ex.getMessage());
+                    return null;
+                }))
+                        .collect(Collectors.toList());
+
+        waitForMajority(completableFutures);
+
+        ArrayList<BroadcastRegisterResponse> result = (ArrayList<BroadcastRegisterResponse>) completableFutures.stream()
+                .map(completableFuture -> completableFuture.join())
+                .filter(Objects::nonNull).collect(Collectors.toList());
+
+        return result;
+    }
+
+
     private ArrayList<BroadcastResponse> sendBCB(ArrayList<DpasServiceBlockingStub> stubs, Announcement message, String userAlias) {
 
         List<CompletableFuture<?>> completableFutures =
@@ -259,7 +318,16 @@ public class ClientAPI {
                         System.err.println("Usage: register|<userAlias>");
                         break;
                     }
-                    responses = sendAsync(stubs, command, this::register, null);
+
+                    ArrayList<BroadcastRegisterResponse> bcbRegister = sendBCBRegister(stubs, command[1]);
+                    if (bcbRegister == null) {
+                        System.err.println("BCB failed. Command not executed.");
+                        break;
+                    }
+
+
+//                    printBcb(bcb);
+                    responses = sendAsyncRegister(stubs, command, bcbRegister);
                     if (responses != null && responses.size() > 0) {
                         RegisterResponse response = (RegisterResponse) responses.get(0);
                         System.out.println("REGISTER COMPLETE: " + response.getResult());
@@ -447,14 +515,14 @@ public class ClientAPI {
     /*----------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------COMMANDS--------------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
-    public RegisterResponse register(DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
+    public RegisterResponse register(DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastRegisterResponse> bcb) throws Exception {
         String userAlias = command[1];
 
         byte[] hash = Main.getHashFromObject(userAlias);
         byte[] signature = Main.getSignature(hash, userAlias);
 
         RegisterRequest requestRegister = RegisterRequest.newBuilder().setKey(command[1])
-                .setSignature(ByteString.copyFrom(signature)).build();
+                .setSignature(ByteString.copyFrom(signature)).addAllBcb(bcb).build();
 
         RegisterResponse responseRegister = stub.register(requestRegister);
 
@@ -733,6 +801,18 @@ public class ClientAPI {
 
         BroadcastRequest broadcastRequest = BroadcastRequest.newBuilder().setPost(message).setKey(userAlias).setSignature(ByteString.copyFrom(signature)).build();
         BroadcastResponse broadcastResponse = stub.broadcast(broadcastRequest);
+        return broadcastResponse;
+    }
+
+    public BroadcastRegisterResponse broadcastRegister(DpasServiceBlockingStub stub, String userAlias) throws Exception {
+
+        byte[] keyHash = Main.getHashFromObject(userAlias);
+
+        byte[] signature = Main.getSignature(keyHash, userAlias);
+
+
+        BroadcastRegisterRequest broadcastRegisterRequest = BroadcastRegisterRequest.newBuilder().setUserAlias(userAlias).setSignature(ByteString.copyFrom(signature)).build();
+        BroadcastRegisterResponse broadcastResponse = stub.broadcastRegister(broadcastRegisterRequest);
         return broadcastResponse;
     }
 

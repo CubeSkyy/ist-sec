@@ -225,6 +225,24 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         }
     }
 
+    public void validateBCBRegister(StreamObserver<?> responseObserver, String userAlias, List<BroadcastRegisterResponse> bcb) {
+        int counter = 0;
+        try {
+            for (BroadcastRegisterResponse res : bcb) {
+                byte[] hash = Main.getHashFromObject(userAlias);
+
+                if (Main.validate(res.getSignature().toByteArray(), res.getKey(), hash)) {
+                    counter++;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        if (counter < majority) {
+            sendArgumentError(responseObserver, MSG_ERROR_BCB);
+        }
+    }
+
     /*---------------------------------------------------TOKENS-------------------------------------------------------*/
     @Override
     public synchronized void getToken(GetTokenRequest request, StreamObserver<GetTokenResponse> responseObserver) {
@@ -297,6 +315,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     @Override
     public synchronized void register(RegisterRequest request, StreamObserver<RegisterResponse> responseObserver) {
         System.out.println("\nRegister Request Received:\n User: " + request.getKey());
+        validateBCBRegister(responseObserver, request.getKey(), request.getBcbList());
 
         String key = request.getKey();
 
@@ -906,6 +925,44 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             ByteString signature = ByteString.copyFrom(sigBytes);
 
             BroadcastResponse response = BroadcastResponse.newBuilder().setSignature(signature).setPost(request).setKey(serverAlias).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public synchronized void broadcastRegister(BroadcastRegisterRequest bcbRequest, StreamObserver<BroadcastRegisterResponse> responseObserver) {
+        System.out.println("\nBroadcast Register Request Received: " + bcbRequest);
+
+        String userAlias = bcbRequest.getUserAlias();
+
+        /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
+        ByteString sigByteString = bcbRequest.getSignature();
+        byte[] requestSignature = sigByteString.toByteArray();
+
+        try {
+
+            byte[] keyHash = Main.getHashFromObject(userAlias);
+
+
+            boolean valid = Main.validate(requestSignature, userAlias, keyHash); //key == userAlias
+            sendArgumentError(!valid, responseObserver, MSG_ERROR_READ_GENERAL_SIG);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /*----------------------------------------------------------------------------------*/
+
+        try {
+            byte[] hash = Main.getHashFromObject(userAlias);
+            byte[] sigBytes = Main.getSignature(hash, serverAlias);
+
+            ByteString signature = ByteString.copyFrom(sigBytes);
+
+            BroadcastRegisterResponse response = BroadcastRegisterResponse.newBuilder().setSignature(signature).setKey(serverAlias).setUserAlias(userAlias).build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
