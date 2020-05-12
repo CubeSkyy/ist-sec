@@ -712,6 +712,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         ReadResponse posts = request.getPosts();
         String userAlias = request.getKey();
+        String token = request.getToken();
 
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
@@ -719,16 +720,28 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         byte[] signature = sigByteString.toByteArray();
 
         try {
+            byte[] tokenHash = Main.getHashFromObject(token);
             byte[] userAliasHash = Main.getHashFromObject(userAlias);
             byte[] postsHash = Main.getHashFromObject(posts);
 
             byte[] finalHash = ArrayUtils.addAll(postsHash, userAliasHash);
+            finalHash = ArrayUtils.addAll(finalHash, tokenHash); 
 
             boolean valid = Main.validate(signature, userAlias, finalHash); //key == userAlias
             sendArgumentError(!valid, responseObserver, MSG_ERROR_READ_GENERAL_SIG);
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        if (getUsersMap().get(userAlias) != null && getUsersMap().get(userAlias).equals(token)) {
+
+            getUsersMap().replace(userAlias, null);
+            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
+
+            System.out.println("User token expired: " + userAlias + ":" + token);
+        } else {
+            sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
         }
 
 
@@ -756,10 +769,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         }
 
         // Now we know that the posts are valid, and we can write them where necessary
-        // TODO timestamps? rid?
 
         System.out.println("--- WRITING BACK ---");
-        System.out.println("TIMESTAMP STORED IN THIS SERVER: " + getTimestamp());
 
         ArrayList<Announcement> tmp = getParticularMap().get(userAlias);
         List<Announcement> tail = tmp.subList(tmp.size() - result.size(), tmp.size());
@@ -773,8 +784,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         int index = getIndexOfFirst(tail, result);
         ArrayList<Announcement> temp = null;
         int firstId = result.get(result.size()-1).getPostId();
-
-        System.out.println("INDEX: " + index);
 
         if (!getParticularMap().containsKey(userAlias)) {
             temp = new ArrayList<Announcement>();

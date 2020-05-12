@@ -94,7 +94,8 @@ message ReadGeneralResponse {
 message WriteBackRequest {
     ReadResponse posts = 1;
     string key = 2;
-    bytes signature = 3;
+    string token = 3;
+    bytes signature = 4;
 }
 
 message WriteBackResponse {

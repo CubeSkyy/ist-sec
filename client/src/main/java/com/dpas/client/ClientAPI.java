@@ -644,12 +644,26 @@ public class ClientAPI {
 
     public WriteBackResponse writeBack(DpasServiceBlockingStub stub, String userAlias, ReadResponse posts) throws Exception {
 
+        /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
+        GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
+
+        boolean tokenVerify = validateToken(responseGetToken);
+
+        if (!tokenVerify) {
+            System.err.println("Invalid signature and/or hash. GetToken request corrupted.");
+            return null;
+        }
+        /*----------------------------------------------------------------------------------*/
+        String token = responseGetToken.getToken();
+
         byte[] postsHash = Main.getHashFromObject(posts);
         byte[] userAliasHash = Main.getHashFromObject(userAlias);
+        byte[] tokenHash = Main.getHashFromObject(token);
         byte[] hash = ArrayUtils.addAll(postsHash, userAliasHash);
+        hash = ArrayUtils.addAll(hash, tokenHash);
         byte[] signature = Main.getSignature(hash, userAlias);
 
-        WriteBackRequest requestWB = WriteBackRequest.newBuilder().setPosts(posts).setKey(userAlias).setSignature(ByteString.copyFrom(signature)).build();
+        WriteBackRequest requestWB = WriteBackRequest.newBuilder().setPosts(posts).setKey(userAlias).setToken(token).setSignature(ByteString.copyFrom(signature)).build();
         WriteBackResponse responseWB = stub.writeBack(requestWB);
 
         /*---------------------------------SERVER VALIDATION--------------------------------*/
