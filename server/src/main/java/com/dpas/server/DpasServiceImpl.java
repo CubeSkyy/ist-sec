@@ -232,8 +232,10 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         try {
             for (BroadcastRegisterResponse res : bcb) {
                 byte[] hash = Main.getHashFromObject(userAlias);
+                byte[] keyHash = Main.getHashFromObject(res.getKey());
+                byte[] finalHash = ArrayUtils.addAll(hash, keyHash);
 
-                if (Main.validate(res.getSignature().toByteArray(), res.getKey(), hash)) {
+                if (Main.validate(res.getSignature().toByteArray(), res.getKey(), finalHash)) {
                     counter++;
                 }
             }
@@ -979,9 +981,11 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         try {
             byte[] hash = Main.getHashFromObject(userAlias);
-            byte[] sigBytes = Main.getSignature(hash, serverAlias);
+            byte[] keyHash = Main.getHashFromObject(serverAlias);
+            byte[] finalHash = ArrayUtils.addAll(hash, keyHash);
+            byte[] sigServer = Main.getSignature(finalHash, serverAlias);
 
-            ByteString signature = ByteString.copyFrom(sigBytes);
+            ByteString signature = ByteString.copyFrom(sigServer);
 
             BroadcastRegisterResponse response = BroadcastRegisterResponse.newBuilder().setSignature(signature).setKey(serverAlias).setUserAlias(userAlias).build();
             responseObserver.onNext(response);

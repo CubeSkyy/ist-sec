@@ -220,7 +220,9 @@ public class ClientAPI {
                     try {
                         BroadcastRegisterResponse res = broadcastRegister(stub, userAlias);
                         byte[] msgHash = Main.getHashFromObject(userAlias);
-                        if (validateServerResponse(res.getSignature(), msgHash, res.getKey())) return res;
+                        byte[] keyHash = Main.getHashFromObject(res.getKey());
+                        byte[] finalHash = ArrayUtils.addAll(msgHash, keyHash);
+                        if (validateServerResponse(res.getSignature(), finalHash, res.getKey())) return res;
                         else {
                             String errorMsg = "Invalid signature. BCB was corrupted.";
                             throw new Exception(errorMsg);
