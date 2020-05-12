@@ -12,6 +12,7 @@ message RegisterRequest {
 message RegisterResponse {
     string result = 1;
     bytes signature = 2;
+    string key = 3;
 }
 
 message GetTokenRequest {
@@ -22,6 +23,7 @@ message GetTokenRequest {
 message GetTokenResponse {
     string token = 1;
     bytes signature = 2;
+    string key = 3;
 }
 
 message Announcement {
@@ -46,6 +48,7 @@ message PostRequest {
 message PostResponse {
     string result = 1;
     bytes signature = 2;
+    string key = 3;
 }
 
 message PostGeneralRequest {
@@ -59,6 +62,7 @@ message PostGeneralRequest {
 message PostGeneralResponse {
     string result = 1;
     bytes signature = 2;
+    string key = 3;
 }
 
 message ReadRequest {
@@ -74,6 +78,7 @@ message ReadResponse {
     bytes signature = 2;
     int32 ts = 4;
     string tsId = 5;
+    string key = 6;
 }
 
 message ReadGeneralRequest {
@@ -88,6 +93,7 @@ message ReadGeneralResponse {
     bytes signature = 2;
     int32 ts = 4;
     string tsId = 5;
+    string key = 6;
 
 }
 
@@ -101,6 +107,7 @@ message WriteBackRequest {
 message WriteBackResponse {
     string result = 1;
     bytes signature = 2;
+    string key = 3;
 }
 
 message ResetRequest {
@@ -120,6 +127,7 @@ message BroadcastRequest {
 message BroadcastResponse {
     bytes signature = 1;
     Announcement post = 2;
+    string key = 3;
 }
 
 

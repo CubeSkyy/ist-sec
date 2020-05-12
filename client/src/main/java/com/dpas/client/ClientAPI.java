@@ -53,6 +53,26 @@ public class ClientAPI {
         }
     }
 
+    private void printBcb(ArrayList<BroadcastResponse> bcbs) {
+        if (bcbs.isEmpty()) System.out.println("Empty.");
+        else {
+            for (BroadcastResponse bcb : bcbs) {
+                System.out.println(" {");
+
+                System.out.println("    {");
+                System.out.println("        Key: " + bcb.getPost().getKey());
+                System.out.println("        Message: " + bcb.getPost().getMessage());
+                System.out.println("        PostId: " + bcb.getPost().getPostId());
+                System.out.println("        References: " + bcb.getPost().getRefList());
+                System.out.println("        General: " + bcb.getPost().getGeneral());
+                System.out.println("    }");
+
+                System.out.println("     Key: " + bcb.getKey());
+                System.out.println(" }");
+            }
+        }
+    }
+
     private ArrayList<GeneratedMessageV3> sendAsync(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api, ArrayList<BroadcastResponse> bcb) {
         List<CompletableFuture<?>> completableFutures =
                 stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
@@ -124,6 +144,7 @@ public class ClientAPI {
             System.err.println("BCB failed. Command not executed.");
             return null;
         }
+        printBcb(bcb);
 
         return sendAsync(stubs, command, this::postGeneral, bcb);
 
@@ -172,7 +193,7 @@ public class ClientAPI {
                     try {
                         BroadcastResponse res = broadcast(stub, message, userAlias);
                         byte[] msgHash = Main.getHashFromObject(message);
-                        if (validateServerResponse(res.getSignature(), msgHash)) return res;
+                        if (validateServerResponse(res.getSignature(), msgHash, res.getKey())) return res;
                         else {
                             String errorMsg = "Invalid signature. BCB was corrupted.";
                             throw new Exception(errorMsg);
@@ -256,6 +277,8 @@ public class ClientAPI {
                         System.err.println("BCB failed. Command not executed.");
                         break;
                     }
+
+                    printBcb(bcb);
 
                     responses = sendAsync(stubs, command, this::post, bcb);
                     if (responses != null && responses.size() > 0) {
@@ -395,17 +418,29 @@ public class ClientAPI {
     public boolean validateToken(GetTokenResponse responseGetToken) throws Exception {
         ByteString serverSigByteString = responseGetToken.getSignature();
         String token = responseGetToken.getToken();
+        String serverAlias = responseGetToken.getKey();
+
+        if (!serverAlias.equals("server1") && !serverAlias.equals("server2") && !serverAlias.equals("server3") && !serverAlias.equals("server4")) {
+            System.err.println("Token was not signed by a server.");
+            return false;
+        }
 
         byte[] serverSig = serverSigByteString.toByteArray();
         byte[] tokenHash = Main.getHashFromObject(token);
 
-        boolean valid = Main.validate(serverSig, "server1", tokenHash);
+        boolean valid = Main.validate(serverSig, serverAlias, tokenHash);
         return valid;
     }
 
-    public boolean validateServerResponse(ByteString signature, byte[] hash) throws Exception {
+    public boolean validateServerResponse(ByteString signature, byte[] hash, String serverAlias) throws Exception {
         byte[] responseSignature = signature.toByteArray();
-        boolean validResponse = Main.validate(responseSignature, "server1", hash);
+
+        if (!serverAlias.equals("server1") && !serverAlias.equals("server2") && !serverAlias.equals("server3") && !serverAlias.equals("server4")) {
+            System.err.println("Token was not signed by a server.");
+            return false;
+        }
+
+        boolean validResponse = Main.validate(responseSignature, serverAlias, hash);
         return validResponse;
     }
 
@@ -429,7 +464,7 @@ public class ClientAPI {
 
         byte[] resultHash = Main.getHashFromObject(key);
 
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseRegister.getKey());
         if (!validResponse) {
             return null;
         }
@@ -490,7 +525,7 @@ public class ClientAPI {
 
         byte[] resultHash = Main.getHashFromObject(key);
 
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responsePost.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post response corrupted.");
             return null;
@@ -534,7 +569,7 @@ public class ClientAPI {
 
         byte[] resultHash = Main.getHashFromObject(key);
 
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseGeneralPost.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post General response corrupted.");
             return null;
@@ -584,7 +619,7 @@ public class ClientAPI {
 
         resultHash = ArrayUtils.addAll(resultHash, hashTsId);
         resultHash = ArrayUtils.addAll(resultHash, hashTs);
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseRead.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Read Response corrupted.");
             return null;
@@ -631,7 +666,7 @@ public class ClientAPI {
 
         resultHash = ArrayUtils.addAll(resultHash, hashTsId);
         resultHash = ArrayUtils.addAll(resultHash, hashTs);
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseReadGeneral.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Read General response corrupted.");
             return null;
@@ -672,7 +707,7 @@ public class ClientAPI {
 
         byte[] resultHash = Main.getHashFromObject(key);
 
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseWB.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Write Back response corrupted.");
             return null;

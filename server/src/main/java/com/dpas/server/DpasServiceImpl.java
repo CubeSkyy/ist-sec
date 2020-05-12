@@ -27,6 +27,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     private ArrayList<Announcement> generalMap;
     private int postId;
     private int port;
+    private String serverAlias;
     private int timestamp;
     private String timestampId;
     private final String USERS_FILE;
@@ -46,6 +47,18 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
     public DpasServiceImpl(int p, int nrFaults) {
         port = p;
+
+        if (port == 8080)
+            serverAlias = "server1";
+        else if (port == 8081)
+            serverAlias = "server2";
+        else if (port == 8082)
+            serverAlias = "server3";
+        else
+            serverAlias = "server4";
+
+        System.out.println(serverAlias);
+
         USERS_FILE = COMMON_USERS_FILE + port;
         PARTICULAR_FILE = COMMON_PARTICULAR_FILE + port;
         GENERAL_FILE = COMMON_GENERAL_FILE + port;
@@ -199,7 +212,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         try {
             for (BroadcastResponse res : bcb) {
                 byte[] hash = Main.getHashFromObject(post);
-                if (Main.validate(res.getSignature().toByteArray(), "server1", hash)) {
+
+                if (Main.validate(res.getSignature().toByteArray(), res.getKey(), hash)) {
                     counter++;
                 }
             }
@@ -248,13 +262,13 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         try {
             byte[] hashServer = Main.getHashFromObject(token);
-            byte[] sigServer = Main.getSignature(hashServer, "server1");
+            byte[] sigServer = Main.getSignature(hashServer, serverAlias);
 
             ByteString sigServerByteString = ByteString.copyFrom(sigServer);
 
             /*----------------------------------------------------------------------------------*/
 
-            GetTokenResponse response = GetTokenResponse.newBuilder().setToken(token).setSignature(sigServerByteString).build();
+            GetTokenResponse response = GetTokenResponse.newBuilder().setToken(token).setSignature(sigServerByteString).setKey(serverAlias).build();
 
             Timer timer = new Timer(30000, new ActionListener() {
                 @Override
@@ -316,12 +330,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         try {
             byte[] userHash = Main.getHashFromObject(key);
-            byte[] sigGeneral = Main.getSignature(userHash, "server1");
+            byte[] sigGeneral = Main.getSignature(userHash, serverAlias);
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
             RegisterResponse response = RegisterResponse.newBuilder()
-                    .setResult(key).setSignature(responseSigByteString).build();
+                    .setResult(key).setSignature(responseSigByteString).setKey(serverAlias).build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -420,12 +434,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
         try {
             byte[] userHash = Main.getHashFromObject(key);
-            byte[] sigGeneral = Main.getSignature(userHash, "server1");
+            byte[] sigGeneral = Main.getSignature(userHash, serverAlias);
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
             PostResponse response = PostResponse.newBuilder()
-                    .setResult(key).setSignature(responseSigByteString).build();
+                    .setResult(key).setSignature(responseSigByteString).setKey(serverAlias).build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -516,12 +530,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
         try {
             byte[] userHash = Main.getHashFromObject(key);
-            byte[] sigGeneral = Main.getSignature(userHash, "server1");
+            byte[] sigGeneral = Main.getSignature(userHash, serverAlias);
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
             PostGeneralResponse response = PostGeneralResponse.newBuilder()
-                    .setResult(key).setSignature(responseSigByteString).build();
+                    .setResult(key).setSignature(responseSigByteString).setKey(serverAlias).build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
@@ -612,11 +626,11 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
             hashGeneral = ArrayUtils.addAll(hashGeneral, hashTsId);
             hashGeneral = ArrayUtils.addAll(hashGeneral, hashTs);
-            byte[] sigGeneral = Main.getSignature(hashGeneral, "server1");
+            byte[] sigGeneral = Main.getSignature(hashGeneral, serverAlias);
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).setTs(getTimestamp()).setTsId(timestampId).build();
+            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).setTs(getTimestamp()).setTsId(timestampId).setKey(serverAlias).build();
             responseObserver.onNext(response);
 
             responseObserver.onCompleted();
@@ -692,12 +706,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
             hashGeneral = ArrayUtils.addAll(hashGeneral, hashTsId);
             hashGeneral = ArrayUtils.addAll(hashGeneral, hashTs);
-            byte[] sigGeneral = Main.getSignature(hashGeneral, "server1");
+            byte[] sigGeneral = Main.getSignature(hashGeneral, serverAlias);
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
             ReadGeneralResponse response = ReadGeneralResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString)
-                    .setTs(getTimestamp()).setTsId(timestampId).build();
+                    .setTs(getTimestamp()).setTsId(timestampId).setKey(serverAlias).build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -725,7 +739,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             byte[] postsHash = Main.getHashFromObject(posts);
 
             byte[] finalHash = ArrayUtils.addAll(postsHash, userAliasHash);
-            finalHash = ArrayUtils.addAll(finalHash, tokenHash); 
+            finalHash = ArrayUtils.addAll(finalHash, tokenHash);
 
             boolean valid = Main.validate(signature, userAlias, finalHash); //key == userAlias
             sendArgumentError(!valid, responseObserver, MSG_ERROR_READ_GENERAL_SIG);
@@ -757,8 +771,9 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             resultHash = ArrayUtils.addAll(resultHash, hashTsId);
             resultHash = ArrayUtils.addAll(resultHash, hashTs);
 
-            boolean validResponse = Main.validate(postsSigByteString.toByteArray(), "server1", resultHash);
-            sendArgumentError(!validResponse, responseObserver, MSG_ERROR_WB_SIG);
+            // TODO change this, it is only temporarily until we broadcast the requests themselves
+            //boolean validResponse = Main.validate(postsSigByteString.toByteArray(), serverAlias, resultHash);
+            //sendArgumentError(!validResponse, responseObserver, MSG_ERROR_WB_SIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -827,12 +842,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
         try {
             byte[] userHash = Main.getHashFromObject(userAlias);
-            byte[] sigGeneral = Main.getSignature(userHash, "server1");
+            byte[] sigGeneral = Main.getSignature(userHash, serverAlias);
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
             WriteBackResponse response = WriteBackResponse.newBuilder()
-                    .setResult(userAlias).setSignature(responseSigByteString).build();
+                    .setResult(userAlias).setSignature(responseSigByteString).setKey(serverAlias).build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -883,11 +898,11 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         try {
             byte[] hash = Main.getHashFromObject(request);
-            byte[] sigBytes = Main.getSignature(hash, "server1");
+            byte[] sigBytes = Main.getSignature(hash, serverAlias);
 
             ByteString signature = ByteString.copyFrom(sigBytes);
 
-            BroadcastResponse response = BroadcastResponse.newBuilder().setSignature(signature).setPost(request).build();
+            BroadcastResponse response = BroadcastResponse.newBuilder().setSignature(signature).setPost(request).setKey(serverAlias).build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
