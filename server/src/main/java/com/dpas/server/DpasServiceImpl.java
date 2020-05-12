@@ -33,6 +33,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     private final String PARTICULAR_FILE;
     private final String GENERAL_FILE;
     private final String POSTID_FILE;
+    private final String TIMESTAMP_FILE;
 
 
     int majority;
@@ -49,8 +50,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         PARTICULAR_FILE = COMMON_PARTICULAR_FILE + port;
         GENERAL_FILE = COMMON_GENERAL_FILE + port;
         POSTID_FILE = COMMON_POSTID_FILE + port;
+        TIMESTAMP_FILE = COMMON_TIMESTAMP_FILE + port;
         initialize();
-        timestamp = -1;
         numOfFaults = nrFaults;
         numOfServers = 3 * numOfFaults + 1;
         majority = (int) Math.ceil((numOfServers + numOfFaults) / 2.0);
@@ -72,6 +73,9 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         checkFile(POSTID_FILE);
         postId = (Integer) readFromFile(POSTID_FILE, MSG_POSTID);
 
+        checkFile(TIMESTAMP_FILE);
+        timestamp = (Integer) readFromFile(TIMESTAMP_FILE, MSG_TIMESTAMP);
+
     }
 
     private HashMap<String, String> getUsersMap() {
@@ -90,6 +94,10 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         return postId;
     }
 
+    private int getTimestamp() {
+        return timestamp;
+    }
+
 
     public void checkFile(String filename) {
 
@@ -105,6 +113,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
                 else if (filename.equals(GENERAL_FILE))
                     writeToFile(new ArrayList<Announcement>(), GENERAL_FILE, MSG_GENERAL);
                 else if (filename.equals(POSTID_FILE)) writeToFile(0, POSTID_FILE, MSG_POSTID);
+                else if (filename.equals(TIMESTAMP_FILE)) writeToFile(-1, TIMESTAMP_FILE, MSG_TIMESTAMP);
                 else System.err.println("Invalid filename. Could not write to file.");
 
             } catch (IOException e) {
@@ -324,11 +333,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         boolean validGeneral = post.getGeneral();
         sendArgumentError(validGeneral, responseObserver, MSG_ERROR_INVALID_GENERAL);
 
-        if (wts < timestamp || (wts == timestamp && key.compareTo(timestampId) >= 0)) {
+        if (wts < getTimestamp() || (wts == getTimestamp() && key.compareTo(timestampId) >= 0)) {
             sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);
         }
 
         timestamp++;
+        writeToFile(getTimestamp(), TIMESTAMP_FILE, MSG_TIMESTAMP);
         timestampId = key;
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
@@ -426,11 +436,12 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         boolean validGeneral = post.getGeneral();
         sendArgumentError(!validGeneral, responseObserver, MSG_ERROR_INVALID_GENERAL);
 
-        if (wts < timestamp || (wts == timestamp && key.compareTo(timestampId) >= 0)) {
+        if (wts < getTimestamp() || (wts == getTimestamp() && key.compareTo(timestampId) >= 0)) {
             sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);
         }
 
         timestamp++;
+        writeToFile(getTimestamp(), TIMESTAMP_FILE, MSG_TIMESTAMP);
         timestampId = key;
 
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
@@ -573,7 +584,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
             byte[] hashGeneral = Main.getHashFromObject(result);
             byte[] hashTsId = Main.getHashFromObject(timestampId);
-            byte[] hashTs = Main.getHashFromObject(timestamp);
+            byte[] hashTs = Main.getHashFromObject(getTimestamp());
 
             hashGeneral = ArrayUtils.addAll(hashGeneral, hashTsId);
             hashGeneral = ArrayUtils.addAll(hashGeneral, hashTs);
@@ -581,7 +592,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
-            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).setTs(timestamp).setTsId(timestampId).build();
+            ReadResponse response = ReadResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString).setTs(getTimestamp()).setTsId(timestampId).build();
             responseObserver.onNext(response);
 
             responseObserver.onCompleted();
@@ -590,6 +601,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         }
     }
 
+    @Override
     public synchronized void readGeneral(ReadGeneralRequest request, StreamObserver<ReadGeneralResponse> responseObserver) {
         System.out.println("\nRead General Request Received:\n User: " + request.getKey() + "\nNumber: "
                 + request.getNumber() + "\nToken: " + request.getToken());
@@ -652,7 +664,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         try {
             byte[] hashGeneral = Main.getHashFromObject(result);
             byte[] hashTsId = Main.getHashFromObject(timestampId);
-            byte[] hashTs = Main.getHashFromObject(timestamp);
+            byte[] hashTs = Main.getHashFromObject(getTimestamp());
 
             hashGeneral = ArrayUtils.addAll(hashGeneral, hashTsId);
             hashGeneral = ArrayUtils.addAll(hashGeneral, hashTs);
@@ -661,7 +673,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
 
             ReadGeneralResponse response = ReadGeneralResponse.newBuilder().addAllResult(result).setSignature(responseSigByteString)
-                    .setTs(timestamp).setTsId(timestampId).build();
+                    .setTs(getTimestamp()).setTsId(timestampId).build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -670,6 +682,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         }
     }
 
+    @Override
     public synchronized void reset(ResetRequest request, StreamObserver<ResetResponse> responseObserver) {
         usersMap = new HashMap<String, String>();
         particularMap = new HashMap<String, ArrayList<Announcement>>();
@@ -682,6 +695,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         responseObserver.onCompleted();
     }
 
+    @Override
     public synchronized void broadcast(BroadcastRequest bcbRequest, StreamObserver<BroadcastResponse> responseObserver) {
         System.out.println("\nBroadcast Request Received: " + bcbRequest);
 

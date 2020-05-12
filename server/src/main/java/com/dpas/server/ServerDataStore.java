@@ -5,10 +5,12 @@ public class ServerDataStore {
     public static final String COMMON_PARTICULAR_FILE = "data/particular.tmp";
     public static final String COMMON_GENERAL_FILE = "data/general.tmp";
     public static final String COMMON_POSTID_FILE = "data/postid.tmp";
+    public static final String COMMON_TIMESTAMP_FILE = "data/timestamp.tmp";
     public static final String MSG_USERS = "Users successfully read/written to file.";
     public static final String MSG_PARTICULAR = "Particular post successfully read/written to file.";
     public static final String MSG_GENERAL = "General post successfully read/written to file.";
     public static final String MSG_POSTID = "Current post ID successfully read/written to file.";
+    public static final String MSG_TIMESTAMP = "Current timestamp successfully read/written to file.";
     public static final String MSG_ERROR_CERTIFICATE = "User is not registered in keystore.";
     public static final String MSG_ERROR_GETTOKEN_SIG = "Invalid signature and/or hash. GetToken request denied.";
     public static final String MSG_ERROR_REGISTER_SIG = "Invalid signature and/or hash. Register request denied.";
