@@ -20,6 +20,10 @@ interface API {
     GeneratedMessageV3 grpcOperation(DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception;
 }
 
+interface APIWB {
+    GeneratedMessageV3 grpcOperation(DpasServiceBlockingStub stub, String userAlias, ReadResponse result) throws Exception;
+}
+
 public class ClientAPI {
     public int wts = 0;
     public int majority;
@@ -54,6 +58,31 @@ public class ClientAPI {
                 stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
                     try {
                         GeneratedMessageV3 tmp = api.grpcOperation(stub, command, bcb);
+                        return tmp;
+                    } catch (Exception ex) {
+                        throw new CompletionException(ex);
+                    }
+                }).exceptionally(ex -> {
+                    System.err.println(ex.getMessage());
+                    return null;
+                }))
+                        .collect(Collectors.toList());
+
+        waitForMajority(completableFutures);
+
+        ArrayList<GeneratedMessageV3> result = (ArrayList<GeneratedMessageV3>) completableFutures.stream()
+                .map(completableFuture -> completableFuture.join())
+                .filter(Objects::nonNull).collect(Collectors.toList());
+
+
+        return result;
+    }
+
+    private ArrayList<GeneratedMessageV3> writeBackAsync(ArrayList<DpasServiceBlockingStub> stubs, String userAlias, ReadResponse readResult, APIWB api) {
+        List<CompletableFuture<?>> completableFutures =
+                stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
+                    try {
+                        GeneratedMessageV3 tmp = api.grpcOperation(stub, userAlias, readResult);
                         return tmp;
                     } catch (Exception ex) {
                         throw new CompletionException(ex);
@@ -267,6 +296,9 @@ public class ClientAPI {
                                 result = message;
                             }
                         }
+
+                        responses = writeBackAsync(stubs, command[1], result, this::writeBack);
+
                         System.out.println("READ:");
                         assert result != null;
                         printRead(result.getResultList());
@@ -608,6 +640,32 @@ public class ClientAPI {
         return responseReadGeneral;
     }
 
+    /*------------------------------------------------WRITEBACK-------------------------------------------------------*/
+
+    public WriteBackResponse writeBack(DpasServiceBlockingStub stub, String userAlias, ReadResponse posts) throws Exception {
+
+        byte[] postsHash = Main.getHashFromObject(posts);
+        byte[] userAliasHash = Main.getHashFromObject(userAlias);
+        byte[] hash = ArrayUtils.addAll(postsHash, userAliasHash);
+        byte[] signature = Main.getSignature(hash, userAlias);
+
+        WriteBackRequest requestWB = WriteBackRequest.newBuilder().setPosts(posts).setKey(userAlias).setSignature(ByteString.copyFrom(signature)).build();
+        WriteBackResponse responseWB = stub.writeBack(requestWB);
+
+        /*---------------------------------SERVER VALIDATION--------------------------------*/
+        ByteString sigServerByteString = responseWB.getSignature();
+        String key = responseWB.getResult();
+
+        byte[] resultHash = Main.getHashFromObject(key);
+
+        boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
+        if (!validResponse) {
+            System.err.println("Invalid signature and/or hash. Write Back response corrupted.");
+            return null;
+        }
+
+        return responseWB;
+    }
 
     public ResetResponse reset(DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
         ResetRequest resetRequest = ResetRequest.newBuilder().build();

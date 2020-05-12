@@ -26,6 +26,7 @@ public class ServerDataStore {
     public static final String MSG_ERROR_INVALID_KEY = "Invalid key. There is no user with the specified key: ";
     public static final String MSG_ERROR_READ_GENERAL_SIG = "Invalid signature and/or hash. Read General request denied.";
     public static final String MSG_ERROR_INVALID_TIMESTAMP = "Previous timestamp received. Ignored write.";
+    public static final String MSG_ERROR_WB_SIG = "Invalid signature and/or hash. Write Back request denied.";
     public static final String MSG_ERROR_BCB = "BCB signatures compromised. Command denied.";
 
 }

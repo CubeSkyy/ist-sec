@@ -683,6 +683,78 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     }
 
     @Override
+    public synchronized void writeBack(WriteBackRequest request, StreamObserver<WriteBackResponse> responseObserver) {
+        System.out.println("Write Back Request Received: " + request);
+
+        ReadResponse posts = request.getPosts();
+        String userAlias = request.getKey();
+
+        /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
+        ByteString sigByteString = request.getSignature();
+
+        byte[] signature = sigByteString.toByteArray();
+
+        try {
+            byte[] userAliasHash = Main.getHashFromObject(userAlias);
+            byte[] postsHash = Main.getHashFromObject(posts);
+
+            byte[] finalHash = ArrayUtils.addAll(postsHash, userAliasHash);
+
+            boolean valid = Main.validate(signature, userAlias, finalHash); //key == userAlias
+            sendArgumentError(!valid, responseObserver, MSG_ERROR_READ_GENERAL_SIG);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        /*--------------------------POSTS VALIDATE-----------------------------*/
+        ByteString postsSigByteString = posts.getSignature();
+        ArrayList<Announcement> result = new ArrayList<Announcement>(posts.getResultList());
+
+        try {
+            byte[] resultHash = Main.getHashFromObject(result);
+            byte[] hashTsId = Main.getHashFromObject(posts.getTsId());
+            byte[] hashTs = Main.getHashFromObject(posts.getTs());
+
+            resultHash = ArrayUtils.addAll(resultHash, hashTsId);
+            resultHash = ArrayUtils.addAll(resultHash, hashTs);
+
+            boolean validResponse = Main.validate(postsSigByteString.toByteArray(), "server1", resultHash);
+            sendArgumentError(!validResponse, responseObserver, MSG_ERROR_WB_SIG);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        for (Announcement a: result) {
+            sendArgumentError(a.getGeneral(), responseObserver, MSG_ERROR_INVALID_GENERAL);
+        }
+
+        // Now we know that the posts are valid, and we can write them where necessary
+        // TODO timestamps? rid?
+
+        System.out.println("--- WRITING BACK ---");
+        System.out.println("TIMESTAMP STORED IN THIS SERVER: " + getTimestamp());
+
+        /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
+        try {
+            byte[] userHash = Main.getHashFromObject(userAlias);
+            byte[] sigGeneral = Main.getSignature(userHash, "server1");
+
+            ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
+
+            WriteBackResponse response = WriteBackResponse.newBuilder()
+                    .setResult(userAlias).setSignature(responseSigByteString).build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public synchronized void reset(ResetRequest request, StreamObserver<ResetResponse> responseObserver) {
         usersMap = new HashMap<String, String>();
         particularMap = new HashMap<String, ArrayList<Announcement>>();

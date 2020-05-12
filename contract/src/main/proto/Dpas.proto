@@ -91,6 +91,17 @@ message ReadGeneralResponse {
 
 }
 
+message WriteBackRequest {
+    ReadResponse posts = 1;
+    string key = 2;
+    bytes signature = 3;
+}
+
+message WriteBackResponse {
+    string result = 1;
+    bytes signature = 2;
+}
+
 message ResetRequest {
 }
 
@@ -120,6 +131,7 @@ service DpasService {
     rpc postGeneral (PostGeneralRequest) returns (PostGeneralResponse);
     rpc read (ReadRequest) returns (ReadResponse);
     rpc readGeneral (ReadGeneralRequest) returns (ReadGeneralResponse);
+    rpc writeBack (WriteBackRequest) returns (WriteBackResponse);
     rpc reset (ResetRequest) returns (ResetResponse);
     rpc broadcast (BroadcastRequest) returns (BroadcastResponse);
 }
