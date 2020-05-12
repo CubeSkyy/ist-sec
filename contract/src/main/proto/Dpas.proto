@@ -39,6 +39,7 @@ message PostRequest {
     bytes signature = 2;
     string token = 4;
     int32 wts = 5;
+    repeated BroadcastResponse bcb = 6;
 }
 
 message PostResponse {
@@ -51,6 +52,7 @@ message PostGeneralRequest {
     bytes signature = 2;
     string token = 4;
     int32 wts = 5;
+    repeated BroadcastResponse bcb = 6;
 }
 
 message PostGeneralResponse {
@@ -70,6 +72,7 @@ message ReadResponse {
     repeated Announcement result = 1;
     bytes signature = 2;
     int32 ts = 4;
+    string tsId = 5;
 }
 
 message ReadGeneralRequest {
@@ -83,13 +86,27 @@ message ReadGeneralResponse {
     repeated Announcement result = 1;
     bytes signature = 2;
     int32 ts = 4;
+    string tsId = 5;
+
 }
 
 message ResetRequest {
 }
 
 message ResetResponse {
+
 }
+
+message BroadcastRequest {
+    Announcement post = 1;
+
+}
+
+message BroadcastResponse {
+    bytes signature = 1;
+    Announcement post = 2;
+}
+
 
 // Defining a Service, a Service can have multiple RPC operations
 service DpasService {
@@ -101,4 +118,5 @@ service DpasService {
     rpc read (ReadRequest) returns (ReadResponse);
     rpc readGeneral (ReadGeneralRequest) returns (ReadGeneralResponse);
     rpc reset (ResetRequest) returns (ResetResponse);
+    rpc broadcast (BroadcastRequest) returns (BroadcastResponse);
 }

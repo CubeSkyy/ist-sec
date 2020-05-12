@@ -9,16 +9,15 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.dpas.client.DpasClient.*;
 
 interface API {
-    GeneratedMessageV3 grpcOperation(DpasServiceBlockingStub stub, String[] command) throws Exception;
+    GeneratedMessageV3 grpcOperation(DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception;
 }
 
 public class ClientAPI {
@@ -49,43 +48,56 @@ public class ClientAPI {
         }
     }
 
-    private ArrayList<GeneratedMessageV3> sendAsync(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api) {
-        AtomicInteger counter = new AtomicInteger(0);
-        ArrayList<GeneratedMessageV3> result = new ArrayList<>();
-        AtomicBoolean error = new AtomicBoolean(false);
-        //For every stub, call grpc call asynchronously
-        stubs.stream().map(
-                (DpasServiceBlockingStub stub) -> CompletableFuture.supplyAsync(
-                        () -> {
-                            try {
-                                GeneratedMessageV3 tmp = api.grpcOperation(stub, command);
-                                if (tmp == null) error.set(true);
-                                return tmp;
-                            } catch (Exception ex) {
-                                throw new CompletionException(ex);
-                            }
-                        })
-                        .thenAccept((s) -> {
-                            //When result arrives, add to return vector and add to counter
-                            result.add(s);
-                            counter.getAndIncrement();
-                        }).exceptionally((e) -> {
-                            System.err.println("Server Error: " + e.getMessage());
-                            counter.getAndIncrement();
-                            return null;
-                        }))
-                .collect(Collectors.toList());
+    private ArrayList<GeneratedMessageV3> sendAsync(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api, ArrayList<BroadcastResponse> bcb) {
+        List<CompletableFuture<?>> completableFutures =
+                stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
+                    try {
+                        GeneratedMessageV3 tmp = api.grpcOperation(stub, command, bcb);
+                        return tmp;
+                    } catch (Exception ex) {
+                        throw new CompletionException(ex);
+                    }
+                }).exceptionally(ex -> {
+                    System.err.println(ex.getMessage());
+                    return null;
+                }))
+                        .collect(Collectors.toList());
 
-        //If a majority of answers has been received, return.
-        while (counter.get() < majority) {
-            if (error.get()) {
-                return null;
-            }
-        }
+        waitForMajority(completableFutures);
+
+        ArrayList<GeneratedMessageV3> result = (ArrayList<GeneratedMessageV3>) completableFutures.stream()
+                .map(completableFuture -> completableFuture.join())
+                .filter(Objects::nonNull).collect(Collectors.toList());
+
 
         return result;
     }
 
+    private ArrayList<GeneratedMessageV3> sendAsyncNN(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api) {
+        List<GeneratedMessageV3> responses;
+        String[] readCommand = {"readGeneral", command[1], "0"};
+        responses = readAsync(stubs, readCommand, this::readGeneral, true, null);
+        ReadGeneralResponse message = null;
+        int maxTs = -2;
+        for (GeneratedMessageV3 m : responses) {
+            message = (ReadGeneralResponse) m;
+            if (maxTs < message.getTs()) {
+                maxTs = message.getTs();
+            }
+        }
+        wts = maxTs;
+        wts++;
+
+        Announcement requestPost = buildAnnouncement(command);
+        ArrayList<BroadcastResponse> bcb = sendBCB(stubs, requestPost);
+        if (bcb == null) {
+            System.err.println("BCB failed. Command not executed.");
+            return null;
+        }
+
+        return sendAsync(stubs, command, this::postGeneral, bcb);
+
+    }
 
     private boolean verifyWriteSig(GeneratedMessageV3 readResponse, boolean general) {
         ArrayList<Announcement> resList;
@@ -111,38 +123,74 @@ public class ClientAPI {
         return false;
     }
 
-
-    private ArrayList<GeneratedMessageV3> readAsync(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api, boolean general) {
-        AtomicInteger counter = new AtomicInteger(0);
-        ArrayList<GeneratedMessageV3> result = new ArrayList<>();
-
-        stubs.stream().map(
-                (DpasServiceBlockingStub stub) -> CompletableFuture.supplyAsync(
-                        () -> {
-                            try {
-                                GeneratedMessageV3 res = api.grpcOperation(stub, command);
-                                if (verifyWriteSig(res, general)) return res;
-                                else {
-                                    String message = "Invalid read signature. Read was corrupted.";
-                                    throw new Exception(message);
-                                }
-                            } catch (Exception ex) {
-                                throw new CompletionException(ex);
-                            }
-                        })
-                        .thenAccept((s) -> {
-                            result.add(s);
-                            counter.getAndIncrement();
-                        }).exceptionally((e) -> {
-                            System.err.println("Server Error: " + e.getMessage());
-                            counter.getAndIncrement();
-                            return null;
-                        }))
-                .collect(Collectors.toList());
-
-
-        while (counter.get() < majority) {
+    private void waitForMajority(List<CompletableFuture<?>> completableFutures) {
+        while (true) {
+            int counter = 0;
+            for (CompletableFuture<?> future : completableFutures) {
+                if (future.isDone()) counter++;
+            }
+            if (counter >= majority) break;
         }
+
+    }
+
+
+    private ArrayList<BroadcastResponse> sendBCB(ArrayList<DpasServiceBlockingStub> stubs, Announcement message) {
+
+        List<CompletableFuture<?>> completableFutures =
+                stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
+                    try {
+                        BroadcastResponse res = broadcast(stub, message);
+                        byte[] msgHash = Main.getHashFromObject(message);
+                        if (validateServerResponse(res.getSignature(), msgHash)) return res;
+                        else {
+                            String errorMsg = "Invalid signature. BCB was corrupted.";
+                            throw new Exception(errorMsg);
+                        }
+                    } catch (Exception ex) {
+                        throw new CompletionException(ex);
+                    }
+
+                }).exceptionally(ex -> {
+                    System.err.println(ex.getMessage());
+                    return null;
+                }))
+                        .collect(Collectors.toList());
+
+        waitForMajority(completableFutures);
+
+        ArrayList<BroadcastResponse> result = (ArrayList<BroadcastResponse>) completableFutures.stream()
+                .map(completableFuture -> completableFuture.join())
+                .filter(Objects::nonNull).collect(Collectors.toList());
+
+        return result;
+    }
+
+
+    private ArrayList<GeneratedMessageV3> readAsync(ArrayList<DpasServiceBlockingStub> stubs, String[] command, API api, boolean general, ArrayList<BroadcastResponse> bcb) {
+        List<CompletableFuture<?>> completableFutures =
+                stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
+                    try {
+                        GeneratedMessageV3 res = api.grpcOperation(stub, command, bcb);
+                        if (verifyWriteSig(res, general)) return res;
+                        else {
+                            String message = "Invalid read signature. Read was corrupted.";
+                            throw new Exception(message);
+                        }
+                    } catch (Exception ex) {
+                        throw new CompletionException(ex);
+                    }
+                }).exceptionally(ex -> {
+                    System.err.println(ex.getMessage());
+                    return null;
+                }))
+                        .collect(Collectors.toList());
+
+        waitForMajority(completableFutures);
+
+        ArrayList<GeneratedMessageV3> result = (ArrayList<GeneratedMessageV3>) completableFutures.stream()
+                .map(completableFuture -> completableFuture.join())
+                .filter(Objects::nonNull).collect(Collectors.toList());
 
         return result;
     }
@@ -160,7 +208,7 @@ public class ClientAPI {
                         System.err.println("Usage: register|<userAlias>");
                         break;
                     }
-                    responses = sendAsync(stubs, command, this::register);
+                    responses = sendAsync(stubs, command, this::register, null);
                     if (responses != null && responses.size() > 0) {
                         RegisterResponse response = (RegisterResponse) responses.get(0);
                         System.out.println("REGISTER COMPLETE: " + response.getResult());
@@ -172,72 +220,91 @@ public class ClientAPI {
                         break;
                     }
                     wts++;
-                    responses = sendAsync(stubs, command, this::post);
-                    if (responses != null) {
+                    Announcement requestPost = buildAnnouncement(command);
+                    ArrayList<BroadcastResponse> bcb = sendBCB(stubs, requestPost);
+                    if (bcb == null) {
+                        System.err.println("BCB failed. Command not executed.");
+                        break;
+                    }
+
+                    responses = sendAsync(stubs, command, this::post, bcb);
+                    if (responses != null && responses.size() > 0) {
                         PostResponse response = (PostResponse) responses.get(0);
                         System.out.println("POST DONE: " + response.getResult());
                     }
-
-                    break;
+                    return responses;
                 case "postGeneral":
                     if (command.length < 3) {
                         System.err.println("Usage: postGeneral|<userAlias>|<Message>|<Reference List>\nReference List can be empty.");
                         break;
                     }
-                    wts++;
-                    responses = sendAsync(stubs, command, this::postGeneral);
-                    if (responses != null) {
+
+                    responses = sendAsyncNN(stubs, command, this::postGeneral);
+                    if (responses != null && responses.size() > 0) {
                         PostGeneralResponse response = (PostGeneralResponse) responses.get(0);
                         System.out.println("POST GENERAL DONE: " + response.getResult());
                     }
 
-                    break;
+                    return responses;
                 case "read":
                     if (command.length != 4) {
-                        System.err.println("Usage: read|<NumberOfPosts>|<userAlias>|<userToRead>.");
+                        System.err.println("Usage: read|<userAlias>|<userToRead>|<NumberOfPosts>.");
                         break;
                     }
-                    responses = readAsync(stubs, command, this::read, false);
-                    System.out.println("READ:");
-                    if (responses == null || responses.size() == 0) {
-                        System.out.println("READ FAILED");
-                    } else {
-                        ReadResponse message = null;
+                    responses = readAsync(stubs, command, this::read, false, null);
+                    if (responses != null && responses.size() > 0) {
+
+                        ReadResponse message;
                         ReadResponse result = null;
                         int maxTs = -2;
+                        String maxId = ((ReadResponse) responses.get(0)).getResult(0).getKey();
                         for (GeneratedMessageV3 m : responses) {
                             message = (ReadResponse) m;
-                            if (maxTs < message.getTs()) {
+                            if (maxTs < message.getTs() || (maxTs == message.getTs() && message.getTsId().compareTo(maxId) > 0)) {
                                 maxTs = message.getTs();
+                                maxId = message.getTsId();
                                 result = message;
                             }
                         }
+                        System.out.println("READ:");
+                        assert result != null;
                         printRead(result.getResultList());
+                        ArrayList<GeneratedMessageV3> tmp = new ArrayList<>();
+                        tmp.add(result);
+                        return tmp;
                     }
-                    break;
+                    return null;
                 case "readGeneral":
                     if (command.length != 3) {
-                        System.err.println("Usage: readGeneral|<NumberOfPosts>|<userAlias>.");
+                        System.err.println("Usage: readGeneral|<userAlias>|<NumberOfPosts>.");
                         break;
                     }
-                    responses = readAsync(stubs, command, this::readGeneral, true);
-                    ReadGeneralResponse resultGeneral = null;
-                    int maxTsGeneral = -2;
-                    for (GeneratedMessageV3 m : responses) {
-                        ReadGeneralResponse messageGeneral = (ReadGeneralResponse) m;
+                    responses = readAsync(stubs, command, this::readGeneral, true, null);
+                    if (responses != null && responses.size() > 0) {
 
-                        if (maxTsGeneral < messageGeneral.getTs()) {
-                            maxTsGeneral = messageGeneral.getTs();
-                            resultGeneral = messageGeneral;
+                        ReadGeneralResponse messageGeneral;
+                        ReadGeneralResponse resultGeneral = null;
+                        int maxTsGeneral = -2;
+                        String maxIdGeneral = ((ReadGeneralResponse) responses.get(0)).getResult(0).getKey();
+                        for (GeneratedMessageV3 m : responses) {
+                            messageGeneral = (ReadGeneralResponse) m;
+                            if (maxTsGeneral < messageGeneral.getTs() || (maxTsGeneral == messageGeneral.getTs() && messageGeneral.getTsId().compareTo(maxIdGeneral) > 0)) {
+                                maxTsGeneral = messageGeneral.getTs();
+                                maxIdGeneral = messageGeneral.getTsId();
+                                resultGeneral = messageGeneral;
+                            }
                         }
+                        System.out.println("READ GENERAL:");
+                        assert resultGeneral != null;
+                        printRead(resultGeneral.getResultList());
+                        ArrayList<GeneratedMessageV3> tmpGeneral = new ArrayList<>();
+                        tmpGeneral.add(resultGeneral);
+                        return tmpGeneral;
                     }
-                    System.out.println("READ GENERAL:");
-                    printRead(resultGeneral.getResultList());
-                    break;
+                    return null;
                 case "reset":
-                    wts = 0;
                     for (DpasServiceBlockingStub stub : stubs) {
-                        reset(stub, command);
+                        reset(stub, command, null);
                     }
                     System.out.println("RESET DONE.");
 
@@ -312,7 +379,7 @@ public class ClientAPI {
     /*----------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------COMMANDS--------------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
-    public RegisterResponse register(DpasServiceBlockingStub stub, String[] command) throws Exception {
+    public RegisterResponse register(DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
         String userAlias = command[1];
 
         byte[] hash = Main.getHashFromObject(userAlias);
@@ -353,7 +420,7 @@ public class ClientAPI {
         return post.build();
     }
 
-    public PostResponse post(DpasServiceBlockingStub stub, String[] command) throws Exception {
+    public PostResponse post(DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
 
         String userAlias = command[1];
         /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
@@ -367,7 +434,8 @@ public class ClientAPI {
         }
         /*----------------------------------------------------------------------------------*/
         String token = responseGetToken.getToken();
-        Announcement post = buildAnnouncement(command);
+
+        Announcement post = bcb.get(0).getPost();
 
 
         byte[] postHash = Main.getHashFromObject(post.getKey());
@@ -379,7 +447,8 @@ public class ClientAPI {
         byte[] signature = Main.getSignature(hash, userAlias);
 
         PostRequest requestPost = PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature))
-                .setWts(wts).setToken(token).build();
+                .setWts(wts).setToken(token).addAllBcb(bcb).build();
+
         PostResponse responsePost = stub.post(requestPost);
 
         /*---------------------------------SERVER VALIDATION--------------------------------*/
@@ -399,7 +468,7 @@ public class ClientAPI {
     }
 
 
-    public PostGeneralResponse postGeneral(DpasServiceBlockingStub stub, String[] command) throws Exception {
+    public PostGeneralResponse postGeneral(DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
         String userAlias = command[1];
         /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
         GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
@@ -412,7 +481,7 @@ public class ClientAPI {
         }
         /*----------------------------------------------------------------------------------*/
         String token = responseGetToken.getToken();
-        Announcement post = buildAnnouncement(command);
+        Announcement post = bcb.get(0).getPost();
 
         byte[] postHash = Main.getHashFromObject(post.getKey());
         postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
@@ -423,7 +492,7 @@ public class ClientAPI {
         byte[] signature = Main.getSignature(hash, userAlias);
 
         PostGeneralRequest requestGeneralPost = PostGeneralRequest.newBuilder()
-                .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).setWts(wts).build();
+                .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).setWts(wts).addAllBcb(bcb).build();
 
         PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
         /*---------------------------------SERVER VALIDATION--------------------------------*/
@@ -443,7 +512,7 @@ public class ClientAPI {
     }
 
     /*--------------------------------------------------READS---------------------------------------------------------*/
-    public ReadResponse read(DpasServiceBlockingStub stub, String[] command) throws Exception {
+    public ReadResponse read(DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
         String userAlias = command[1];
         String key = command[2];
         int number = Integer.parseInt(command[3]);
@@ -470,13 +539,18 @@ public class ClientAPI {
 
         ReadRequest requestRead = ReadRequest.newBuilder().setNumber(number).setKey(userAlias)
                 .setKeyToRead(key).setSignature(ByteString.copyFrom(signature)).setToken(token).build();
+
         ReadResponse responseRead = stub.read(requestRead);
 
         /*---------------------------------SERVER VALIDATION--------------------------------*/
         ByteString sigServerByteString = responseRead.getSignature();
         ArrayList<Announcement> result = new ArrayList<Announcement>(responseRead.getResultList());
         byte[] resultHash = Main.getHashFromObject(result);
+        byte[] hashTsId = Main.getHashFromObject(responseRead.getTsId());
+        byte[] hashTs = Main.getHashFromObject(responseRead.getTs());
 
+        resultHash = ArrayUtils.addAll(resultHash, hashTsId);
+        resultHash = ArrayUtils.addAll(resultHash, hashTs);
         boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Read Response corrupted.");
@@ -487,7 +561,7 @@ public class ClientAPI {
     }
 
 
-    public ReadGeneralResponse readGeneral(DpasServiceBlockingStub stub, String[] command) throws Exception {
+    public ReadGeneralResponse readGeneral(DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
 
         String userAlias = command[1];
         int number = Integer.parseInt(command[2]);
@@ -512,12 +586,18 @@ public class ClientAPI {
 
         ReadGeneralRequest requestReadGeneral = ReadGeneralRequest.newBuilder().setNumber(number)
                 .setKey(userAlias).setSignature(ByteString.copyFrom(signature)).setToken(token).build();
+
         ReadGeneralResponse responseReadGeneral = stub.readGeneral(requestReadGeneral);
+
         /*---------------------------------SERVER VALIDATION--------------------------------*/
         ByteString sigServerByteString = responseReadGeneral.getSignature();
         ArrayList<Announcement> result = new ArrayList<Announcement>(responseReadGeneral.getResultList());
         byte[] resultHash = Main.getHashFromObject(result);
+        byte[] hashTsId = Main.getHashFromObject(responseReadGeneral.getTsId());
+        byte[] hashTs = Main.getHashFromObject(responseReadGeneral.getTs());
 
+        resultHash = ArrayUtils.addAll(resultHash, hashTsId);
+        resultHash = ArrayUtils.addAll(resultHash, hashTs);
         boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Read General response corrupted.");
@@ -528,10 +608,16 @@ public class ClientAPI {
     }
 
 
-    public ResetResponse reset(DpasServiceBlockingStub stub, String[] command) throws Exception {
+    public ResetResponse reset(DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
         ResetRequest resetRequest = ResetRequest.newBuilder().build();
         ResetResponse resetResponse = stub.reset(resetRequest);
         return resetResponse;
+    }
+
+    public BroadcastResponse broadcast(DpasServiceBlockingStub stub, Announcement message) throws Exception {
+        BroadcastRequest broadcastRequest = BroadcastRequest.newBuilder().setPost(message).build();
+        BroadcastResponse broadcastResponse = stub.broadcast(broadcastRequest);
+        return broadcastResponse;
     }
 
 }

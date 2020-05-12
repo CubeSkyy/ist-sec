@@ -7,11 +7,15 @@ import com.dpas.server.ServerDataStore;
 import com.google.protobuf.ByteString;
 import io.grpc.StatusRuntimeException;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.ArrayList;
+
 import static com.dpas.ClientDataStore.*;
+import static com.dpas.server.ServerDataStore.*;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
@@ -19,83 +23,94 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
 
     @Test
     public void postGeneralValid() throws Exception {
-        client.register(blockingStub, client.getCommand("register|" + CLIENT_TEST_USER));
-        PostGeneralResponse postResponse = client.postGeneral(blockingStub, client.getCommand("postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG2));
-        ReadGeneralResponse readResponse = client.readGeneral(blockingStub, client.getCommand("readGeneral|" + CLIENT_TEST_USER
-                + "|" + 0));
+        client.receive(stubs, "register|" + CLIENT_TEST_USER);
+        ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG2);
+        for (PostGeneralResponse ele : res) {
+            assertEquals(ele.getResult(), CLIENT_TEST_USER);
+        }
+        ArrayList<ReadGeneralResponse> res2 = (ArrayList) client.receive(stubs, "readGeneral|" + CLIENT_TEST_USER
+                + "|" + 0);
 
-        assertEquals(postResponse.getResult(), CLIENT_TEST_USER);
-        assertEquals(CLIENT_TEST_MSG_NUMBER, Integer.toString(readResponse.getResultCount()));
-        assertEquals(CLIENT_TEST_USER, readResponse.getResult(0).getKey());
-        assertEquals(CLIENT_TEST_MSG2, readResponse.getResult(0).getMessage());
-        assertEquals(0, readResponse.getResult(0).getRefCount());
-        assertEquals(1, readResponse.getResult(0).getPostId());
+        for (ReadGeneralResponse ele : res2) {
+            assertEquals(CLIENT_TEST_MSG_NUMBER, Integer.toString(ele.getResultCount()));
+            assertEquals(CLIENT_TEST_USER, ele.getResult(0).getKey());
+            assertEquals(CLIENT_TEST_MSG2, ele.getResult(0).getMessage());
+            assertEquals(0, ele.getResult(0).getRefCount());
+            assertEquals(1, ele.getResult(0).getPostId());
+        }
+
+
     }
 
     @Test
     public void postGeneralNonRegistered() throws Exception {
-        Throwable exception = assertThrows(StatusRuntimeException.class, () -> {
-            client.postGeneral(blockingStub, client.getCommand("postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG));
-        });
-        assertEquals(ServerDataStore.MSG_ERROR_NOT_REGISTERED, ((StatusRuntimeException) exception).getStatus().getDescription());
+
+        ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG);
+        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_NOT_REGISTERED) >= client.majority);
+        assertEquals(0, res.size());
+
     }
 
     @Test
     public void postGeneralInvalidRef() throws Exception {
-        client.register(blockingStub, client.getCommand("register|" + CLIENT_TEST_USER));
-        Throwable exception = assertThrows(StatusRuntimeException.class, () -> {
-            client.postGeneral(blockingStub, client.getCommand("postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG + "|" + CLIENT_TEST_REF));
-        });
-        assertEquals(ServerDataStore.MSG_ERROR_INVALID_REF, ((StatusRuntimeException) exception).getStatus().getDescription());
+        client.receive(stubs, "register|" + CLIENT_TEST_USER);
+
+        ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs,"postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG + "|" + CLIENT_TEST_REF);
+        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_INVALID_REF) >= client.majority);
+        assertEquals(0, res.size());
+
+
     }
 
     @Test
     public void postGeneral255ValidMsgLen() throws Exception {
-        client.register(blockingStub, client.getCommand("register|" + CLIENT_TEST_USER));
-        PostGeneralResponse postResponse = client.postGeneral(blockingStub, client.getCommand("postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_255_MSG));
-        ReadGeneralResponse readGeneralResponse = client.readGeneral(blockingStub, client.getCommand("readGeneral|" + CLIENT_TEST_USER +
-                "|" + CLIENT_TEST_MSG_NUMBER));
 
-        assertEquals(postResponse.getResult(), CLIENT_TEST_USER);
-        assertEquals(CLIENT_TEST_MSG_NUMBER, Integer.toString(readGeneralResponse.getResultCount()));
-        assertEquals(CLIENT_TEST_USER, readGeneralResponse.getResult(0).getKey());
-        assertEquals(CLIENT_TEST_255_MSG, readGeneralResponse.getResult(0).getMessage());
-        assertEquals(0, readGeneralResponse.getResult(0).getRefCount());
-        assertEquals(1, readGeneralResponse.getResult(0).getPostId());
+        client.receive(stubs, "register|" + CLIENT_TEST_USER);
+        ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_255_MSG);
+        for (PostGeneralResponse ele : res) assertEquals(ele.getResult(), CLIENT_TEST_USER);
+
+        ArrayList<ReadGeneralResponse> res2 = (ArrayList) client.receive(stubs, "readGeneral|" + CLIENT_TEST_USER +
+                "|" + CLIENT_TEST_MSG_NUMBER);
+
+        assertEquals(CLIENT_TEST_MSG_NUMBER, Integer.toString(res2.get(0).getResultCount()));
+        assertEquals(CLIENT_TEST_USER, res2.get(0).getResult(0).getKey());
+        assertEquals(CLIENT_TEST_255_MSG, res2.get(0).getResult(0).getMessage());
+        assertEquals(0, res2.get(0).getResult(0).getRefCount());
+        assertEquals(1, res2.get(0).getResult(0).getPostId());
+
     }
 
     @Test
     public void postGeneral256InvalidMsgLen() throws Exception {
-        client.register(blockingStub, client.getCommand("register|" + CLIENT_TEST_USER));
-        Throwable exception = assertThrows(StatusRuntimeException.class, () -> {
-            client.postGeneral(blockingStub, client.getCommand("postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_256_MSG));
-        });
-        assertEquals(ServerDataStore.MSG_ERROR_POST_MSG_LEN, ((StatusRuntimeException) exception).getStatus().getDescription());
+        client.receive(stubs, "register|" + CLIENT_TEST_USER);
+        ArrayList<PostResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_256_MSG);
+
+        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_POST_MSG_LEN) >= client.majority);
+        assertEquals(0, res.size());
     }
 
 
     @Test
     public void postGeneralChangeMessageTest() throws Exception {
         changeMessageAPI client = new changeMessageAPI(numOfServers, numOfFaults);
+        client.receive(stubs, "register|" + CLIENT_TEST_USER);
 
-        client.register(blockingStub, client.getCommand("register|" + CLIENT_TEST_USER));
-        Throwable exception = assertThrows(StatusRuntimeException.class, () -> {
-            client.postGeneral(blockingStub, client.getCommand("postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG));
-        });
+        ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG);
 
-        assertEquals(ServerDataStore.MSG_ERROR_POST_GENERAL_SIG, ((StatusRuntimeException) exception).getStatus().getDescription());
+        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_BCB) >= client.majority);
+        assertEquals(0, res.size());
     }
 
     @Test
     public void postGeneralChangeTokenTest() throws Exception {
         changeTokenAPI client = new changeTokenAPI(numOfServers, numOfFaults);
 
-        client.register(blockingStub, client.getCommand("register|" + CLIENT_TEST_USER));
-        Throwable exception = assertThrows(StatusRuntimeException.class, () -> {
-            client.postGeneral(blockingStub, client.getCommand("postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG));
-        });
+        client.receive(stubs, "register|" + CLIENT_TEST_USER);
 
-        assertEquals(ServerDataStore.MSG_ERROR_POST_GENERAL_SIG, ((StatusRuntimeException) exception).getStatus().getDescription());
+        ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG);
+
+        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_BCB) >= client.majority);
+        assertEquals(0, res.size());
     }
 
 
@@ -103,49 +118,26 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
     public void postGeneralReplayTest() throws Exception {
         ReplayAPI client = new ReplayAPI(numOfServers, numOfFaults);
 
-        client.register(blockingStub, client.getCommand("register|" + CLIENT_TEST_USER));
-        Throwable exception = assertThrows(StatusRuntimeException.class, () -> {
-            client.postGeneral(blockingStub, client.getCommand("postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG));
-        });
+        client.receive(stubs, "register|" + CLIENT_TEST_USER);
 
-        assertEquals(ServerDataStore.MSG_ERROR_TOKEN_EXPIRED, ((StatusRuntimeException) exception).getStatus().getDescription());
+        ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG);
+
+        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_BCB) >= client.majority);
+        assertEquals(0, res.size());
+
     }
 
     @Test
     public void postGeneralChangeSignatureTest() throws Exception {
         ChangeSignatureAPI client = new ChangeSignatureAPI(numOfServers, numOfFaults);
 
-        client.register(blockingStub, client.getCommand("register|" + CLIENT_TEST_USER));
-        Throwable exception = assertThrows(StatusRuntimeException.class, () -> {
-            client.postGeneral(blockingStub, client.getCommand("postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG));
-        });
+        client.receive(stubs, "register|" + CLIENT_TEST_USER);
 
-        assertEquals(ServerDataStore.MSG_ERROR_POST_GENERAL_SIG, ((StatusRuntimeException) exception).getStatus().getDescription());
-    }
+        ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG);
 
+        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_BCB) >= client.majority);
+        assertEquals(0, res.size());
 
-    //TODO: Complete when server has new test user
-    @Test
-    public void postGeneralChangeServerSignatureTest() throws Exception {
-//        ManagedChannel inProcessChannelTest;
-//        DpasServiceGrpc.DpasServiceBlockingStub blockingStubTest;
-//        String serverName = InProcessServerBuilder.generateName();
-//
-//        grpcCleanupTest.register(InProcessServerBuilder
-//                .forName(serverName).directExecutor().addService(serviceImplTest).build().start());
-//
-//        inProcessChannelTest = grpcCleanupTest.register(
-//                InProcessChannelBuilder.forName(serverName).directExecutor().build());
-//
-//        blockingStubTest = DpasServiceGrpc.newBlockingStub(inProcessChannelTest);
-//
-//
-//        final RegisterResponse[] response = new RegisterResponse[1];
-//        Throwable exception = assertThrows(io.grpc.StatusRuntimeException.class, () -> {
-//            response[0] = client.register(blockingStub, client.getCommand("register|" + ClientDataStore.TEST_USER));
-//        });
-//        assertEquals("INVALID_ARGUMENT: Invalid signature and/or hash. Register request denied.", exception.getMessage());
-//        assertNull(response[0]);
     }
 
 
@@ -156,7 +148,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
 
 
         @Override
-        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
+        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
             GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
@@ -169,8 +161,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            Announcement post = buildAnnouncement(command);
-
+            Announcement post = bcb.get(0).getPost();
             byte[] postHash = Main.getHashFromObject(post.getKey());
             postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
             byte[] tokenHash = Main.getHashFromObject(token);
@@ -210,7 +201,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
         }
 
         @Override
-        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
+        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
             GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
@@ -223,8 +214,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            Announcement post = buildAnnouncement(command);
-
+            Announcement post = bcb.get(0).getPost();
             byte[] postHash = Main.getHashFromObject(post.getKey());
             postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
             byte[] tokenHash = Main.getHashFromObject(token);
@@ -260,7 +250,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
         public ReplayAPI(int numOfServers, int numOfFaults) {
             super(numOfServers, numOfFaults);
         }
-        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
+        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
             GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
@@ -273,8 +263,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            Announcement post = buildAnnouncement(command);
-
+            Announcement post = bcb.get(0).getPost();
             byte[] postHash = Main.getHashFromObject(post.getKey());
             postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
             byte[] tokenHash = Main.getHashFromObject(token);
@@ -312,7 +301,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
         }
 
         @Override
-        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
+        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
             GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
@@ -325,7 +314,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            Announcement post = buildAnnouncement(command);
+            Announcement post = bcb.get(0).getPost();
 
             byte[] postHash = Main.getHashFromObject(post.getKey());
             postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
@@ -356,48 +345,5 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
         }
     }
 
-
-    private class changeResponseTokenTestAPI extends ClientAPI {
-        public changeResponseTokenTestAPI(int numOfServers, int numOfFaults) {
-            super(numOfServers, numOfFaults);
-        }
-
-        @Override
-        public boolean validateToken(GetTokenResponse responseGetToken) throws Exception {
-            ByteString serverSigByteString = responseGetToken.getSignature();
-            String token = ClientDataStore.CLIENT_WRONG_TOKEN;
-
-            byte[] serverSig = serverSigByteString.toByteArray();
-            byte[] tokenHash = Main.getHashFromObject(token);
-
-            boolean valid = Main.validate(serverSig, "server1", tokenHash);
-            return valid;
-        }
-    }
-
-//    private final DpasServiceGrpc.DpasServiceImplBase serviceImplTest =
-//            mock(DpasServiceGrpc.DpasServiceImplBase.class, delegatesTo(
-//                    new DpasServiceGrpc.DpasServiceImplBase() {
-//                        @Override
-//                        public synchronized void postGeneral(PostGeneralRequest request, StreamObserver<PostGeneralResponse> responseObserver) {
-//                            Announcement post = request.getPost();
-//                            String key = post.getKey();
-//
-//                            /*--------------------------SERVER SIGNATURE AND HASH-------------------------------*/
-//                            try {
-//                                byte[] userHash = Main.getHashFromObject(key);
-//                                byte[] sigGeneral = Main.getSignature(userHash, "test1");
-//
-//                                ByteString responseSigByteString = ByteString.copyFrom(sigGeneral);
-//
-//                                PostGeneralResponse response = PostGeneralResponse.newBuilder()
-//                                        .setResult(key).setSignature(responseSigByteString).build();
-//                                responseObserver.onNext(response);
-//                                responseObserver.onCompleted();
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }));
 
 }

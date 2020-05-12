@@ -22,7 +22,7 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
 
     @Test
     public void getTokenValid() throws Exception {
-        Dpas.RegisterResponse registerResponse = client.register(blockingStub, client.getCommand("register|" + ClientDataStore.CLIENT_TEST_USER));
+        Dpas.RegisterResponse registerResponse = client.register(blockingStub, client.getCommand("register|" + ClientDataStore.CLIENT_TEST_USER), null);
         GetTokenResponse tokenResponse = client.getClientToken(blockingStub, ClientDataStore.CLIENT_TEST_USER);
 
         assertNotNull(registerResponse.getResult());
@@ -74,7 +74,7 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
     public void getTokenChangeResponseTokenTest() throws Exception {
         changeResponseTokenTestAPI client = new changeResponseTokenTestAPI(numOfServers, numOfFaults);
 
-        Dpas.RegisterResponse registerResponse = client.register(blockingStub, client.getCommand("register|" + ClientDataStore.CLIENT_TEST_USER));
+        Dpas.RegisterResponse registerResponse = client.register(blockingStub, client.getCommand("register|" + ClientDataStore.CLIENT_TEST_USER), null);
         GetTokenResponse tokenResponse = client.getClientToken(blockingStub, ClientDataStore.CLIENT_TEST_USER);
 
         assertNotNull(registerResponse.getResult());

@@ -10,13 +10,14 @@ public class DpasServer {
         // check arguments
         if (args.length < 1) {
             System.err.println("Argument(s) missing!");
-            System.err.printf("Usage: java %s port%n", Server.class.getName());
+            System.err.printf("Usage: java %s port numOfFaults%n", Server.class.getName());
             return;
         }
 
 
         final int port = Integer.parseInt(args[0]);
-        final BindableService impl = new DpasServiceImpl(port);
+        final int numOfFaults = Integer.parseInt(args[1]);;
+        final BindableService impl = new DpasServiceImpl(port, numOfFaults);
 
         // Create a new server to listen on port
         Server server = ServerBuilder.forPort(port).addService(impl).build();

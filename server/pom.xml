@@ -25,6 +25,7 @@
 
 
         <server.port>8080</server.port>
+        <server.faults>1</server.faults>
     </properties>
 
     <dependencies>
@@ -90,6 +91,7 @@
                     <mainClass>com.dpas.server.DpasServer</mainClass>
                     <arguments>
                         <argument>${server.port}</argument>
+                        <argument>${server.faults}</argument>
                     </arguments>
                 </configuration>
             </plugin>

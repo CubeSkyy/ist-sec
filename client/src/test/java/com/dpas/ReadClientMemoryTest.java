@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 public class ReadClientMemoryTest extends RollbackTestAbstractClass {
 
     @Test
-    public void getTokenValid() throws Exception {
+    public void readAfterChange() throws Exception {
         changeMessageReceived client = new changeMessageReceived(numOfServers, numOfFaults);
         client.receive(stubs, "register|" + CLIENT_TEST_USER);
         client.receive(stubs, "post|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG);
@@ -36,7 +36,7 @@ public class ReadClientMemoryTest extends RollbackTestAbstractClass {
         }
 
         @Override
-        public Dpas.ReadResponse read(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
+        public Dpas.ReadResponse read(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<Dpas.BroadcastResponse> bcb) throws Exception {
             String userAlias = command[1];
             String key = command[2];
             int number = Integer.parseInt(command[3]);
@@ -63,18 +63,24 @@ public class ReadClientMemoryTest extends RollbackTestAbstractClass {
 
             Dpas.ReadRequest requestRead = Dpas.ReadRequest.newBuilder().setNumber(number).setKey(userAlias)
                     .setKeyToRead(key).setSignature(ByteString.copyFrom(signature)).setToken(token).build();
+
             Dpas.ReadResponse responseRead = stub.read(requestRead);
 
             /*---------------------------------SERVER VALIDATION--------------------------------*/
             ByteString sigServerByteString = responseRead.getSignature();
             ArrayList<Dpas.Announcement> result = new ArrayList<Dpas.Announcement>(responseRead.getResultList());
             byte[] resultHash = Main.getHashFromObject(result);
+            byte[] hashTsId = Main.getHashFromObject(responseRead.getTsId());
+            byte[] hashTs = Main.getHashFromObject(responseRead.getTs());
 
+            resultHash = ArrayUtils.addAll(resultHash, hashTsId);
+            resultHash = ArrayUtils.addAll(resultHash, hashTs);
             boolean validResponse = validateServerResponse(sigServerByteString, resultHash);
             if (!validResponse) {
                 System.err.println("Invalid signature and/or hash. Read Response corrupted.");
                 return null;
             }
+
             responseRead = responseRead.toBuilder().setResult(0, responseRead.toBuilder().getResult(0).toBuilder().setMessage("Changed Message").build()).build();
 
             return responseRead;

@@ -65,7 +65,7 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
             super(numOfServers, numOfFaults);
         }
 
-        public RegisterResponse register(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
+        public RegisterResponse register(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<Dpas.BroadcastResponse> bcb) throws Exception {
             String userAlias = command[1];
 
             byte[] hash = Main.getHashFromObject(userAlias);
@@ -98,7 +98,7 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
         }
 
         @Override
-        public RegisterResponse register(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command) throws Exception {
+        public RegisterResponse register(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<Dpas.BroadcastResponse> bcb) throws Exception {
             String userAlias = command[1];
 
             byte[] hash = Main.getHashFromObject(userAlias);
@@ -106,7 +106,6 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
 
             RegisterRequest requestRegister = RegisterRequest.newBuilder().setKey(CLIENT_TEST_USER2)
                     .setSignature(ByteString.copyFrom(signature)).build();
-
             RegisterResponse responseRegister = stub.register(requestRegister);
 
             /*---------------------------------SERVER VALIDATION--------------------------------*/
@@ -121,6 +120,7 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
             }
 
             return responseRegister;
+
         }
     }
 
