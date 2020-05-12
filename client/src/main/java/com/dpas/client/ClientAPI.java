@@ -193,7 +193,9 @@ public class ClientAPI {
                     try {
                         BroadcastResponse res = broadcast(stub, message, userAlias);
                         byte[] msgHash = Main.getHashFromObject(message);
-                        if (validateServerResponse(res.getSignature(), msgHash, res.getKey())) return res;
+                        byte[] keyHash = Main.getHashFromObject(res.getKey());
+                        byte[] finalHash = ArrayUtils.addAll(msgHash, keyHash);
+                        if (validateServerResponse(res.getSignature(), finalHash, res.getKey())) return res;
                         else {
                             String errorMsg = "Invalid signature. BCB was corrupted.";
                             throw new Exception(errorMsg);
@@ -427,8 +429,10 @@ public class ClientAPI {
 
         byte[] serverSig = serverSigByteString.toByteArray();
         byte[] tokenHash = Main.getHashFromObject(token);
+        byte[] keyHash = Main.getHashFromObject(serverAlias);
+        byte[] finalHash = ArrayUtils.addAll(tokenHash, keyHash);
 
-        boolean valid = Main.validate(serverSig, serverAlias, tokenHash);
+        boolean valid = Main.validate(serverSig, serverAlias, finalHash);
         return valid;
     }
 
@@ -461,10 +465,13 @@ public class ClientAPI {
         /*---------------------------------SERVER VALIDATION--------------------------------*/
         ByteString sigServerByteString = responseRegister.getSignature();
         String key = responseRegister.getResult();
+        String serverAlias = responseRegister.getKey();
 
         byte[] resultHash = Main.getHashFromObject(key);
+        byte[] keyHash = Main.getHashFromObject(serverAlias);
+        byte[] finalHash = ArrayUtils.addAll(resultHash, keyHash);
 
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseRegister.getKey());
+        boolean validResponse = validateServerResponse(sigServerByteString, finalHash, responseRegister.getKey());
         if (!validResponse) {
             return null;
         }
@@ -522,10 +529,13 @@ public class ClientAPI {
         /*---------------------------------SERVER VALIDATION--------------------------------*/
         ByteString sigServerByteString = responsePost.getSignature();
         String key = responsePost.getResult();
+        String serverAlias = responsePost.getKey();
 
         byte[] resultHash = Main.getHashFromObject(key);
+        byte[] keyHash = Main.getHashFromObject(serverAlias);
+        byte[] finalHash = ArrayUtils.addAll(resultHash, keyHash);
 
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responsePost.getKey());
+        boolean validResponse = validateServerResponse(sigServerByteString, finalHash, responsePost.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post response corrupted.");
             return null;
@@ -566,10 +576,13 @@ public class ClientAPI {
         /*---------------------------------SERVER VALIDATION--------------------------------*/
         ByteString sigServerByteString = responseGeneralPost.getSignature();
         String key = responseGeneralPost.getResult();
+        String serverAlias = responseGeneralPost.getKey();
 
         byte[] resultHash = Main.getHashFromObject(key);
+        byte[] keyHash = Main.getHashFromObject(serverAlias);
+        byte[] finalHash = ArrayUtils.addAll(resultHash, keyHash);
 
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseGeneralPost.getKey());
+        boolean validResponse = validateServerResponse(sigServerByteString, finalHash, responseGeneralPost.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post General response corrupted.");
             return null;
@@ -619,7 +632,12 @@ public class ClientAPI {
 
         resultHash = ArrayUtils.addAll(resultHash, hashTsId);
         resultHash = ArrayUtils.addAll(resultHash, hashTs);
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseRead.getKey());
+
+        String serverAlias = responseRead.getKey();
+        byte[] serverHash = Main.getHashFromObject(serverAlias);
+        byte[] finalHash = ArrayUtils.addAll(resultHash, serverHash);
+
+        boolean validResponse = validateServerResponse(sigServerByteString, finalHash, responseRead.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Read Response corrupted.");
             return null;
@@ -666,7 +684,12 @@ public class ClientAPI {
 
         resultHash = ArrayUtils.addAll(resultHash, hashTsId);
         resultHash = ArrayUtils.addAll(resultHash, hashTs);
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseReadGeneral.getKey());
+
+        String serverAlias = responseReadGeneral.getKey();
+        byte[] keyHash = Main.getHashFromObject(serverAlias);
+        byte[] finalHash = ArrayUtils.addAll(resultHash, keyHash);
+
+        boolean validResponse = validateServerResponse(sigServerByteString, finalHash, responseReadGeneral.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Read General response corrupted.");
             return null;
@@ -704,10 +727,13 @@ public class ClientAPI {
         /*---------------------------------SERVER VALIDATION--------------------------------*/
         ByteString sigServerByteString = responseWB.getSignature();
         String key = responseWB.getResult();
+        String serverAlias = responseWB.getKey();
 
         byte[] resultHash = Main.getHashFromObject(key);
+        byte[] keyHash = Main.getHashFromObject(serverAlias);
+        byte[] finalHash = ArrayUtils.addAll(resultHash, keyHash);
 
-        boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseWB.getKey());
+        boolean validResponse = validateServerResponse(sigServerByteString, finalHash, responseWB.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Write Back response corrupted.");
             return null;
