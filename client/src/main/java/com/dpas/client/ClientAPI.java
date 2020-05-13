@@ -62,7 +62,6 @@ public class ClientAPI {
                 System.out.println("    {");
                 System.out.println("        Key: " + bcb.getPost().getKey());
                 System.out.println("        Message: " + bcb.getPost().getMessage());
-                System.out.println("        PostId: " + bcb.getPost().getPostId());
                 System.out.println("        References: " + bcb.getPost().getRefList());
                 System.out.println("        General: " + bcb.getPost().getGeneral());
                 System.out.println("    }");

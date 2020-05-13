@@ -8,6 +8,8 @@ import java.security.cert.CertificateException;
 
 public class Main {
 
+    private Main() {}
+
     public static byte[] getHashFromObject(Object obj) throws Exception {
         final String DIGEST_ALGO = "SHA-512";
         MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGO);
