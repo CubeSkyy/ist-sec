@@ -15,6 +15,7 @@ mvn compile
 ```
 
 ### Running the tests
+Start the servers with the startServers.bat (in the server directory) or manually.
 In the base project directory:
 ```
 mvn test
@@ -22,8 +23,9 @@ mvn test
 
 ### Executing Client and Server
 In the server directory:
+Recal that you need 3 * numberOfFaults + 1 servers in different ports to run the project.
 ```
-mvn exec:java
+mvn exec:java "-Dexec.args=<port> <numberOfFaults>"
 ```
 
 In the client directory:
