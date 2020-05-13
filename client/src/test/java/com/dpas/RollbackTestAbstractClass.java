@@ -49,9 +49,7 @@ public abstract class RollbackTestAbstractClass {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
-        // Create a server, add service, start, and register for automatic graceful shutdown.
-
+        if(stubs.size() >= numOfServers) return;
 
         int port;
         for (int i = 0; i < numOfServers; i++) {

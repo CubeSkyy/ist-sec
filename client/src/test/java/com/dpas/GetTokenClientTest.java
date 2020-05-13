@@ -15,6 +15,7 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.dpas.ClientDataStore.CLIENT_TEST_USER;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
@@ -22,10 +23,10 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
 
     @Test
     public void getTokenValid() throws Exception {
-        Dpas.RegisterResponse registerResponse = client.register(blockingStub, client.getCommand("register|" + ClientDataStore.CLIENT_TEST_USER), null);
+        ArrayList<Dpas.RegisterResponse> res = (ArrayList) client.receive(stubs, "register|" + CLIENT_TEST_USER);
         GetTokenResponse tokenResponse = client.getClientToken(blockingStub, ClientDataStore.CLIENT_TEST_USER);
 
-        assertNotNull(registerResponse.getResult());
+        assertTrue(res.size() > 0);
         assertTrue(client.validateToken(tokenResponse));
     }
 
@@ -73,11 +74,11 @@ public class GetTokenClientTest extends RollbackTestAbstractClass {
     @Test
     public void getTokenChangeResponseTokenTest() throws Exception {
         changeResponseTokenTestAPI client = new changeResponseTokenTestAPI(numOfServers, numOfFaults);
+        ArrayList<Dpas.RegisterResponse> res = (ArrayList) client.receive(stubs, "register|" + CLIENT_TEST_USER);
 
-        Dpas.RegisterResponse registerResponse = client.register(blockingStub, client.getCommand("register|" + ClientDataStore.CLIENT_TEST_USER), null);
         GetTokenResponse tokenResponse = client.getClientToken(blockingStub, ClientDataStore.CLIENT_TEST_USER);
 
-        assertNotNull(registerResponse.getResult());
+        assertTrue(res.size() > 0);
         assertFalse(client.validateToken(tokenResponse));
     }
 

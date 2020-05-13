@@ -13,9 +13,7 @@ import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.*;
 
 import static com.dpas.server.ServerDataStore.*;
@@ -69,7 +67,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         numOfServers = 3 * numOfFaults + 1;
         majority = (int) Math.ceil((numOfServers + numOfFaults) / 2.0);
         timestampId = "ZZ";
-        postId = 0;
     }
 
 
@@ -901,12 +898,25 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
     @Override
     public synchronized void reset(ResetRequest request, StreamObserver<ResetResponse> responseObserver) {
-        usersMap = new HashMap<String, String>();
-        particularMap = new HashMap<String, ArrayList<Announcement>>();
-        generalMap = new ArrayList<Announcement>();
-        timestamp = -1;
-        timestampId = "ZZ";
-        postId = 0;
+        try {
+            Files.deleteIfExists(Paths.get(USERS_FILE));
+            Files.deleteIfExists(Paths.get(PARTICULAR_FILE));
+            Files.deleteIfExists(Paths.get(GENERAL_FILE));
+            Files.deleteIfExists(Paths.get(POSTID_FILE));
+            Files.deleteIfExists(Paths.get(TIMESTAMP_FILE));
+        } catch(NoSuchFileException e)
+        {
+            System.out.println("No such file/directory exists");
+        }
+        catch(DirectoryNotEmptyException e)
+        {
+            System.out.println("Directory is not empty.");
+        }
+        catch(IOException e)
+        {
+            System.out.println("Invalid permissions.");
+        }
+        initialize();
         ResetResponse response = ResetResponse.newBuilder().build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
