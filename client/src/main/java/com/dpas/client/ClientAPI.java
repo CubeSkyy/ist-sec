@@ -53,7 +53,7 @@ public class ClientAPI {
                 case "read":
                     return readAPI(stubs, command);
                 case "readGeneral":
-                    return responses = readGeneralAPI(stubs, command);
+                    return readGeneralAPI(stubs, command);
                 case "reset":
                     return resetAPI(stubs);
                 case "demo1":
@@ -90,7 +90,8 @@ public class ClientAPI {
         List<CompletableFuture<?>> completableFutures =
                 stubs.stream().map(stub -> CompletableFuture.supplyAsync(() -> {
                     try {
-                        return api.grpcOperation(stub, command, bcb);
+                        GeneratedMessageV3 tmp = api.grpcOperation(stub, command, bcb);
+                        return tmp;
                     } catch (Exception ex) {
                         throw new CompletionException(ex);
                     }
@@ -356,11 +357,13 @@ public class ClientAPI {
         /*----------------------------------------------------------------------------------*/
         String token = responseGetToken.getToken();
         Announcement post = (Announcement) bcb.get(0).getField(bcb.get(0).getDescriptorForType().findFieldByName("post"));
-        Object[] obj_list = {post.getKey(), post.getMessage(), token, wts};
-        byte[] signature = Main.getSignatureAll(obj_list, userAlias);
-        ArrayList<BroadcastResponse> bcbCast = (ArrayList<BroadcastResponse>) bcb.stream().map(obj -> (BroadcastResponse) obj).collect(Collectors.toList());
+        ArrayList<BroadcastResponse> bcbCast = (ArrayList<BroadcastResponse>) bcb.stream().map((obj) -> (BroadcastResponse) obj).collect(Collectors.toList());
 
-        PostRequest requestPost = PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature))
+        Object[] obj_list = {post, bcbCast, token, wts};
+        byte[] signature = Main.getSignatureAll(obj_list, userAlias);
+        Object[] obj_list2 = {post.getKey(), post.getMessage(), post.getRefList()};
+        byte[] announcementSig = Main.getSignatureAll(obj_list2, userAlias);
+        PostRequest requestPost = PostRequest.newBuilder().setPost(post).setAnnouncementSig(ByteString.copyFrom(announcementSig)).setSignature(ByteString.copyFrom(signature))
                 .setWts(wts).setToken(token).addAllBcb(bcbCast).build();
 
         PostResponse responsePost = stub.post(requestPost);
@@ -368,9 +371,9 @@ public class ClientAPI {
         ByteString sigServerByteString = responsePost.getSignature();
         String key = responsePost.getResult();
         String serverAlias = responsePost.getKey();
-        Object[] obj_list2 = {key, serverAlias};
+        Object[] obj_list3 = {key, serverAlias};
 
-        boolean validResponse = validateServerResponse(sigServerByteString, obj_list2, responsePost.getKey());
+        boolean validResponse = validateServerResponse(sigServerByteString, obj_list3, responsePost.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post response corrupted.");
             return null;
@@ -394,20 +397,21 @@ public class ClientAPI {
         /*----------------------------------------------------------------------------------*/
         String token = responseGetToken.getToken();
         Announcement post = (Announcement) bcb.get(0).getField(bcb.get(0).getDescriptorForType().findFieldByName("post"));
-        Object[] obj_list = {post.getKey(), post.getMessage(), token, wts};
+        ArrayList<BroadcastResponse> bcbCast = (ArrayList<BroadcastResponse>) bcb.stream().map((obj) -> (BroadcastResponse) obj).collect(Collectors.toList());
+        Object[] obj_list = {post, bcbCast, token, wts};
         byte[] signature = Main.getSignatureAll(obj_list, userAlias);
-        ArrayList<BroadcastResponse> bcbCast = (ArrayList<BroadcastResponse>) bcb.stream().map(obj -> (BroadcastResponse) obj).collect(Collectors.toList());
-
+        Object[] obj_list2 = {post.getKey(), post.getMessage(), post.getRefList()};
+        byte[] announcementSig = Main.getSignatureAll(obj_list2, userAlias);
         PostGeneralRequest requestGeneralPost = PostGeneralRequest.newBuilder()
-                .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).setWts(wts).addAllBcb(bcbCast).build();
+                .setPost(post).setSignature(ByteString.copyFrom(signature)).setAnnouncementSig(ByteString.copyFrom(announcementSig)).setToken(token).setWts(wts).addAllBcb(bcbCast).build();
 
         PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
         /*---------------------------------SERVER VALIDATION--------------------------------*/
         ByteString sigServerByteString = responseGeneralPost.getSignature();
         String key = responseGeneralPost.getResult();
         String serverAlias = responseGeneralPost.getKey();
-        Object[] obj_list2 = {key, serverAlias};
-        boolean validResponse = validateServerResponse(sigServerByteString, obj_list2, responseGeneralPost.getKey());
+        Object[] obj_list3 = {key, serverAlias};
+        boolean validResponse = validateServerResponse(sigServerByteString, obj_list3, responseGeneralPost.getKey());
         if (!validResponse) {
             System.err.println("Invalid signature and/or hash. Post General response corrupted.");
             return null;
@@ -526,13 +530,12 @@ public class ClientAPI {
 
     protected boolean verifyWriteSig(GeneratedMessageV3 readResponse) {
         ArrayList<Announcement> resList = new ArrayList<>((Collection<? extends Announcement>) readResponse.getField(readResponse.getDescriptorForType().findFieldByName("result")));
-
         if (resList.size() == 0) {
             return true;
         }
         for (Announcement a : resList) {
             try {
-                Object[] obj_list = {a.getKey(), a.getMessage(), a.getToken(), a.getWts()};
+                Object[] obj_list = {a.getKey(), a.getMessage(), a.getRefList()};
                 if (!Main.validateFromObjectList(a.getSignature().toByteArray(), obj_list, a.getKey())) return false;
             } catch (Exception e) {
                 System.err.println(e.getMessage());
@@ -605,4 +608,5 @@ public class ClientAPI {
         post.addAllRef(referral);
         return post.build();
     }
+
 }

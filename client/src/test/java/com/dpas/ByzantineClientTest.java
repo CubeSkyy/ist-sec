@@ -27,8 +27,8 @@ public class ByzantineClientTest extends RollbackTestAbstractClass {
         changeMessageBCBAPI client = new changeMessageBCBAPI(numOfServers, numOfFaults);
 
         client.receive(stubs, "register|" + CLIENT_TEST_USER);
-
         ArrayList<Dpas.PostResponse> res = (ArrayList) client.receive(stubs, "post|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG);
+        System.out.println(errContent.toString());
 
         assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_BCB) >= client.majority);
         assertEquals(0, res.size());
@@ -106,6 +106,8 @@ public class ByzantineClientTest extends RollbackTestAbstractClass {
 
             Object[] obj_list = {post.getKey(), post.getMessage(), token, wts};
             byte[] signature = Main.getSignatureAll(obj_list, userAlias);
+            Object[] obj_list2 = {post.getKey(), post.getMessage(), post.getRefList()};
+            byte[] announcementSig = Main.getSignatureAll(obj_list2, userAlias);
 
             ArrayList<Dpas.BroadcastResponse> bcbCast = (ArrayList<Dpas.BroadcastResponse>) bcb.stream().map(obj -> (Dpas.BroadcastResponse) obj).collect(Collectors.toList());
             if(counter % 2 == 1){
@@ -114,7 +116,7 @@ public class ByzantineClientTest extends RollbackTestAbstractClass {
                 post = postBuilder.build();
             }
 
-            Dpas.PostRequest requestPost = Dpas.PostRequest.newBuilder().setPost(post).setSignature(ByteString.copyFrom(signature))
+            Dpas.PostRequest requestPost = Dpas.PostRequest.newBuilder().setPost(post).setAnnouncementSig(ByteString.copyFrom(announcementSig)).setSignature(ByteString.copyFrom(signature))
                     .setWts(wts).setToken(token).addAllBcb(bcbCast).build();
 
             Dpas.PostResponse responsePost = stub.post(requestPost);
@@ -124,9 +126,9 @@ public class ByzantineClientTest extends RollbackTestAbstractClass {
             String key = responsePost.getResult();
             String serverAlias = responsePost.getKey();
 
-            Object[] obj_list2 = {key, serverAlias};
+            Object[] obj_list3 = {key, serverAlias};
 
-            boolean validResponse = validateServerResponse(sigServerByteString, obj_list2, responsePost.getKey());
+            boolean validResponse = validateServerResponse(sigServerByteString, obj_list3, responsePost.getKey());
             if (!validResponse) {
                 System.err.println("Invalid signature and/or hash. Post response corrupted.");
                 return null;

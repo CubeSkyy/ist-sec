@@ -23,9 +23,9 @@ public class DpasClient {
     }
 
     private static BufferedReader reader;
-    public final static String DEMO1 = "reset|register|user1\npost|user1|Test\nread|user1|user1|0";
-    public final static String DEMO2 = "reset|register|user1\nregister|user2\npostGeneral|user1|Test\npostGeneral|user2|Test2|1\nreadGeneral|user1|0";
-    public final static String DEMO3 = "reset|register|user1\npost|user1|Test\npost|user1|Test2\npost|user1|Test3\nread|user1|user1|2";
+    public final static String DEMO1 = "reset\nregister|user1\npost|user1|Test\nread|user1|user1|0";
+    public final static String DEMO2 = "reset\nregister|user1\nregister|user2\npostGeneral|user1|Test\npostGeneral|user2|Test2|1\nreadGeneral|user1|0";
+    public final static String DEMO3 = "reset\nregister|user1\npost|user1|Test\npost|user1|Test2\npost|user1|Test3\nread|user1|user1|2";
 
     public static void main(String[] args) throws Exception {
 

@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.dpas.server.ServerDataStore.*;
 
@@ -371,8 +372,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
     /*--------------------------------------------------POSTS---------------------------------------------------------*/
     @Override
     public synchronized void post(PostRequest request, StreamObserver<PostResponse> responseObserver) {
-
-        validateBCB(responseObserver, request.getPost(), request.getBcbList());
+        ArrayList<BroadcastResponse> bcbList = new ArrayList<>(request.getBcbList());
+        validateBCB(responseObserver, request.getPost(), bcbList);
 
         Announcement post = request.getPost();
         String key = post.getKey();
@@ -389,19 +390,14 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         byte[] signature = sigByteString.toByteArray();
 
         try {
-            byte[] tokenHash = Main.getHashFromObject(token);
-            byte[] postHash = Main.getHashFromObject(post.getKey());
-            postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
-            byte[] wtsHash = Main.getHashFromObject(wts);
-            byte[] finalHash = ArrayUtils.addAll(postHash, tokenHash);
-            finalHash = ArrayUtils.addAll(finalHash, wtsHash);
-
-            boolean valid = Main.validate(signature, key, finalHash); //key == userAlias
+            Object[] obj_list = {post, bcbList, token, wts};
+            boolean valid = Main.validateFromObjectList(signature, obj_list, key); //key == userAlias
             sendArgumentError(!valid, responseObserver, MSG_ERROR_POST_SIG);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
         if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
             getUsersMap().replace(key, null);
@@ -440,7 +436,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         Announcement.Builder postBuilder = post.toBuilder();
         postBuilder.setPostId(getPostId());
         postBuilder.setToken(token);
-        postBuilder.setSignature(sigByteString);
+        postBuilder.setSignature(request.getAnnouncementSig());
         post = postBuilder.build();
 
         if (!getParticularMap().containsKey(key)) {
@@ -477,8 +473,8 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
     @Override
     public synchronized void postGeneral(PostGeneralRequest request, StreamObserver<PostGeneralResponse> responseObserver) {
-
-        validateBCB(responseObserver, request.getPost(), request.getBcbList());
+        ArrayList<BroadcastResponse> bcbList = new ArrayList<>(request.getBcbList());
+        validateBCB(responseObserver, request.getPost(), bcbList);
 
         Announcement post = request.getPost();
         String key = post.getKey();
@@ -493,14 +489,9 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
 
         byte[] signature = sigByteString.toByteArray();
         try {
-            byte[] postHash = Main.getHashFromObject(post.getKey());
-            postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
-            byte[] tokenHash = Main.getHashFromObject(token);
-            byte[] wtsHash = Main.getHashFromObject(wts);
-            byte[] finalHash = ArrayUtils.addAll(postHash, tokenHash);
-            finalHash = ArrayUtils.addAll(finalHash, wtsHash);
+            Object[] obj_list = {post, bcbList, token, wts};
+            boolean valid = Main.validateFromObjectList(signature, obj_list, key); //key == userAlias
 
-            boolean valid = Main.validate(signature, key, finalHash); //key == userAlias
             sendArgumentError(!valid, responseObserver, MSG_ERROR_POST_GENERAL_SIG);
 
         } catch (Exception e) {
@@ -546,7 +537,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         Announcement.Builder postBuilder = post.toBuilder();
         postBuilder.setPostId(getPostId());
         postBuilder.setToken(token);
-        postBuilder.setSignature(sigByteString);
+        postBuilder.setSignature(request.getAnnouncementSig());
         post = postBuilder.build();
 
         getGeneralMap().add(post);
