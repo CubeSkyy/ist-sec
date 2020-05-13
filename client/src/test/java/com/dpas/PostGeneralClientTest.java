@@ -124,7 +124,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
 
         ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG);
 
-        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_TOKEN_EXPIRED) >= client.majority);
+        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_POST_GENERAL_SIG) >= client.majority);
         assertEquals(0, res.size());
 
     }

@@ -56,7 +56,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         else
             serverAlias = "server4";
 
-        System.out.println(serverAlias);
+        System.out.println(serverAlias+ " started");
 
         USERS_FILE = COMMON_USERS_FILE + port;
         PARTICULAR_FILE = COMMON_PARTICULAR_FILE + port;
@@ -218,7 +218,7 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
                 }
             }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            sendArgumentError(responseObserver, MSG_ERROR_BCB);
         }
         if (counter < majority) {
             sendArgumentError(responseObserver, MSG_ERROR_BCB);

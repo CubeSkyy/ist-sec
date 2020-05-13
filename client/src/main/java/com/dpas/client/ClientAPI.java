@@ -108,7 +108,7 @@ public class ClientAPI {
     }
 
     /*----------------------------------------------------------------------------------------------------------------*/
-    /*--------------------------------------Byzantine Consistent Broadcast--------------------------------------------*/
+    /*--------------------------------------Byzantine Consistent 1--------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
 
     public BroadcastResponse broadcast(DpasServiceBlockingStub stub, Object payload, ArrayList<GeneratedMessageV3> bcb) throws Exception {
@@ -513,7 +513,7 @@ public class ClientAPI {
     /*----------------------------------------------------------------------------------------------------------------*/
     /*--------------------------------------------Helper functions----------------------------------------------------*/
     /*----------------------------------------------------------------------------------------------------------------*/
-    private void printRead(List<Announcement> _list) {
+    public void printRead(List<Announcement> _list) {
         ArrayList<Announcement> list = new ArrayList<>(_list);
         if (list.isEmpty()) System.out.println("Empty.");
         else {
