@@ -1,5 +1,8 @@
 package com.dpas.crypto;
 
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.*;
 import java.security.*;
 import java.security.cert.Certificate;
@@ -9,6 +12,19 @@ import java.security.cert.CertificateException;
 public class Main {
 
     private Main() {}
+
+
+    public static byte[] getSignatureAll(Object[] obj_list, String key) throws  Exception{
+        return Main.getSignature(getHashFromObjectList(obj_list), key);
+    }
+
+    public static byte[] getHashFromObjectList(Object[] obj_list) throws  Exception{
+        byte[] hash = new byte[0];
+        for(Object obj : obj_list){
+            hash = ArrayUtils.addAll(hash, Main.getHashFromObject(obj));
+        }
+        return hash;
+    }
 
     public static byte[] getHashFromObject(Object obj) throws Exception {
         final String DIGEST_ALGO = "SHA-512";
@@ -96,6 +112,21 @@ public class Main {
         }
         return true;
     }
+
+    public static boolean validateFromObjectList(byte[] signature, Object[] obj_list, String userAlias) throws Exception {
+        PublicKey publicKey = getPublicKey(userAlias);
+
+        Signature sig = Signature.getInstance("SHA256withRSA");
+        sig.initVerify(publicKey);
+        sig.update(getHashFromObjectList(obj_list));
+        boolean verify = sig.verify(signature);
+        if (!verify) {
+            System.err.println("Invalid signature! Board compromised!");
+            return false;
+        }
+        return true;
+    }
+
 
 
     public static boolean hasCertificate(String userAlias) {

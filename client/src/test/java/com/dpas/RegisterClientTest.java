@@ -5,6 +5,7 @@ import com.dpas.Dpas.RegisterResponse;
 import com.dpas.client.ClientAPI;
 import com.dpas.crypto.Main;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.GeneratedMessageV3;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static com.dpas.server.ServerDataStore.*;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import static com.dpas.ClientDataStore.*;
 import static org.junit.Assert.assertEquals;
@@ -65,15 +67,17 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
         public RegisterTestWrongUserAPI(int numOfServers, int numOfFaults) {
             super(numOfServers, numOfFaults);
         }
+        public RegisterResponse register(DpasServiceGrpc.DpasServiceBlockingStub stub, Object payload, ArrayList<GeneratedMessageV3> bcb) throws Exception {
+            String[] command = (String[]) payload;
 
-        public RegisterResponse register(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<Dpas.BroadcastRegisterResponse> bcb) throws Exception {
             String userAlias = command[1];
+            Object[] obj_list = {userAlias};
 
-            byte[] hash = Main.getHashFromObject(userAlias);
-            byte[] signature = Main.getSignature(hash, userAlias);
+            byte[] signature = Main.getSignatureAll(obj_list, userAlias);
+            ArrayList<Dpas.BroadcastRegisterResponse> bcbCast = (ArrayList<Dpas.BroadcastRegisterResponse>) bcb.stream().map(obj -> (Dpas.BroadcastRegisterResponse) obj).collect(Collectors.toList());
 
             RegisterRequest requestRegister = RegisterRequest.newBuilder().setKey(CLIENT_TEST_USER2)
-                    .setSignature(ByteString.copyFrom(signature)).addAllBcb(bcb).build();
+                    .setSignature(ByteString.copyFrom(signature)).addAllBcb(bcbCast).build();
 
             RegisterResponse responseRegister = stub.register(requestRegister);
 
@@ -81,18 +85,15 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
             ByteString sigServerByteString = responseRegister.getSignature();
             String key = responseRegister.getResult();
             String serverAlias = responseRegister.getKey();
-
-            byte[] resultHash = Main.getHashFromObject(key);
-            byte[] keyHash = Main.getHashFromObject(serverAlias);
-            byte[] finalHash = ArrayUtils.addAll(resultHash, keyHash);
-
-            boolean validResponse = validateServerResponse(sigServerByteString, finalHash, responseRegister.getKey());
+            Object[] obj_list2 = {key, serverAlias};
+            boolean validResponse = validateServerResponse(sigServerByteString, obj_list2, responseRegister.getKey());
             if (!validResponse) {
                 return null;
             }
 
             return responseRegister;
         }
+
     }
 
 
@@ -102,14 +103,17 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
         }
 
         @Override
-        public RegisterResponse register(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<Dpas.BroadcastRegisterResponse> bcb) throws Exception {
-            String userAlias = command[1];
+        public RegisterResponse register(DpasServiceGrpc.DpasServiceBlockingStub stub, Object payload, ArrayList<GeneratedMessageV3> bcb) throws Exception {
+            String[] command = (String[]) payload;
 
-            byte[] hash = Main.getHashFromObject(userAlias);
-            byte[] signature = Main.getSignature(hash, CLIENT_TEST_USER2);
+            String userAlias = command[1];
+            Object[] obj_list = {CLIENT_TEST_USER2};
+
+            byte[] signature = Main.getSignatureAll(obj_list, userAlias);
+            ArrayList<Dpas.BroadcastRegisterResponse> bcbCast = (ArrayList<Dpas.BroadcastRegisterResponse>) bcb.stream().map(obj -> (Dpas.BroadcastRegisterResponse) obj).collect(Collectors.toList());
 
             RegisterRequest requestRegister = RegisterRequest.newBuilder().setKey(CLIENT_TEST_USER2)
-                    .setSignature(ByteString.copyFrom(signature)).addAllBcb(bcb).build();
+                    .setSignature(ByteString.copyFrom(signature)).addAllBcb(bcbCast).build();
 
             RegisterResponse responseRegister = stub.register(requestRegister);
 
@@ -117,18 +121,15 @@ public class RegisterClientTest extends RollbackTestAbstractClass {
             ByteString sigServerByteString = responseRegister.getSignature();
             String key = responseRegister.getResult();
             String serverAlias = responseRegister.getKey();
-
-            byte[] resultHash = Main.getHashFromObject(key);
-            byte[] keyHash = Main.getHashFromObject(serverAlias);
-            byte[] finalHash = ArrayUtils.addAll(resultHash, keyHash);
-
-            boolean validResponse = validateServerResponse(sigServerByteString, finalHash, responseRegister.getKey());
+            Object[] obj_list2 = {key, serverAlias};
+            boolean validResponse = validateServerResponse(sigServerByteString, obj_list2, responseRegister.getKey());
             if (!validResponse) {
                 return null;
             }
 
             return responseRegister;
         }
+
     }
 
 

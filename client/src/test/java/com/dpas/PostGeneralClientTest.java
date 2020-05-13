@@ -5,6 +5,7 @@ import com.dpas.client.ClientAPI;
 import com.dpas.crypto.Main;
 import com.dpas.server.ServerDataStore;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.GeneratedMessageV3;
 import io.grpc.StatusRuntimeException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import static com.dpas.ClientDataStore.*;
 import static com.dpas.server.ServerDataStore.*;
@@ -109,7 +111,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
 
         ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG);
 
-        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_BCB) >= client.majority);
+        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_POST_GENERAL_SIG) >= client.majority);
         assertEquals(0, res.size());
     }
 
@@ -122,7 +124,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
 
         ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG);
 
-        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_BCB) >= client.majority);
+        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_TOKEN_EXPIRED) >= client.majority);
         assertEquals(0, res.size());
 
     }
@@ -135,7 +137,7 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
 
         ArrayList<PostGeneralResponse> res = (ArrayList) client.receive(stubs, "postGeneral|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_MSG);
 
-        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_BCB) >= client.majority);
+        assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_POST_GENERAL_SIG) >= client.majority);
         assertEquals(0, res.size());
 
     }
@@ -148,7 +150,9 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
 
 
         @Override
-        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
+        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, Object payload, ArrayList<GeneratedMessageV3> bcb) throws Exception {
+            String[] command = (String[]) payload;
+
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
             GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
@@ -161,38 +165,36 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            Announcement post = bcb.get(0).getPost();
-            byte[] postHash = Main.getHashFromObject(post.getKey());
-            postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
-            byte[] tokenHash = Main.getHashFromObject(token);
-            byte[] wtsHash = Main.getHashFromObject(wts);
-            byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
-            hash = ArrayUtils.addAll(hash, wtsHash);
-            byte[] signature = Main.getSignature(hash, userAlias);
+
+            Announcement post = (Announcement) bcb.get(0).getField(bcb.get(0).getDescriptorForType().findFieldByName("post"));
+
+            Object[] obj_list = {post.getKey() , post.getMessage(), token, wts};
+
+            byte[] signature = Main.getSignatureAll(obj_list, userAlias);
+
+            ArrayList<BroadcastResponse> bcbCast = (ArrayList<BroadcastResponse>) bcb.stream().map(obj -> (BroadcastResponse) obj).collect(Collectors.toList());
+
             Announcement.Builder postBuilder = post.toBuilder();
             postBuilder.setMessage(CLIENT_TEST_MSG2);
             post = postBuilder.build();
 
             PostGeneralRequest requestGeneralPost = PostGeneralRequest.newBuilder()
-                    .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).setWts(wts).build();
+                    .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).setWts(wts).addAllBcb(bcbCast).build();
 
             PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
             /*---------------------------------SERVER VALIDATION--------------------------------*/
             ByteString sigServerByteString = responseGeneralPost.getSignature();
             String key = responseGeneralPost.getResult();
-
-            byte[] resultHash = Main.getHashFromObject(key);
-
-            boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseGeneralPost.getKey());
+            String serverAlias = responseGeneralPost.getKey();
+            Object[] obj_list2 = {key, serverAlias};
+            boolean validResponse = validateServerResponse(sigServerByteString, obj_list2, responseGeneralPost.getKey());
             if (!validResponse) {
                 System.err.println("Invalid signature and/or hash. Post General response corrupted.");
                 return null;
 
             }
-
             return responseGeneralPost;
         }
-
     }
 
     private class changeTokenAPI extends ClientAPI {
@@ -201,7 +203,9 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
         }
 
         @Override
-        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
+        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, Object payload, ArrayList<GeneratedMessageV3> bcb) throws Exception {
+            String[] command = (String[]) payload;
+
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
             GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
@@ -214,26 +218,25 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            Announcement post = bcb.get(0).getPost();
-            byte[] postHash = Main.getHashFromObject(post.getKey());
-            postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
-            byte[] tokenHash = Main.getHashFromObject(token);
-            byte[] wtsHash = Main.getHashFromObject(wts);
-            byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
-            hash = ArrayUtils.addAll(hash, wtsHash);
-            byte[] signature = Main.getSignature(hash, userAlias);
+
+            Announcement post = (Announcement) bcb.get(0).getField(bcb.get(0).getDescriptorForType().findFieldByName("post"));
+
+            Object[] obj_list = {post.getKey() , post.getMessage(), token, wts};
+
+            byte[] signature = Main.getSignatureAll(obj_list, userAlias);
+
+            ArrayList<BroadcastResponse> bcbCast = (ArrayList<BroadcastResponse>) bcb.stream().map(obj -> (BroadcastResponse) obj).collect(Collectors.toList());
 
             PostGeneralRequest requestGeneralPost = PostGeneralRequest.newBuilder()
-                    .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(CLIENT_WRONG_TOKEN).setWts(wts).build();
+                    .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(CLIENT_WRONG_TOKEN).setWts(wts).addAllBcb(bcbCast).build();
 
             PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
             /*---------------------------------SERVER VALIDATION--------------------------------*/
             ByteString sigServerByteString = responseGeneralPost.getSignature();
             String key = responseGeneralPost.getResult();
-
-            byte[] resultHash = Main.getHashFromObject(key);
-
-            boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseGeneralPost.getKey());
+            String serverAlias = responseGeneralPost.getKey();
+            Object[] obj_list2 = {key, serverAlias};
+            boolean validResponse = validateServerResponse(sigServerByteString, obj_list2, responseGeneralPost.getKey());
             if (!validResponse) {
                 System.err.println("Invalid signature and/or hash. Post General response corrupted.");
                 return null;
@@ -242,7 +245,6 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
 
             return responseGeneralPost;
         }
-
     }
 
 
@@ -250,7 +252,10 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
         public ReplayAPI(int numOfServers, int numOfFaults) {
             super(numOfServers, numOfFaults);
         }
-        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
+        @Override
+        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, Object payload, ArrayList<GeneratedMessageV3> bcb) throws Exception {
+            String[] command = (String[]) payload;
+
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
             GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
@@ -263,27 +268,26 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            Announcement post = bcb.get(0).getPost();
-            byte[] postHash = Main.getHashFromObject(post.getKey());
-            postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
-            byte[] tokenHash = Main.getHashFromObject(token);
-            byte[] wtsHash = Main.getHashFromObject(wts);
-            byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
-            hash = ArrayUtils.addAll(hash, wtsHash);
-            byte[] signature = Main.getSignature(hash, userAlias);
+
+            Announcement post = (Announcement) bcb.get(0).getField(bcb.get(0).getDescriptorForType().findFieldByName("post"));
+
+            Object[] obj_list = {post.getKey() , post.getMessage(), token, wts};
+
+            byte[] signature = Main.getSignatureAll(obj_list, userAlias);
+
+            ArrayList<BroadcastResponse> bcbCast = (ArrayList<BroadcastResponse>) bcb.stream().map(obj -> (BroadcastResponse) obj).collect(Collectors.toList());
 
             PostGeneralRequest requestGeneralPost = PostGeneralRequest.newBuilder()
-                    .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).setWts(wts).build();
+                    .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).setWts(wts).addAllBcb(bcbCast).build();
 
             PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
             stub.postGeneral(requestGeneralPost);
             /*---------------------------------SERVER VALIDATION--------------------------------*/
             ByteString sigServerByteString = responseGeneralPost.getSignature();
             String key = responseGeneralPost.getResult();
-
-            byte[] resultHash = Main.getHashFromObject(key);
-
-            boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseGeneralPost.getKey());
+            String serverAlias = responseGeneralPost.getKey();
+            Object[] obj_list2 = {key, serverAlias};
+            boolean validResponse = validateServerResponse(sigServerByteString, obj_list2, responseGeneralPost.getKey());
             if (!validResponse) {
                 System.err.println("Invalid signature and/or hash. Post General response corrupted.");
                 return null;
@@ -301,7 +305,9 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
         }
 
         @Override
-        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, String[] command, ArrayList<BroadcastResponse> bcb) throws Exception {
+        public PostGeneralResponse postGeneral(DpasServiceGrpc.DpasServiceBlockingStub stub, Object payload, ArrayList<GeneratedMessageV3> bcb) throws Exception {
+            String[] command = (String[]) payload;
+
             String userAlias = command[1];
             /*-------------------------------GET TOKEN VALIDATION-------------------------------*/
             GetTokenResponse responseGetToken = getClientToken(stub, userAlias);
@@ -314,27 +320,25 @@ public class PostGeneralClientTest extends RollbackTestAbstractClass {
             }
             /*----------------------------------------------------------------------------------*/
             String token = responseGetToken.getToken();
-            Announcement post = bcb.get(0).getPost();
 
-            byte[] postHash = Main.getHashFromObject(post.getKey());
-            postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
-            byte[] tokenHash = Main.getHashFromObject(token);
-            byte[] wtsHash = Main.getHashFromObject(wts);
-            byte[] hash = ArrayUtils.addAll(postHash, tokenHash);
-            hash = ArrayUtils.addAll(hash, wtsHash);
-            byte[] signature = Main.getSignature(hash, CLIENT_TEST_USER2);
+            Announcement post = (Announcement) bcb.get(0).getField(bcb.get(0).getDescriptorForType().findFieldByName("post"));
+
+            Object[] obj_list = {post.getKey() , post.getMessage(), token, wts};
+
+            byte[] signature = Main.getSignatureAll(obj_list, CLIENT_TEST_USER2);
+
+            ArrayList<BroadcastResponse> bcbCast = (ArrayList<BroadcastResponse>) bcb.stream().map(obj -> (BroadcastResponse) obj).collect(Collectors.toList());
 
             PostGeneralRequest requestGeneralPost = PostGeneralRequest.newBuilder()
-                    .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).setWts(wts).build();
+                    .setPost(post).setSignature(ByteString.copyFrom(signature)).setToken(token).setWts(wts).addAllBcb(bcbCast).build();
 
             PostGeneralResponse responseGeneralPost = stub.postGeneral(requestGeneralPost);
             /*---------------------------------SERVER VALIDATION--------------------------------*/
             ByteString sigServerByteString = responseGeneralPost.getSignature();
             String key = responseGeneralPost.getResult();
-
-            byte[] resultHash = Main.getHashFromObject(key);
-
-            boolean validResponse = validateServerResponse(sigServerByteString, resultHash, responseGeneralPost.getKey());
+            String serverAlias = responseGeneralPost.getKey();
+            Object[] obj_list2 = {key, serverAlias};
+            boolean validResponse = validateServerResponse(sigServerByteString, obj_list2, responseGeneralPost.getKey());
             if (!validResponse) {
                 System.err.println("Invalid signature and/or hash. Post General response corrupted.");
                 return null;

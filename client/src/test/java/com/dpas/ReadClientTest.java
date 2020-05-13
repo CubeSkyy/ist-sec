@@ -44,7 +44,7 @@ public class ReadClientTest extends RollbackTestAbstractClass {
 
         ArrayList<Dpas.RegisterResponse> res = (ArrayList) client.receive(stubs, "read|" + CLIENT_TEST_USER + "|" + CLIENT_TEST_USER + "|" + 0);
         assertTrue(StringUtils.countMatches(errContent.toString(), MSG_ERROR_NOT_REGISTERED) >= client.majority);
-        assertNull(res);
+        assertTrue(res.size() == 0);
     }
 
 

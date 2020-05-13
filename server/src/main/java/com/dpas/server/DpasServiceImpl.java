@@ -403,6 +403,14 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             e.printStackTrace();
         }
 
+        if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
+            getUsersMap().replace(key, null);
+            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
+
+            System.out.println("\nUser token expired: " + key + ":" + token);
+        } else {
+            sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
+        }
 
         boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
         sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
@@ -423,15 +431,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         timestamp++;
         writeToFile(getTimestamp(), TIMESTAMP_FILE, MSG_TIMESTAMP);
         timestampId = key;
-
-        if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
-            getUsersMap().replace(key, null);
-            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
-
-            System.out.println("\nUser token expired: " + key + ":" + token);
-        } else {
-            sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
-        }
 
         /*------------------------------------POST ID---------------------------------------*/
         postId++;
@@ -508,6 +507,15 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             e.printStackTrace();
         }
 
+        if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
+
+            getUsersMap().replace(key, null);
+            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
+
+            System.out.println("\nUser token expired: " + key + ":" + token);
+        } else {
+            sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
+        }
 
         boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
         sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
@@ -529,15 +537,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         writeToFile(getTimestamp(), TIMESTAMP_FILE, MSG_TIMESTAMP);
         timestampId = key;
 
-        if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
-
-            getUsersMap().replace(key, null);
-            writeToFile(getUsersMap(), USERS_FILE, MSG_USERS);
-
-            System.out.println("\nUser token expired: " + key + ":" + token);
-        } else {
-            sendArgumentError(responseObserver, MSG_ERROR_TOKEN_EXPIRED);
-        }
 
         /*------------------------------------POST ID---------------------------------------*/
         postId++;
