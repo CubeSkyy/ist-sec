@@ -386,25 +386,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         System.out.println("\nPost Request Received:\n User: " + key + "\nMessage: "
                 + message + "\nTimestamp: " + wts + "\nToken: " + request.getToken());
 
-        boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
-        sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
-
-        boolean validLenght = message.length() <= 255;
-        sendArgumentError(!validLenght, responseObserver, MSG_ERROR_POST_MSG_LEN);
-
-        boolean validRegister = getUsersMap().containsKey(key);
-        sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
-
-        boolean validGeneral = post.getGeneral();
-        sendArgumentError(validGeneral, responseObserver, MSG_ERROR_INVALID_GENERAL);
-
-        if (wts < getTimestamp() || (wts == getTimestamp() && key.compareTo(timestampId) >= 0)) {
-            sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);
-        }
-
-        timestamp++;
-        writeToFile(getTimestamp(), TIMESTAMP_FILE, MSG_TIMESTAMP);
-        timestampId = key;
         /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
         ByteString sigByteString = request.getSignature();
 
@@ -425,6 +406,26 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
             e.printStackTrace();
         }
 
+
+        boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
+        sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
+
+        boolean validLenght = message.length() <= 255;
+        sendArgumentError(!validLenght, responseObserver, MSG_ERROR_POST_MSG_LEN);
+
+        boolean validRegister = getUsersMap().containsKey(key);
+        sendArgumentError(!validRegister, responseObserver, MSG_ERROR_NOT_REGISTERED);
+
+        boolean validGeneral = post.getGeneral();
+        sendArgumentError(validGeneral, responseObserver, MSG_ERROR_INVALID_GENERAL);
+
+        if (wts < getTimestamp() || (wts == getTimestamp() && key.compareTo(timestampId) >= 0)) {
+            sendArgumentError(responseObserver, MSG_ERROR_INVALID_TIMESTAMP);
+        }
+
+        timestamp++;
+        writeToFile(getTimestamp(), TIMESTAMP_FILE, MSG_TIMESTAMP);
+        timestampId = key;
 
         if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
             getUsersMap().replace(key, null);
@@ -491,6 +492,26 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         System.out.println("\nPost General Request Received:\n User: " + key + "\nMessage: "
                 + message + "\nTimestamp: " + wts + "\nToken: " + request.getToken());
 
+        /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
+        ByteString sigByteString = request.getSignature();
+
+        byte[] signature = sigByteString.toByteArray();
+        try {
+            byte[] postHash = Main.getHashFromObject(post.getKey());
+            postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
+            byte[] tokenHash = Main.getHashFromObject(token);
+            byte[] wtsHash = Main.getHashFromObject(wts);
+            byte[] finalHash = ArrayUtils.addAll(postHash, tokenHash);
+            finalHash = ArrayUtils.addAll(finalHash, wtsHash);
+
+            boolean valid = Main.validate(signature, key, finalHash); //key == userAlias
+            sendArgumentError(!valid, responseObserver, MSG_ERROR_POST_GENERAL_SIG);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         boolean validRef = post.getRefList().isEmpty() || Collections.max(post.getRefList()) <= getPostId();
         sendArgumentError(!validRef, responseObserver, MSG_ERROR_INVALID_REF);
 
@@ -510,25 +531,6 @@ public class DpasServiceImpl extends DpasServiceGrpc.DpasServiceImplBase {
         timestamp++;
         writeToFile(getTimestamp(), TIMESTAMP_FILE, MSG_TIMESTAMP);
         timestampId = key;
-
-        /*--------------------------SIGNATURE AND HASH VALIDATE-----------------------------*/
-        ByteString sigByteString = request.getSignature();
-
-        byte[] signature = sigByteString.toByteArray();
-        try {
-            byte[] postHash = Main.getHashFromObject(post.getKey());
-            postHash = ArrayUtils.addAll(postHash, Main.getHashFromObject(post.getMessage()));
-            byte[] tokenHash = Main.getHashFromObject(token);
-            byte[] wtsHash = Main.getHashFromObject(wts);
-            byte[] finalHash = ArrayUtils.addAll(postHash, tokenHash);
-            finalHash = ArrayUtils.addAll(finalHash, wtsHash);
-
-            boolean valid = Main.validate(signature, key, finalHash); //key == userAlias
-            sendArgumentError(!valid, responseObserver, MSG_ERROR_POST_GENERAL_SIG);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         if (getUsersMap().get(key) != null && getUsersMap().get(key).equals(token)) {
 
