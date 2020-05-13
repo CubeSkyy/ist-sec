@@ -23,10 +23,9 @@ public class DpasClient {
     }
 
     private static BufferedReader reader;
-    public static String DEMO1;
-    public static String DEMO2;
-    public static String DEMO3;
-
+    public final static String DEMO1 = "reset|register|user1\npost|user1|Test\nread|user1|user1|0";
+    public final static String DEMO2 = "reset|register|user1\nregister|user2\npostGeneral|user1|Test\npostGeneral|user2|Test2|1\nreadGeneral|user1|0";
+    public final static String DEMO3 = "reset|register|user1\npost|user1|Test\npost|user1|Test2\npost|user1|Test3\nread|user1|user1|2";
 
     public static void main(String[] args) throws Exception {
 
@@ -71,10 +70,6 @@ public class DpasClient {
                 }
             }
         });
-
-        DEMO1 = "register|user1\npost|user1|Test\nread|user1|user1|0";
-        DEMO2 = "register|user1\nregister|user2\npostGeneral|user1|Test\npostGeneral|user2|Test2|1\nreadGeneral|user1|0";
-        DEMO3 = "register|user1\npost|user1|Test\npost|user1|Test2\npost|user1|Test3\nread|user1|user1|2";
 
         System.out.print("Insert commands:\n");
         while (true) {
